@@ -499,11 +499,11 @@ string GraphState::to_s ( unsigned int frequency ) {
                   oss << " " << ids_i[i];
               }
           }
-          if (!DO_YAML) oss << " ]\n";
+          if (!DO_YAML) oss << " ]";
           else oss << " ]";
       }
 
-      if (DO_YAML) oss << " ]\n";
+      if (DO_YAML) oss << " ]";
 
 
       return oss.str();

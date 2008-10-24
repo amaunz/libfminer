@@ -12,6 +12,7 @@ extern bool do_backbone;
 extern bool adjust_ub;
 extern string outl;
 extern int type;
+extern vector<string> result;
 
 inline void PatternTree::addLeg ( NodeId connectingnode, const int depth, const EdgeLabel edgelabel, LegOccurrences &legoccurrences ) {
   LegPtr leg = new Leg;
@@ -828,7 +829,7 @@ void PatternTree::expand (pair<float, string> max) {
 
   if (do_backbone && (legs.size()==0)) {
     if (updated)
-        cout << max.second;
+        result << max.second;
         updated = false;
   }
  
@@ -841,7 +842,7 @@ void PatternTree::expand (pair<float, string> max) {
     // GRAPHSTATE
     graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.label, legs[i]->occurrences.maxdegree );
     outl = graphstate.to_s(legs[i]->occurrences.frequency);
-    if (!do_backbone) cout << outl;
+    if (!do_backbone) result << outl;
 
     // RECURSE
     float cmax = maxi ( maxi ( chisq.sig, max.first ), chisq.p );
@@ -864,7 +865,7 @@ void PatternTree::expand (pair<float, string> max) {
     }
     else {
         if (do_backbone && updated) {
-            cout << max.second;
+            result << max.second;
             updated = false;
         }
     }
