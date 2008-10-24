@@ -121,8 +121,6 @@ class Database {
 
      // NOTE! In the input file, the nodes MUST be listed in pre-order.
 
-    // reads binary activity information and stores it in the trees
-    void read_act (char* smi_file);
 
      // after "read", determines the frequency of edges, using DatabaseNodeLabel's edgelasttid/edgelabelfrequency
     void edgecount ();
