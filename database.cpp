@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <iostream>
 
-extern void remove_dos_cr(string* str);
 
 ostream &operator<< ( ostream &stream, DatabaseTreeEdge &databasetreeedge ) {
   stream << "DatabaseTreeEdge; edgelabel: " << databasetreeedge.edgelabel << "; tonode: " << databasetreeedge.tonode << endl;
@@ -39,12 +38,6 @@ bool Database::readTree (string smi, Tid tid, Tid orig_tid, int line_nr) {
 
     // read the molecule
     conv.SetInAndOutFormats("SMI","SDF");
-
-/*
-    conv.SetOptions("h", OBConversion::INOPTIONS);
-    conv.SetOptions("h", OBConversion::GENOPTIONS);
-    conv.SetOptions("h", OBConversion::OUTOPTIONS);
-*/
 
     if (!conv.ReadString(&mol,smi)) {
         cerr << "Error during conversion" << endl;

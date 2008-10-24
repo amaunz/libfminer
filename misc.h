@@ -42,8 +42,6 @@ extern Frequency minfreq;
 extern int level; // 3 : all, 2 : paths and trees, 1 : paths
 extern int maxsize; // maximal size
 
-void puti (FILE *f, int i);
-
 inline void setmax ( short unsigned int &a, short unsigned int b ) { if ( b > a ) a = b; }
 
 class Statistics {

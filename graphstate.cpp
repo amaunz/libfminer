@@ -409,41 +409,6 @@ int GraphState::enumerateSpanning () {
   return 0;
 }
 
-/*
-void GraphState::print () {
-  static int counter = 0;
-  counter++;
-  putc ( 't', stdout );
-  putc ( ' ', stdout );
-  puti ( stdout, (int) counter );
-  putc ( '\n', stdout );
-  for ( unsigned int i = 0; i < nodes.size (); i++ ) {
-    putc ( 'v', stdout );
-    putc ( ' ', stdout );
-    puti ( stdout, (int) i );
-    putc ( ' ', stdout );
-    puti ( stdout, (int) database.nodelabels[nodes[i].label].inputlabel );
-    putc ( '\n', stdout );
-  }
-  for (unsigned int i = 0; i < nodes.size (); i++ ) {
-    for (unsigned int j = 0; j < nodes[i].edges.size (); j++ ) {
-      GraphState::GSEdge &edge = nodes[i].edges[j];
-      if ( i < (unsigned) edge.tonode ) {
-        putc ( 'e', stdout );
-	putc ( ' ', stdout );
-	puti ( stdout, (int) i );
-	putc ( ' ', stdout );
-	puti ( stdout, (int) edge.tonode );
-	putc ( ' ', stdout );
-	puti ( stdout, (int) database.edgelabels[
-	             database.edgelabelsindexes[edge.edgelabel]
-		   ].inputedgelabel );
-        putc ( '\n', stdout );
-      }      
-    }
-  }
-}
-*/
 
 void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
     oss << database.nodelabels[nodes[cur_n].label].inputlabel; // output nodelabel
@@ -461,58 +426,10 @@ void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
 
 string GraphState::to_s ( unsigned int frequency ) {
 
-//  print();
-
-//  OBMol mol;
-//  string smi;
-
   bool DO_YAML = true;
   if (getenv("FMINER_LAZAR")) DO_YAML = false;
 
   if (!chisq.active || chisq.p >= chisq.sig) {
-
-/*
-      for ( int i = 0; i < (int) nodes.size (); i++ ) { // nodes
-        OBAtom a; 
-        a.SetAtomicNum(database.nodelabels[nodes[i].label].inputlabel);
-        if (!mol.AddAtom(a)) {
-            cerr << " Error! Adding atom " << i << " failed. " << endl; exit(1);
-        }
-      }
-
-      for ( int i = 0; i < (int) nodes.size (); i++ ) {   // edges
-        for ( int j = 0; j < (int) nodes[i].edges.size (); j++ ) {
-
-          GraphState::GSEdge &edge = nodes[i].edges[j];
-
-          if ( i < edge.tonode ) {
-
-            if (! (mol.AddBond (
-                i+1,
-                ((int) edge.tonode)+1, 
-                (int) (database.edgelabels[database.edgelabelsindexes[edge.edgelabel]].inputedgelabel) 
-                               )
-                  )
-               ) { cerr << "Error! Adding edge " << i+1 << " => " << ((int) edge.tonode) +1  << "failed. " << endl; exit(1); }
-          }      
-        }
-      }
-*/
-
-/*
-      OBConversion conv;
-      conv.SetOutFormat("SMI");
-*/
-
-/*
-      conv.SetOptions("h", OBConversion::INOPTIONS);
-      conv.SetOptions("h", OBConversion::GENOPTIONS);
-      conv.SetOptions("h", OBConversion::OUTOPTIONS);
-*/
-
-//      smi = conv.WriteString(&mol,1);
-//      conv.SetOutFormat("MOL");
-//      cout <<  conv.WriteString(&mol,1) << endl;
 
       ostringstream oss;
 
@@ -596,82 +513,6 @@ string GraphState::to_s ( unsigned int frequency ) {
   
 }
 
-
-
-/*
-void GraphState::print ( FILE *f ) {
-  static int counter = 0;
-  counter++;
-
-  putc ( 't', f );      // tree
-  putc ( ' ', f );
-  puti ( f, (int) counter );
-  putc ( '\n', f );
-
-  for ( int i = 0; i < nodes.size (); i++ ) { // nodes
-    putc ( 'v', f );
-    putc ( ' ', f );
-    puti ( f, (int) i );
-    putc ( ' ', f );
-    fputs ( database.nodelabels[nodes[i].label].inputlabel.c_str(), f );
-    putc ( '\n', f );
-  }
-
-  for ( int i = 0; i < nodes.size (); i++ ) {   // edges
-    for ( int j = 0; j < nodes[i].edges.size (); j++ ) {
-      GraphState::GSEdge &edge = nodes[i].edges[j];
-      if ( i < edge.tonode ) {
-        putc ( 'e', f );
-	    putc ( ' ', f );
-	    puti ( f, (int) i );
-	    putc ( ' ', f );
-	    puti ( f, (int) edge.tonode );
-	    putc ( ' ', f );
-	    puti ( f, (int) database.edgelabels[database.edgelabelsindexes[edge.edgelabel]].inputedgelabel );
-        putc ( '\n', f );
-      }      
-    }
-  }
-
-}
-*/
-
-/*
-void GraphState::makeState ( DatabaseTree *databasetree ) {
-  vector<int> used ( databasetree->nodes.size (), 0 );
-  queue<int> nqueue;
-  queue<int> pqueue;
-  nqueue.push ( 0 );
-  pqueue.push ( -1 );
-  insertStartNode ( databasetree->nodes[0].nodelabel );
-  used[0] = 1;
-  int nr = 2; // already done == 0
-  while ( !nqueue.empty () ) {
-    NodeId node = nqueue.front (), parent = pqueue.front ();
-    int s = databasetree->nodes[node].edges.size ();
-    for ( int i = 0; i < s; i++ ) {
-      if ( used[databasetree->nodes[node].edges[i].tonode] ) {
-        if ( databasetree->nodes[node].edges[i].tonode != parent ) {
-	  if ( used[node] < used[databasetree->nodes[node].edges[i].tonode] )
-            insertEdge ( used[node] , 
-                        used[databasetree->nodes[node].edges[i].tonode] , 
-                        databasetree->nodes[node].edges[i].edgelabel );
-	  cout << "ERROR! CYCLIC GRAPH IN THE INPUT!" << endl;
-	}
-      }
-      else {
-        insertNode ( used[node] -1, databasetree->nodes[node].edges[i].edgelabel, 100 );
-	nqueue.push ( databasetree->nodes[node].edges[i].tonode );
-	pqueue.push ( node );
-	used[databasetree->nodes[node].edges[i].tonode] = nr;
-	nr++;
-      }
-    }
-    nqueue.pop ();
-    pqueue.pop ();
-  }
-}
-*/
 
 void GraphState::undoState () {
   int s = nodes.size ();
