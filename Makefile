@@ -15,8 +15,8 @@ LIBS	      = -lm -ldl -lopenbabel -lgsl -lgslcblas
 all: $(LIB1_REALNAME) 
 $(LIB1_REALNAME): $(OBJ)
 	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJ)
-	ln -s $@ $(LIB1_SONAME)
-	ln -s $@ $(LIB1)
+	-ln -sf $@ $(LIB1_SONAME)
+	-ln -sf $@ $(LIB1)
 .o:
 	$(CC) $(CXXFLAGS) $(LIBS) $@
 

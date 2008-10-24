@@ -30,49 +30,6 @@ ostream &operator<< ( ostream &stream, DatabaseTree &databasetree ) {
 }
 
 
-void Database::read_smi (char* smi_file) {
-    Tid tree_nr = 0; 
-    Tid tree_id = 0;
-    int line_nr = 1;
-
-    ifstream input;
-    string line;
-    string tmp_field;
-    input.open(smi_file);
-
-    if (!input) {
-        cerr << "Cannot open " << smi_file << endl;
-        exit(1);
-    }
-
-    while (getline(input, line)) {
-        istringstream iss(line);
-        string id = "";
-        int field_nr = 0;
-        while(getline(iss, tmp_field, '\t')) {  // split at tabs
-            if (field_nr == 0) { // ID
-                tree_id = (unsigned int) atoi (tmp_field.c_str());
-                if (tree_id == 0) { cerr << "Error! Invalid ID: '" << tmp_field << "' in file " << smi_file << ", line " << line_nr << "." << endl; exit(1); }
-            }
-            else if (field_nr == 1) { // SMILES
-                if (readTree (tmp_field , tree_nr, tree_id, line_nr)) {
-                    tree_nr++;
-                }
-                else {
-                    cerr << "on line " << line_nr << ", id " << tree_id << "." << endl;
-                }
-            }
-            field_nr++;
-        }
-        line_nr++;
-    }
-
-    cerr << tree_nr << " compounds" << endl;
-    input.close();
-
-}
-
-
 void Database::read_act (char* act_file) {
     extern ChisqConstraint chisq;
     ifstream input;

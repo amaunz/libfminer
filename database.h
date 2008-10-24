@@ -121,8 +121,6 @@ class Database {
 
      // NOTE! In the input file, the nodes MUST be listed in pre-order.
 
-    // reads a smiles string, and determines the frequency counts for node labels and (combined) edge labels
-    void read_smi (char* smi_file);
     // reads binary activity information and stores it in the trees
     void read_act (char* smi_file);
 
@@ -138,7 +136,6 @@ class Database {
 
     void printTrees ();
     ~Database ();
-  private:
     bool readTree (string smi, Tid tid , Tid orig_tid, int line_nr);
   
   	// Perform DFS through tree to identify cycles
