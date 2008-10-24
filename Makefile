@@ -12,9 +12,11 @@ LIBS	      = -lm -ldl -lopenbabel -lgsl -lgslcblas
 
 # TARGETS
 .PHONY:
-all: $(LIB1_SONAME) 
-$(LIB1_SONAME): $(OBJ)
+all: $(LIB1_REALNAME) 
+$(LIB1_REALNAME): $(OBJ)
 	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJ)
+	ln -s $@ $(LIB1_SONAME)
+	ln -s $@ $(LIB1)
 .o:
 	$(CC) $(CXXFLAGS) $(LIBS) $@
 
