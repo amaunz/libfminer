@@ -3,7 +3,6 @@
 // Siegfried Nijssen, snijssen@liacs.nl, jan 2004.
 #include <algorithm>
 #include "patterntree.h"
-#include "patterngraph.h"
 #include "path.h"
 #include "graphstate.h"
 #include <iomanip>
@@ -459,51 +458,8 @@ void Path::expand2 (pair<float,string> max) {
     return;
   }
 
-
   
-  // PHASE 3: INSERT CYLE CLOSING EDGES IN CASE OF CYCLE-CLOSING REFINEMENT
-  if ( closelegs.size () && type > 2 ) {
-    
-    NodeId from = graphstate.nodes.size ();
-    NodeId to = 0;
-    while ( graphstate.nodes[to].edges.size () == 2 )
-      to++;
-    to++;
-      
-    for ( unsigned int i = 0; i < closelegs.size (); i++ ) {
-      if ( closelegs[i]->tuple.from == from &&
-           closelegs[i]->tuple.to == to &&
-           is_normal ( closelegs[i]->tuple.label ) ) {
-
-           // Processing Closelegs
-
-           // GRAPHSTATE
-           graphstate.insertEdge ( closelegs[i]->tuple.from, closelegs[i]->tuple.to, closelegs[i]->tuple.label );
-
-           // DO NOT RECURSE
-
-           // OUTPUT
-           if (chisq.active) chisq.Calc(closelegs[i]->occurrences.elements);
-           outl = graphstate.to_s(closelegs[i]->occurrences.frequency);
-           result << outl;
-
-           int addsize = statistics.patternsize + graphstate.edgessize - graphstate.nodes.size ();
-           if ( (unsigned) addsize >= statistics.frequenttreenumbers.size () ) {
-              statistics.frequenttreenumbers.resize ( addsize + 1, 0 );
-              statistics.frequentpathnumbers.resize ( addsize + 1, 0 );
-              statistics.frequentgraphnumbers.resize ( addsize + 1, 0 );
-           }
-           statistics.frequentgraphnumbers[addsize]++;
-           graphstate.deleteEdge ( closelegs[i]->tuple.from, closelegs[i]->tuple.to );
-        
-           // DON'T RECURSE GRAPH GROWING!
-           // circle graphs can only grow from paths, all other graphs
-           // can grow from spanning trees, which we prefer for now
-      }
-    }
-  }
-
-
+  
   // Grow Path forw
   for (unsigned int j=0; j<forwpathlegs.size() ; j++ ) {
     unsigned int index = forwpathlegs[j];

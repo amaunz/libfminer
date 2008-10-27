@@ -2,7 +2,7 @@
 // Andreas Maunz, andreas@maunz.de, jul 2008
 // Siegfried Nijssen, snijssen@liacs.nl, jan 2004.
 #include "patterntree.h"
-#include "patterngraph.h"
+//#include "patterngraph.h"
 #include "graphstate.h"
 #include <algorithm>
 #include "misc.h"
@@ -814,6 +814,7 @@ void PatternTree::expand (pair<float, string> max) {
   }
     
   // PHASE 3
+  /*
   if ( type > 2 ) {
     for ( int i = 0; i < (int) closelegs.size(); i++ ) {
       // TEST CHISQ HERE ALREADY (ONLY FOR GRAPHS)!
@@ -826,6 +827,7 @@ void PatternTree::expand (pair<float, string> max) {
       graphstate.deleteEdge ( closelegs[i]->tuple.from, closelegs[i]->tuple.to );
     }
   }
+  */
 
   if (do_backbone && (legs.size()==0)) {
     if (updated)
