@@ -5,9 +5,9 @@ LIB1_SONAME   = $(LIB1).1
 LIB1_REALNAME = $(LIB1_SONAME).0.1
 
 # OPTIONS
-OBJ           = database.o patterntree.o legoccurrence.o closeleg.o graphstate.o path.o constraints.o
+OBJ           = database.o patterntree.o legoccurrence.o closeleg.o graphstate.o path.o constraints.o fminer.o
 CC            = g++
-CXXFLAGS      = -g -Wall -O3 -I./include/openbabel-2.0/ -fPIC -g
+CXXFLAGS      = -g -Wall -O3 -I./include/openbabel-2.0/ -fPIC
 LIBS	      = -lm -ldl -lopenbabel -lgsl -lgslcblas
 
 # TARGETS

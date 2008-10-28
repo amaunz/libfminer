@@ -466,7 +466,7 @@ void Path::expand2 (pair<float,string> max) {
 
 
     // Calculate chisq
-    if (chisq.active) chisq.Calc(legs[index]->occurrences.elements);
+    if (fm.chisq.active) fm.chisq.Calc(legs[index]->occurrences.elements);
           
     // GRAPHSTATE AND OUTPUT
     graphstate.insertNode ( legs[index]->tuple.connectingnode, legs[index]->tuple.edgelabel, legs[index]->occurrences.maxdegree );
@@ -476,12 +476,12 @@ void Path::expand2 (pair<float,string> max) {
     if (!do_backbone) result << outl;
 
     // RECURSE
-    float cmax = maxi ( maxi ( chisq.sig, max.first ), chisq.p );
+    float cmax = maxi ( maxi ( fm.chisq.sig, max.first ), fm.chisq.p );
     if ( (
              !do_pruning || 
              (
-               (  !adjust_ub && (chisq.u >= chisq.sig) ) || 
-               (   adjust_ub && (chisq.u >= cmax) )
+               (  !adjust_ub && (fm.chisq.u >= fm.chisq.sig) ) || 
+               (   adjust_ub && (fm.chisq.u >= cmax) )
              )
          ) &&
          (
@@ -490,7 +490,7 @@ void Path::expand2 (pair<float,string> max) {
       ){   // UB-PRUNING
 
       Path path ( *this, index );
-      if (max.first<chisq.p) { updated = true; path.expand2 ( pair<float, string>(chisq.p, outl)); }
+      if (max.first<fm.chisq.p) { updated = true; path.expand2 ( pair<float, string>(fm.chisq.p, outl)); }
       else path.expand2 (max);
     }
     else {
@@ -511,7 +511,7 @@ void Path::expand2 (pair<float,string> max) {
     
 
     // Calculate chisq
-    if (chisq.active) chisq.Calc(legs[index]->occurrences.elements);
+    if (fm.chisq.active) fm.chisq.Calc(legs[index]->occurrences.elements);
 
     // GRAPHSTATE AND OUTPUT
     graphstate.insertNode ( legs[index]->tuple.connectingnode, legs[index]->tuple.edgelabel, legs[index]->occurrences.maxdegree );
@@ -521,12 +521,12 @@ void Path::expand2 (pair<float,string> max) {
     if (!do_backbone) result << outl;
 
     // RECURSE
-    float cmax = maxi ( maxi ( chisq.sig, max.first ), chisq.p );
+    float cmax = maxi ( maxi ( fm.chisq.sig, max.first ), fm.chisq.p );
     if ( ( 
              !do_pruning || 
              (
-               (  !adjust_ub && (chisq.u >= chisq.sig) ) || 
-               (   adjust_ub && (chisq.u >= cmax) )
+               (  !adjust_ub && (fm.chisq.u >= fm.chisq.sig) ) || 
+               (   adjust_ub && (fm.chisq.u >= cmax) )
              )
          ) &&
          (
@@ -535,7 +535,7 @@ void Path::expand2 (pair<float,string> max) {
      ){   // UB-PRUNING
 
       Path path ( *this, index );
-      if (max.first<chisq.p) { updated = true; path.expand2 ( pair<float, string>(chisq.p, outl)); }
+      if (max.first<fm.chisq.p) { updated = true; path.expand2 ( pair<float, string>(fm.chisq.p, outl)); }
       else path.expand2 (max);
     }
     else {
@@ -571,7 +571,7 @@ void Path::expand2 (pair<float,string> max) {
 	      ( legs[i]->tuple.depth != nodelabels.size () - 2 || legs[i]->tuple.edgelabel >= edgelabels.back () ) &&
 	        type > 1 ) {
           // Calculate chisq
-          if (chisq.active) chisq.Calc(legs[i]->occurrences.elements);
+          if (fm.chisq.active) fm.chisq.Calc(legs[i]->occurrences.elements);
           // GRAPHSTATE
           graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.edgelabel, legs[i]->occurrences.maxdegree );
           outl = graphstate.to_s(legs[i]->occurrences.frequency);
@@ -579,12 +579,12 @@ void Path::expand2 (pair<float,string> max) {
           if (!do_backbone) result << outl;
 
           // RECURSE
-          float cmax = maxi ( maxi ( chisq.sig, max.first ), chisq.p );
+          float cmax = maxi ( maxi ( fm.chisq.sig, max.first ), fm.chisq.p );
 
           if ( ( !do_pruning || 
                (
-                 (  !adjust_ub && (chisq.u >= chisq.sig) ) || 
-                 (   adjust_ub && (chisq.u >= cmax) )
+                 (  !adjust_ub && (fm.chisq.u >= fm.chisq.sig) ) || 
+                 (   adjust_ub && (fm.chisq.u >= cmax) )
                )
              ) &&
              (
@@ -594,7 +594,7 @@ void Path::expand2 (pair<float,string> max) {
           ){   // UB-PRUNING
 
             PatternTree tree ( *this, i );
-            if (max.first<chisq.p) { updated = true; tree.expand ( pair<float, string>(chisq.p, outl) ); }
+            if (max.first<fm.chisq.p) { updated = true; tree.expand ( pair<float, string>(fm.chisq.p, outl) ); }
             else tree.expand (max);
           }
 
@@ -638,7 +638,7 @@ void Path::expand () {
     PathTuple &tuple = legs[i]->tuple;
     if ( tuple.nodelabel >= nodelabels[0] ) {
         
-      if (chisq.active) chisq.Calc(legs[i]->occurrences.elements);
+      if (fm.chisq.active) fm.chisq.Calc(legs[i]->occurrences.elements);
 
       // GRAPHSTATE AND OUTPUT
       graphstate.insertNode ( tuple.connectingnode, tuple.edgelabel, legs[i]->occurrences.maxdegree );
@@ -648,7 +648,7 @@ void Path::expand () {
       // RECURSE
       Path path (*this, i);
       updated = true;
-      path.expand2 (pair<float, string>(chisq.p, outl));
+      path.expand2 (pair<float, string>(fm.chisq.p, outl));
       graphstate.deleteNode ();
 
     }

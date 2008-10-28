@@ -10,10 +10,11 @@
 #include "legoccurrence.h"
 #include "closeleg.h"
 #include "constraints.h"
+#include "fminer.h"
 
 using namespace std;
 
-extern ChisqConstraint chisq;
+extern FMiner fm;
 
 struct PathTuple {
   Depth depth;

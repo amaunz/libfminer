@@ -2,7 +2,6 @@
 // Andreas Maunz, andreas@maunz.de, jul 2008
 // Siegfried Nijssen, snijssen@liacs.nl, jan 2004.
 #include "patterntree.h"
-//#include "patterngraph.h"
 #include "graphstate.h"
 #include <algorithm>
 #include "misc.h"
@@ -228,9 +227,6 @@ int PatternTree::addRightLegs ( Path &path, PathLeg &leg, Tuple &tuple, unsigned
 PatternTree::PatternTree ( Path &path, unsigned int legindex ) {
   PathLeg &leg = (*path.legs[legindex]);
   
-//  if (chisq.active) chisq.Calc(path.legs[legindex]->occurrences.elements);
-//  graphstate.to_s(path.legs[legindex]->occurrences.frequency)
-      
   maxdepth = path.edgelabels.size () / 2 - 1;
   int leftwalk, leftstart, rightwalk, rightstart;
   LegOccurrencesPtr legoccurrencesptr;
@@ -654,9 +650,6 @@ PatternTree::PatternTree ( Path &path, unsigned int legindex ) {
 PatternTree::PatternTree ( PatternTree &parenttree, unsigned int legindex ) {
   Leg &leg = * ( parenttree.legs[legindex] );
     
-//  if (chisq.active) chisq.Calc(parenttree.legs[legindex]->occurrences.elements);
-//  graphstate.to_s(parenttree.legs[legindex]->occurrences.frequency)
-
   addCloseExtensions ( closelegs, parenttree.closelegs, leg.occurrences );
   
   symmetric = parenttree.symmetric;
@@ -813,22 +806,6 @@ void PatternTree::expand (pair<float, string> max) {
     return;
   }
     
-  // PHASE 3
-  /*
-  if ( type > 2 ) {
-    for ( int i = 0; i < (int) closelegs.size(); i++ ) {
-      // TEST CHISQ HERE ALREADY (ONLY FOR GRAPHS)!
-      if (chisq.active) chisq.Calc(closelegs[i]->occurrences.elements);
-      // GRAPHSTATE
-      graphstate.insertEdge ( closelegs[i]->tuple.from, closelegs[i]->tuple.to, closelegs[i]->tuple.label );
-      // RECURSE
-      PatternGraph p ( closelegs, i );
-      p.expand ();
-      graphstate.deleteEdge ( closelegs[i]->tuple.from, closelegs[i]->tuple.to );
-    }
-  }
-  */
-
   if (do_backbone && (legs.size()==0)) {
     if (updated)
         result << max.second;
@@ -839,7 +816,7 @@ void PatternTree::expand (pair<float, string> max) {
   for ( int i = legs.size () - 1; i >= 0; i-- ) {
 
     // Calculate chisq
-    if (chisq.active) chisq.Calc(legs[i]->occurrences.elements);
+    if (fm.chisq.active) fm.chisq.Calc(legs[i]->occurrences.elements);
 
     // GRAPHSTATE
     graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.label, legs[i]->occurrences.maxdegree );
@@ -847,12 +824,12 @@ void PatternTree::expand (pair<float, string> max) {
     if (!do_backbone) result << outl;
 
     // RECURSE
-    float cmax = maxi ( maxi ( chisq.sig, max.first ), chisq.p );
+    float cmax = maxi ( maxi ( fm.chisq.sig, max.first ), fm.chisq.p );
 
     if ( ( !do_pruning || 
                (
-                 (  !adjust_ub && (chisq.u >= chisq.sig) ) || 
-                 (   adjust_ub && (chisq.u >= cmax) )
+                 (  !adjust_ub && (fm.chisq.u >= fm.chisq.sig) ) || 
+                 (   adjust_ub && (fm.chisq.u >= cmax) )
                )
              ) &&
          (
@@ -862,7 +839,7 @@ void PatternTree::expand (pair<float, string> max) {
     ) {   // UB-PRUNING
 
         PatternTree p ( *this, i );
-        if (chisq.p>max.first) { updated = true; p.expand (pair<float, string>(chisq.p,outl)); }
+        if (fm.chisq.p>max.first) { updated = true; p.expand (pair<float, string>(fm.chisq.p,outl)); }
         else p.expand (max);
     }
     else {
