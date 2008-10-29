@@ -21,6 +21,10 @@ class FMiner {
   friend int main(int, char**, char*);
   friend void read_smi(char*);
   friend void read_act(char*);
+  friend void initLegStatics();
+  friend void extend(LegOccurrences&);
+  friend void candidateCloseLegsAllocate(int, int);
+  friend void extend(LegOccurrences&, EdgeLabel, EdgeLabel);
 
   public:
     FMiner ();

@@ -24,10 +24,12 @@ void initLegStatics () {
 }
 
 
+/*
 ostream &operator<< ( ostream &stream, LegOccurrence &occ ) {
   stream << "[" << occ.tid << "(" << fm.database.trees[occ.tid]->activity  << ")" << "," << occ.occurrenceid << "," << occ.tonodeid << "," << occ.fromnodeid << "]";
   return stream;
 }
+*/
 
 ostream &operator<< ( ostream &stream, vector<LegOccurrence> &occs ) {
   Tid lasttid = NOTID;

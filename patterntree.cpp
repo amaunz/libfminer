@@ -866,6 +866,7 @@ PatternTree::~PatternTree () {
     delete closelegs[i];
 }
 
+/*
 ostream &operator<< ( ostream &stream, Tuple &tuple ) {
   DatabaseEdgeLabel edgelabel = fm.database.edgelabels[fm.database.edgelabelsindexes[tuple.label]];
   stream << "(" << tuple.depth << ","
@@ -875,6 +876,7 @@ ostream &operator<< ( ostream &stream, Tuple &tuple ) {
 
   return stream;
 }
+*/
 
 void PatternTree::checkIfIndeedNormal () {
   int i = 0, j = nextpathstart;
