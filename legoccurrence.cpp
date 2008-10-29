@@ -5,6 +5,10 @@
 #include "closeleg.h"
 #include "database.h"
 #include "graphstate.h"
+#include "fminer.h"
+
+
+extern FMiner fm;
 
 vector<LegOccurrences> candidatelegsoccurrences; // for each frequent possible edge, the occurrences found, used by extend
 LegOccurrences legoccurrences;
@@ -16,12 +20,12 @@ vector<bool> candidatecloselegsoccsused;
 
 void initLegStatics () {
   candidatecloselegsoccs.reserve ( 200 ); // should be larger than the largest structure that contains a cycle
-  candidatelegsoccurrences.resize ( database.frequentEdgeLabelSize () );
+  candidatelegsoccurrences.resize ( fm.database.frequentEdgeLabelSize () );
 }
 
 
 ostream &operator<< ( ostream &stream, LegOccurrence &occ ) {
-  stream << "[" << occ.tid << "(" << database.trees[occ.tid]->activity  << ")" << "," << occ.occurrenceid << "," << occ.tonodeid << "," << occ.fromnodeid << "]";
+  stream << "[" << occ.tid << "(" << fm.database.trees[occ.tid]->activity  << ")" << "," << occ.occurrenceid << "," << occ.tonodeid << "," << occ.fromnodeid << "]";
   return stream;
 }
 
@@ -85,7 +89,7 @@ LegOccurrencesPtr join ( LegOccurrences &legoccsdata1, NodeId connectingnode, Le
 	      NodeId tonodeid = legoccs2[l2].tonodeid;
               if ( legoccs1[m2].tonodeid !=  tonodeid ) {
                 legoccurrences.elements.push_back ( LegOccurrence ( jlegocc.tid, m2, tonodeid, legoccs2[l2].fromnodeid ) );
-                setmax ( legoccurrences.maxdegree, database.trees[jlegocc.tid]->nodes[tonodeid].edges.size () );
+                setmax ( legoccurrences.maxdegree, fm.database.trees[jlegocc.tid]->nodes[tonodeid].edges.size () );
         		add = true;
         		d++;
               }
@@ -145,7 +149,7 @@ LegOccurrencesPtr join ( LegOccurrences &legoccsdata ) {
       for ( m = k; m < j; m++ )
         if ( l != m ) {
           legoccurrences.elements.push_back ( LegOccurrence ( legocc.tid, l, legoccs[m].tonodeid, legoccs[m].fromnodeid ) );
-          setmax ( legoccurrences.maxdegree, database.trees[legocc.tid]->nodes[legoccs[m].tonodeid].edges.size () );
+          setmax ( legoccurrences.maxdegree, fm.database.trees[legocc.tid]->nodes[legoccs[m].tonodeid].edges.size () );
         }
     if ( ( j - k > 2 ) && legocc.tid != lastself ) {
       lastself = legocc.tid;
@@ -183,7 +187,7 @@ void candidateCloseLegsAllocate ( int number, int maxnumber ) {
     int oldsize = candidatecloselegsoccs.size ();
     candidatecloselegsoccs.resize ( maxnumber );
     for ( int k = oldsize; k < (int) candidatecloselegsoccs.size (); k++ ) {
-      candidatecloselegsoccs[k].resize ( database.frequentEdgeLabelSize () );
+      candidatecloselegsoccs[k].resize ( fm.database.frequentEdgeLabelSize () );
     }
     candidatecloselegsoccsused.resize ( 0 );
     candidatecloselegsoccsused.resize ( maxnumber, false );
@@ -221,7 +225,7 @@ void extend ( LegOccurrences &legoccurrencesdata ) {
 
   for ( OccurrenceId i = 0; i < legoccurrences.size (); i++ ) {
     LegOccurrence &legocc = legoccurrences[i];
-    DatabaseTreePtr tree = database.trees[legocc.tid];
+    DatabaseTreePtr tree = fm.database.trees[legocc.tid];
     DatabaseTreeNode &node = tree->nodes[legocc.tonodeid];
     for ( int j = 0; j < node.edges.size (); j++ ) {
       if ( node.edges[j].tonode != legocc.fromnodeid ) {
@@ -245,7 +249,7 @@ void extend ( LegOccurrences &legoccurrencesdata ) {
 
           }
           candidatelegsoccs.push_back ( LegOccurrence ( legocc.tid, i, node.edges[j].tonode, legocc.tonodeid ) );
-          setmax ( candidatelegsoccurrences[edgelabel].maxdegree, database.trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
+          setmax ( candidatelegsoccurrences[edgelabel].maxdegree, fm.database.trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
         }
 
         else if ( number - 1 != graphstate.nodes.back().edges[0].tonode ) {
@@ -254,7 +258,7 @@ void extend ( LegOccurrences &legoccurrencesdata ) {
             if ( !candidatelegsoccs.size () || candidatelegsoccs.back ().tid != legocc.tid )
 	            candidatecloselegsoccs[number][edgelabel].frequency++;
             candidatelegsoccs.push_back ( CloseLegOccurrence ( legocc.tid, i ) );
-            setmax ( candidatelegsoccurrences[edgelabel].maxdegree, database.trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
+            setmax ( candidatelegsoccurrences[edgelabel].maxdegree, fm.database.trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
         }
 
       }
@@ -284,7 +288,7 @@ void extend ( LegOccurrences &legoccurrencesdata, EdgeLabel minlabel, EdgeLabel 
                              // many cases
   for ( OccurrenceId i = 0; i < legoccurrences.size (); i++ ) {
     LegOccurrence &legocc = legoccurrences[i];
-    DatabaseTreePtr tree = database.trees[legocc.tid];
+    DatabaseTreePtr tree = fm.database.trees[legocc.tid];
     DatabaseTreeNode &node = tree->nodes[legocc.tonodeid];
     for ( int j = 0; j < node.edges.size (); j++ ) {
       if ( node.edges[j].tonode != legocc.fromnodeid ) {
@@ -305,7 +309,7 @@ void extend ( LegOccurrences &legoccurrencesdata, EdgeLabel minlabel, EdgeLabel 
               }
             }
             candidatelegsoccs.push_back ( LegOccurrence ( legocc.tid, i, node.edges[j].tonode, legocc.tonodeid ) );
-	    setmax ( candidatelegsoccurrences[edgelabel].maxdegree, database.trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
+	    setmax ( candidatelegsoccurrences[edgelabel].maxdegree, fm.database.trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
 	  }
         }
         else if ( number - 1 != graphstate.nodes.back().edges[0].tonode ) {
@@ -315,7 +319,7 @@ void extend ( LegOccurrences &legoccurrencesdata, EdgeLabel minlabel, EdgeLabel 
           if ( !candidatelegsoccs.size () || candidatelegsoccs.back ().tid != legocc.tid )
 	    candidatecloselegsoccs[number][edgelabel].frequency++;
           candidatelegsoccs.push_back ( CloseLegOccurrence ( legocc.tid, i ) );
-          setmax ( candidatelegsoccurrences[edgelabel].maxdegree, database.trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
+          setmax ( candidatelegsoccurrences[edgelabel].maxdegree, fm.database.trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
         }
       }
     }

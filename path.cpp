@@ -24,19 +24,19 @@ Path::Path ( NodeLabel startnodelabel ) {
     nodelabels.push_back ( startnodelabel );
     frontsymmetry = backsymmetry = totalsymmetry = 0;
 
-    cerr << "Root: " << database.nodelabels[startnodelabel].inputlabel << endl; 
+    cerr << "Root: " << fm.database.nodelabels[startnodelabel].inputlabel << endl; 
 
-    DatabaseNodeLabel &databasenodelabel = database.nodelabels[startnodelabel];
+    DatabaseNodeLabel &databasenodelabel = fm.database.nodelabels[startnodelabel];
 
     // ...gather frequent edge labels
     vector<EdgeLabel> frequentedgelabels;
     for ( unsigned int i = 0; i < databasenodelabel.frequentedgelabels.size (); i++ )
-        frequentedgelabels.push_back ( database.edgelabels[databasenodelabel.frequentedgelabels[i]].edgelabel );
+        frequentedgelabels.push_back ( fm.database.edgelabels[databasenodelabel.frequentedgelabels[i]].edgelabel );
                                                                                                 //  ^^^^^^^^^ is frequency rank!
     sort ( frequentedgelabels.begin (), frequentedgelabels.end () );                            // restores the rank order
     
     Tid lastself[frequentedgelabels.size ()];
-    vector<EdgeLabel> edgelabelorder ( database.edgelabelsindexes.size () );
+    vector<EdgeLabel> edgelabelorder ( fm.database.edgelabelsindexes.size () );
     EdgeLabel j = 0;
 
     // FOR ALL EDGES...
@@ -57,7 +57,7 @@ Path::Path ( NodeLabel startnodelabel ) {
         leg->occurrences.maxdegree = 0;
         leg->occurrences.selfjoin = 0;
 
-        DatabaseEdgeLabel &databaseedgelabel = database.edgelabels[database.edgelabelsindexes[frequentedgelabels[i]]];
+        DatabaseEdgeLabel &databaseedgelabel = fm.database.edgelabels[fm.database.edgelabelsindexes[frequentedgelabels[i]]];
         leg->occurrences.frequency = databaseedgelabel.frequency;
 
         if ( databaseedgelabel.fromnodelabel == startnodelabel ) {
@@ -74,7 +74,7 @@ Path::Path ( NodeLabel startnodelabel ) {
     
     // ... OCCURRENCES DESCRIBES LOCATION IN TREE (2)
     for ( unsigned int i = 0; i < databasenodelabel.occurrences.elements.size (); i++ ) {
-        DatabaseTree &tree = * (database.trees[databasenodelabel.occurrences.elements[i].tid]);
+        DatabaseTree &tree = * (fm.database.trees[databasenodelabel.occurrences.elements[i].tid]);
         DatabaseTreeNode &datanode = tree.nodes[databasenodelabel.occurrences.elements[i].tonodeid];
         for ( int j = 0; j < datanode.edges.size (); j++ ) {
             EdgeLabel edgelabel = edgelabelorder[datanode.edges[j].edgelabel];
@@ -173,7 +173,7 @@ Path::Path ( Path &parentpath, unsigned int legindex ) {
         legs.push_back ( leg2 );
         leg2->tuple.edgelabel = i;
     	leg2->tuple.connectingnode = graphstate.lastNode ();
-        DatabaseEdgeLabel &databaseedgelabel = database.edgelabels[database.edgelabelsindexes[i]];
+        DatabaseEdgeLabel &databaseedgelabel = fm.database.edgelabels[fm.database.edgelabelsindexes[i]];
         if ( databaseedgelabel.fromnodelabel == leg.tuple.nodelabel )
           leg2->tuple.nodelabel = databaseedgelabel.tonodelabel;
         else
@@ -285,7 +285,7 @@ Path::Path ( Path &parentpath, unsigned int legindex ) {
       legs.push_back ( leg2 );
       leg2->tuple.edgelabel = i;
       leg2->tuple.connectingnode = graphstate.lastNode ();
-      DatabaseEdgeLabel &databaseedgelabel = database.edgelabels[database.edgelabelsindexes[i]];
+      DatabaseEdgeLabel &databaseedgelabel = fm.database.edgelabels[fm.database.edgelabelsindexes[i]];
       if ( databaseedgelabel.fromnodelabel == leg.tuple.nodelabel )
         leg2->tuple.nodelabel = databaseedgelabel.tonodelabel;
       else

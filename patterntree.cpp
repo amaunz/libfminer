@@ -5,6 +5,7 @@
 #include "graphstate.h"
 #include <algorithm>
 #include "misc.h"
+#include "fminer.h"
 
 extern bool do_pruning;
 extern bool do_backbone;
@@ -12,6 +13,7 @@ extern bool adjust_ub;
 extern string outl;
 extern int type;
 extern vector<string> result;
+extern FMiner fm;
 
 inline void PatternTree::addLeg ( NodeId connectingnode, const int depth, const EdgeLabel edgelabel, LegOccurrences &legoccurrences ) {
   LegPtr leg = new Leg;
@@ -869,11 +871,11 @@ PatternTree::~PatternTree () {
 }
 
 ostream &operator<< ( ostream &stream, Tuple &tuple ) {
-  DatabaseEdgeLabel edgelabel = database.edgelabels[database.edgelabelsindexes[tuple.label]];
+  DatabaseEdgeLabel edgelabel = fm.database.edgelabels[fm.database.edgelabelsindexes[tuple.label]];
   stream << "(" << tuple.depth << ","
-         << database.nodelabels[edgelabel.fromnodelabel].inputlabel << "-"
+         << fm.database.nodelabels[edgelabel.fromnodelabel].inputlabel << "-"
          << edgelabel.inputedgelabel << "-"
-         << database.nodelabels[edgelabel.tonodelabel].inputlabel << "[" << (int) tuple.label << "])";
+         << fm.database.nodelabels[edgelabel.tonodelabel].inputlabel << "[" << (int) tuple.label << "])";
 
   return stream;
 }

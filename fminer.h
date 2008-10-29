@@ -26,8 +26,9 @@ class FMiner {
     void AddChiSqNa(){chisq.na++;}
     void AddChiSqNi(){chisq.ni++;}
     void AddChiSqN(){chisq.n=chisq.na+chisq.ni;}
-  private:
+    
     Database database;
+  private:
     Statistics statistics;
     vector<string> result;
     void InitChisq() { chisq.active = true; }

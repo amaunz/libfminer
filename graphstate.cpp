@@ -6,148 +6,16 @@
 #include "misc.h"
 #include <queue>
 #include <sstream>
+#include "fminer.h"
 
+extern FMiner fm;
 
 GraphState graphstate;
 
-#ifdef DEBUG
-
-// The functions in the DEBUG sections allow for reading in a graph from a file,
-// and to check during the run of the algorithm if this graph is found.
-// If an analysis reveals that one particular graph is missing, this allows
-// to stop the debugger on one particular graph (eg. the parent of the graph
-// that is missing, without knowing the id of the parent). 
-
-char readcommand ( FILE *input );
-int readint ( FILE *input );
-DatabaseTree *debugtree;
-
-void readDebug () {
-  InputNodeLabel inputnodelabel;
-
-  DatabaseTreePtr tree = new DatabaseTree ( 0 );
-
-  char command;
-  int dummy;
-  int nodessize = 0, edgessize = 0;
-  FILE *input = fopen ( "debug", "r" );
-  command = readcommand ( input );
-  
-  static vector<DatabaseTreeNode> nodes;
-  static vector<vector<DatabaseTreeEdge> > edges;
-  nodes.resize ( 0 );
-
-  while ( command == 'v' ) {
-    dummy = readint ( input );
-    inputnodelabel = readint ( input );
-    if ( dummy != nodessize ) {
-      cerr << "Error reading input file - node number does not correspond to its position." << endl;
-      exit ( 1 );
-    }
-    nodessize++;
-    pair<map<InputNodeLabel,NodeLabel>::iterator,bool> 
-      p = database.nodelabelmap.insert ( make_pair ( inputnodelabel, database.nodelabels.size () ) );
-    if ( p.second ) {
-      cout << "ERROR! Debug label does not occur in dataset" << endl;
-    }
-    
-    vector_push_back ( DatabaseTreeNode, nodes, node );
-    node.nodelabel = p.first->second;
-    node.incycle = false;
-
-    command = readcommand ( input );
-  }
-
-  tree->nodes.reserve ( nodessize );
-  if ( edges.size () < nodessize )
-    edges.resize ( nodessize );
-  for ( int i = 0; i < nodessize; i++ ) {
-    edges[i].resize ( 0 );
-    tree->nodes.push_back ( nodes[i] );
-  }
-  
-  InputEdgeLabel inputedgelabel;
-  InputNodeId nodeid1, nodeid2;
-
-  while ( !feof ( input ) && command == 'e' ) {
-    nodeid1 = readint ( input );
-    nodeid2 = readint ( input );
-    inputedgelabel = readint ( input );
-    NodeLabel node2label = tree->nodes[nodeid2].nodelabel;
-    NodeLabel node1label = tree->nodes[nodeid1].nodelabel;
-    CombinedInputLabel combinedinputlabel;
-    if ( node1label > node2label ) {
-      NodeLabel temp = node1label;
-      node1label = node2label;
-      node2label = temp;
-    }
-    combinedinputlabel = combineInputLabels ( inputedgelabel, node1label, node2label );
-
-    pair<map<CombinedInputLabel,EdgeLabel>::iterator,bool>
-      p = database.edgelabelmap.insert ( make_pair ( combinedinputlabel, database.edgelabels.size () ) );
-    if ( p.second ) 
-      cout << "Edge label does not occur in the dataset" << endl;
-
-    vector_push_back ( DatabaseTreeEdge, edges[nodeid1], edge );
-    edge.edgelabel = database.edgelabels[p.first->second].edgelabel;
-    edge.tonode = nodeid2;
-
-    vector_push_back ( DatabaseTreeEdge, edges[nodeid2], edge2 );
-    edge2.edgelabel = database.edgelabels[p.first->second].edgelabel;
-    edge2.tonode = nodeid1;
-
-    edgessize++;
-
-    command = readcommand ( input );
-  }
-
-  tree->edges = new DatabaseTreeEdge[edgessize * 2];
-  int pos = 0;
-  for ( int i = 0; i < nodessize; i++ ) {
-    int s = edges[i].size ();
-    tree->nodes[i].edges._size = s;
-    tree->nodes[i].edges.array = tree->edges + pos;
-    for ( int j = 0; j < s; j++, pos++ ) {
-      tree->edges[pos] = edges[i][j];
-    }
-  }
-  debugtree = tree;
-  fclose ( input );
-}
-
-bool isLookFor () {
-  if ( graphstate.nodes.size () != debugtree->nodes.size () ) 
-    return false;
-  for ( int i = 0; i < graphstate.nodes.size (); i++ ) {
-    if ( graphstate.nodes[i].label != debugtree->nodes[i].nodelabel ||
-         graphstate.nodes[i].edges.size () != debugtree->nodes[i].edges.size () )
-      return false;
-  }
-  for ( int i = 0; i < graphstate.nodes.size (); i++ ) {
-    for ( int j = 0; j < graphstate.nodes[i].edges.size (); j++ ) {
-      int k;
-      for ( k = 0; k < debugtree->nodes[i].edges.size (); k++ )
-        if ( graphstate.nodes[i].edges[j].tonode == 
-	     debugtree->nodes[i].edges[k].tonode &&
-	     graphstate.nodes[i].edges[j].edgelabel ==
-	     debugtree->nodes[i].edges[k].edgelabel )
-	  break;
-      if ( k == debugtree->nodes[i].edges.size () )
-        return false;
-    }
-  }
-  return true;
-}
-#endif
-
 GraphState::GraphState () {
-//    buf = pair<float, string> (0.0,"");
 }
 
 void GraphState::init () {
-#ifdef DEBUG
-  readDebug ();
-#endif
   edgessize = 0;
   closecount = 0;
   // 1 extra element on this stack in order to always be able to check the previous element
@@ -175,7 +43,7 @@ void GraphState::deleteStartNode () {
 
 void GraphState::insertNode ( int from, EdgeLabel edgelabel, short unsigned int maxdegree  ) {
   NodeLabel fromlabel = nodes[from].label, tolabel;
-  DatabaseEdgeLabel &dataedgelabel = database.edgelabels[  database.edgelabelsindexes[edgelabel]];
+  DatabaseEdgeLabel &dataedgelabel = fm.database.edgelabels[  fm.database.edgelabelsindexes[edgelabel]];
   if ( dataedgelabel.fromnodelabel == fromlabel )
     tolabel = dataedgelabel.tonodelabel;
   else
@@ -411,13 +279,13 @@ int GraphState::enumerateSpanning () {
 
 
 void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
-    oss << database.nodelabels[nodes[cur_n].label].inputlabel; // output nodelabel
+    oss << fm.database.nodelabels[nodes[cur_n].label].inputlabel; // output nodelabel
     int fanout = (int) nodes[cur_n].edges.size ();
     for ( int j = 0; j < fanout; j++ ) {
         GraphState::GSEdge &edge = nodes[cur_n].edges[j];
         if ( edge.tonode != from_n) {
             if (fanout>2) oss << "(";
-            oss <<  (char) (database.edgelabels[database.edgelabelsindexes[edge.edgelabel]].inputedgelabel);
+            oss <<  (char) (fm.database.edgelabels[fm.database.edgelabelsindexes[edge.edgelabel]].inputedgelabel);
             DfsOut(edge.tonode, oss, cur_n);
             if (fanout>2) oss << ")";
         }
@@ -467,7 +335,7 @@ string GraphState::to_s ( unsigned int frequency ) {
 
           vector<Tid> ids_a;
           for (iter = fm.chisq.fa_list.begin(); iter != fm.chisq.fa_list.end(); iter++) {
-              ids_a.push_back((database.trees[(*iter)]->line_nr)-1);
+              ids_a.push_back((fm.database.trees[(*iter)]->line_nr)-1);
           }
           if (DO_YAML) {
               sort(ids_a.begin(),ids_a.end());
@@ -481,7 +349,7 @@ string GraphState::to_s ( unsigned int frequency ) {
 
           vector<Tid> ids_i;
           for (iter = fm.chisq.fi_list.begin(); iter != fm.chisq.fi_list.end(); iter++) {
-              ids_i.push_back((database.trees[(*iter)]->line_nr)-1);
+              ids_i.push_back((fm.database.trees[(*iter)]->line_nr)-1);
           }
           if (DO_YAML) {
               sort(ids_i.begin(),ids_i.end());

@@ -140,6 +140,6 @@ class Database {
     void determineCycledNodes ( DatabaseTreePtr tree, vector<int> &nodestack, vector<bool> &visited1, vector<bool> &visited2 );
 };
 
-extern Database database;
+//extern Database database;
 
 #endif
