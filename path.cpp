@@ -9,12 +9,8 @@
 #include <openbabel/data.h> 
 #include "misc.h"
 
-extern bool do_pruning;
-extern bool do_backbone;
 extern bool updated;
-extern bool adjust_ub;
 extern string outl;
-extern int type;
 extern vector<string> result;
 
 // for every database node...
@@ -437,7 +433,7 @@ void Path::expand2 (pair<float,string> max) {
  
 
   // FREE STRUCTURES: we have reached a leaf
-  if (do_backbone && (pathlegs.size()==0)) { 
+  if (fm.do_backbone && (pathlegs.size()==0)) { 
     if (updated) { 
         result << max.second;
         updated = false;
@@ -473,15 +469,15 @@ void Path::expand2 (pair<float,string> max) {
     outl = graphstate.to_s(legs[index]->occurrences.frequency);
 
     // immediate output
-    if (!do_backbone) result << outl;
+    if (!fm.do_backbone) result << outl;
 
     // RECURSE
     float cmax = maxi ( maxi ( fm.chisq.sig, max.first ), fm.chisq.p );
     if ( (
-             !do_pruning || 
+             !fm.do_pruning || 
              (
-               (  !adjust_ub && (fm.chisq.u >= fm.chisq.sig) ) || 
-               (   adjust_ub && (fm.chisq.u >= cmax) )
+               (  !fm.adjust_ub && (fm.chisq.u >= fm.chisq.sig) ) || 
+               (   fm.adjust_ub && (fm.chisq.u >= cmax) )
              )
          ) &&
          (
@@ -494,7 +490,7 @@ void Path::expand2 (pair<float,string> max) {
       else path.expand2 (max);
     }
     else {
-        if (do_backbone && updated) {  // FREE STRUCTURES: search was pruned
+        if (fm.do_backbone && updated) {  // FREE STRUCTURES: search was pruned
             result << max.second;
             updated=false;
         }
@@ -518,15 +514,15 @@ void Path::expand2 (pair<float,string> max) {
     outl = graphstate.to_s(legs[index]->occurrences.frequency);
 
     // immediate output
-    if (!do_backbone) result << outl;
+    if (!fm.do_backbone) result << outl;
 
     // RECURSE
     float cmax = maxi ( maxi ( fm.chisq.sig, max.first ), fm.chisq.p );
     if ( ( 
-             !do_pruning || 
+             !fm.do_pruning || 
              (
-               (  !adjust_ub && (fm.chisq.u >= fm.chisq.sig) ) || 
-               (   adjust_ub && (fm.chisq.u >= cmax) )
+               (  !fm.adjust_ub && (fm.chisq.u >= fm.chisq.sig) ) || 
+               (   fm.adjust_ub && (fm.chisq.u >= cmax) )
              )
          ) &&
          (
@@ -539,7 +535,7 @@ void Path::expand2 (pair<float,string> max) {
       else path.expand2 (max);
     }
     else {
-        if (do_backbone && updated) { // FREE STRUCTURES: search was pruned
+        if (fm.do_backbone && updated) { // FREE STRUCTURES: search was pruned
             result << max.second;
             updated=false;
         }
@@ -569,22 +565,22 @@ void Path::expand2 (pair<float,string> max) {
         if ( ( totalsymmetry || legs[i]->tuple.depth <= edgelabels.size () / 2 ) &&
  	      ( legs[i]->tuple.depth != 1 || legs[i]->tuple.edgelabel >= edgelabels[0] ) &&
 	      ( legs[i]->tuple.depth != nodelabels.size () - 2 || legs[i]->tuple.edgelabel >= edgelabels.back () ) &&
-	        type > 1 ) {
+	        fm.type > 1 ) {
           // Calculate chisq
           if (fm.chisq.active) fm.chisq.Calc(legs[i]->occurrences.elements);
           // GRAPHSTATE
           graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.edgelabel, legs[i]->occurrences.maxdegree );
           outl = graphstate.to_s(legs[i]->occurrences.frequency);
 
-          if (!do_backbone) result << outl;
+          if (!fm.do_backbone) result << outl;
 
           // RECURSE
           float cmax = maxi ( maxi ( fm.chisq.sig, max.first ), fm.chisq.p );
 
-          if ( ( !do_pruning || 
+          if ( ( !fm.do_pruning || 
                (
-                 (  !adjust_ub && (fm.chisq.u >= fm.chisq.sig) ) || 
-                 (   adjust_ub && (fm.chisq.u >= cmax) )
+                 (  !fm.adjust_ub && (fm.chisq.u >= fm.chisq.sig) ) || 
+                 (   fm.adjust_ub && (fm.chisq.u >= cmax) )
                )
              ) &&
              (
@@ -599,7 +595,7 @@ void Path::expand2 (pair<float,string> max) {
           }
 
           else {
-            if (do_backbone && updated) { 
+            if (fm.do_backbone && updated) { 
               result << max.second;
               updated=false;
             }
@@ -643,7 +639,7 @@ void Path::expand () {
       // GRAPHSTATE AND OUTPUT
       graphstate.insertNode ( tuple.connectingnode, tuple.edgelabel, legs[i]->occurrences.maxdegree );
       outl = graphstate.to_s(legs[i]->occurrences.frequency);
-      if (!do_backbone) result << outl;
+      if (!fm.do_backbone) result << outl;
 
       // RECURSE
       Path path (*this, i);

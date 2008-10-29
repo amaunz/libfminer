@@ -7,11 +7,7 @@
 #include "misc.h"
 #include "fminer.h"
 
-extern bool do_pruning;
-extern bool do_backbone;
-extern bool adjust_ub;
 extern string outl;
-extern int type;
 extern vector<string> result;
 extern FMiner fm;
 
@@ -808,7 +804,7 @@ void PatternTree::expand (pair<float, string> max) {
     return;
   }
     
-  if (do_backbone && (legs.size()==0)) {
+  if (fm.do_backbone && (legs.size()==0)) {
     if (updated)
         result << max.second;
         updated = false;
@@ -823,15 +819,15 @@ void PatternTree::expand (pair<float, string> max) {
     // GRAPHSTATE
     graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.label, legs[i]->occurrences.maxdegree );
     outl = graphstate.to_s(legs[i]->occurrences.frequency);
-    if (!do_backbone) result << outl;
+    if (!fm.do_backbone) result << outl;
 
     // RECURSE
     float cmax = maxi ( maxi ( fm.chisq.sig, max.first ), fm.chisq.p );
 
-    if ( ( !do_pruning || 
+    if ( ( !fm.do_pruning || 
                (
-                 (  !adjust_ub && (fm.chisq.u >= fm.chisq.sig) ) || 
-                 (   adjust_ub && (fm.chisq.u >= cmax) )
+                 (  !fm.adjust_ub && (fm.chisq.u >= fm.chisq.sig) ) || 
+                 (   fm.adjust_ub && (fm.chisq.u >= cmax) )
                )
              ) &&
          (
@@ -845,7 +841,7 @@ void PatternTree::expand (pair<float, string> max) {
         else p.expand (max);
     }
     else {
-        if (do_backbone && updated) {
+        if (fm.do_backbone && updated) {
             result << max.second;
             updated = false;
         }
