@@ -18,6 +18,9 @@ class FMiner {
   friend CloseLegOccurrences* join(CloseLegOccurrences&, CloseLegOccurrences&);
   friend LegOccurrences* join(LegOccurrences&, NodeId, LegOccurrences&);
   friend LegOccurrences* join(LegOccurrences&);
+  friend int main(int, char**, char*);
+  friend void read_smi(char*);
+  friend void read_act(char*);
 
   public:
     FMiner ();
@@ -33,9 +36,10 @@ class FMiner {
     void AddChiSqNi(){chisq.ni++;}
     void AddChiSqN(){chisq.n=chisq.na+chisq.ni;}
     
-    Database database; // public because heavily used in main
   private:
+    Database database;
     Statistics statistics;
+    string outl;
     vector<string> result;
     void InitChisq() { chisq.active = true; }
 
@@ -44,7 +48,6 @@ class FMiner {
     int type;
     bool do_backbone;
     bool updated;
-
     bool adjust_ub;
     bool do_pruning;
 

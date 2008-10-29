@@ -7,9 +7,9 @@
 #include "misc.h"
 #include "fminer.h"
 
-extern string outl;
-extern vector<string> result;
 extern FMiner fm;
+
+int maxsize = ( 1 << ( sizeof(NodeId)*8 ) ) - 1; // safe default for the largest allowed pattern
 
 inline void PatternTree::addLeg ( NodeId connectingnode, const int depth, const EdgeLabel edgelabel, LegOccurrences &legoccurrences ) {
   LegPtr leg = new Leg;
@@ -792,22 +792,22 @@ PatternTree::PatternTree ( PatternTree &parenttree, unsigned int legindex ) {
 }
 
 void PatternTree::expand (pair<float, string> max) {
-  statistics.patternsize++;
-  if ( statistics.patternsize > (int) statistics.frequenttreenumbers.size () ) {
-    statistics.frequenttreenumbers.resize ( statistics.patternsize, 0 );
-    statistics.frequentpathnumbers.resize ( statistics.patternsize, 0 );
-    statistics.frequentgraphnumbers.resize ( statistics.patternsize, 0 );
+  fm.statistics.patternsize++;
+  if ( fm.statistics.patternsize > (int) fm.statistics.frequenttreenumbers.size () ) {
+    fm.statistics.frequenttreenumbers.resize ( fm.statistics.patternsize, 0 );
+    fm.statistics.frequentpathnumbers.resize ( fm.statistics.patternsize, 0 );
+    fm.statistics.frequentgraphnumbers.resize ( fm.statistics.patternsize, 0 );
   }
-  ++statistics.frequenttreenumbers[statistics.patternsize-1];
-  if ( statistics.patternsize == maxsize ) {
-    statistics.patternsize--;
+  ++fm.statistics.frequenttreenumbers[fm.statistics.patternsize-1];
+  if ( fm.statistics.patternsize == ((1<<(sizeof(NodeId)*8))-1) ) {
+    fm.statistics.patternsize--;
     return;
   }
     
   if (fm.do_backbone && (legs.size()==0)) {
-    if (updated)
-        result << max.second;
-        updated = false;
+    if (fm.updated)
+        fm.result << max.second;
+        fm.updated = false;
   }
  
 //bool t_rec=false;
@@ -818,8 +818,8 @@ void PatternTree::expand (pair<float, string> max) {
 
     // GRAPHSTATE
     graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.label, legs[i]->occurrences.maxdegree );
-    outl = graphstate.to_s(legs[i]->occurrences.frequency);
-    if (!fm.do_backbone) result << outl;
+    fm.outl = graphstate.to_s(legs[i]->occurrences.frequency);
+    if (!fm.do_backbone) fm.result << fm.outl;
 
     // RECURSE
     float cmax = maxi ( maxi ( fm.chisq.sig, max.first ), fm.chisq.p );
@@ -837,13 +837,13 @@ void PatternTree::expand (pair<float, string> max) {
     ) {   // UB-PRUNING
 
         PatternTree p ( *this, i );
-        if (fm.chisq.p>max.first) { updated = true; p.expand (pair<float, string>(fm.chisq.p,outl)); }
+        if (fm.chisq.p>max.first) { fm.updated = true; p.expand (pair<float, string>(fm.chisq.p,fm.outl)); }
         else p.expand (max);
     }
     else {
-        if (fm.do_backbone && updated) {
-            result << max.second;
-            updated = false;
+        if (fm.do_backbone && fm.updated) {
+            fm.result << max.second;
+            fm.updated = false;
         }
     }
 
@@ -853,7 +853,7 @@ void PatternTree::expand (pair<float, string> max) {
 
 
 
-  statistics.patternsize--;
+  fm.statistics.patternsize--;
 
 }
 

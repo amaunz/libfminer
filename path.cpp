@@ -9,9 +9,7 @@
 #include <openbabel/data.h> 
 #include "misc.h"
 
-extern bool updated;
-extern string outl;
-extern vector<string> result;
+
 
 // for every database node...
 Path::Path ( NodeLabel startnodelabel ) {
@@ -434,23 +432,23 @@ void Path::expand2 (pair<float,string> max) {
 
   // FREE STRUCTURES: we have reached a leaf
   if (fm.do_backbone && (pathlegs.size()==0)) { 
-    if (updated) { 
-        result << max.second;
-        updated = false;
+    if (fm.updated) { 
+        fm.result << max.second;
+        fm.updated = false;
     }
   }
 
 
-  statistics.patternsize++;
-  if ( (unsigned) statistics.patternsize > statistics.frequenttreenumbers.size () ) {
-    statistics.frequenttreenumbers.push_back ( 0 );
-    statistics.frequentpathnumbers.push_back ( 0 );
-    statistics.frequentgraphnumbers.push_back ( 0 );
+  fm.statistics.patternsize++;
+  if ( (unsigned) fm.statistics.patternsize > fm.statistics.frequenttreenumbers.size () ) {
+    fm.statistics.frequenttreenumbers.push_back ( 0 );
+    fm.statistics.frequentpathnumbers.push_back ( 0 );
+    fm.statistics.frequentgraphnumbers.push_back ( 0 );
   }
-  ++statistics.frequentpathnumbers[statistics.patternsize-1];
+  ++fm.statistics.frequentpathnumbers[fm.statistics.patternsize-1];
   
-  if ( statistics.patternsize == maxsize ) {
-    statistics.patternsize--;
+  if ( fm.statistics.patternsize == ((1<<(sizeof(NodeId)*8))-1) ) {
+    fm.statistics.patternsize--;
     return;
   }
 
@@ -466,10 +464,10 @@ void Path::expand2 (pair<float,string> max) {
           
     // GRAPHSTATE AND OUTPUT
     graphstate.insertNode ( legs[index]->tuple.connectingnode, legs[index]->tuple.edgelabel, legs[index]->occurrences.maxdegree );
-    outl = graphstate.to_s(legs[index]->occurrences.frequency);
+    fm.outl = graphstate.to_s(legs[index]->occurrences.frequency);
 
     // immediate output
-    if (!fm.do_backbone) result << outl;
+    if (!fm.do_backbone) fm.result << fm.outl;
 
     // RECURSE
     float cmax = maxi ( maxi ( fm.chisq.sig, max.first ), fm.chisq.p );
@@ -486,13 +484,13 @@ void Path::expand2 (pair<float,string> max) {
       ){   // UB-PRUNING
 
       Path path ( *this, index );
-      if (max.first<fm.chisq.p) { updated = true; path.expand2 ( pair<float, string>(fm.chisq.p, outl)); }
+      if (max.first<fm.chisq.p) { fm.updated = true; path.expand2 ( pair<float, string>(fm.chisq.p, fm.outl)); }
       else path.expand2 (max);
     }
     else {
-        if (fm.do_backbone && updated) {  // FREE STRUCTURES: search was pruned
-            result << max.second;
-            updated=false;
+        if (fm.do_backbone && fm.updated) {  // FREE STRUCTURES: search was pruned
+            fm.result << max.second;
+            fm.updated=false;
         }
     }
 
@@ -511,10 +509,10 @@ void Path::expand2 (pair<float,string> max) {
 
     // GRAPHSTATE AND OUTPUT
     graphstate.insertNode ( legs[index]->tuple.connectingnode, legs[index]->tuple.edgelabel, legs[index]->occurrences.maxdegree );
-    outl = graphstate.to_s(legs[index]->occurrences.frequency);
+    fm.outl = graphstate.to_s(legs[index]->occurrences.frequency);
 
     // immediate output
-    if (!fm.do_backbone) result << outl;
+    if (!fm.do_backbone) fm.result << fm.outl;
 
     // RECURSE
     float cmax = maxi ( maxi ( fm.chisq.sig, max.first ), fm.chisq.p );
@@ -531,13 +529,13 @@ void Path::expand2 (pair<float,string> max) {
      ){   // UB-PRUNING
 
       Path path ( *this, index );
-      if (max.first<fm.chisq.p) { updated = true; path.expand2 ( pair<float, string>(fm.chisq.p, outl)); }
+      if (max.first<fm.chisq.p) { fm.updated = true; path.expand2 ( pair<float, string>(fm.chisq.p, fm.outl)); }
       else path.expand2 (max);
     }
     else {
-        if (fm.do_backbone && updated) { // FREE STRUCTURES: search was pruned
-            result << max.second;
-            updated=false;
+        if (fm.do_backbone && fm.updated) { // FREE STRUCTURES: search was pruned
+            fm.result << max.second;
+            fm.updated=false;
         }
     }
 
@@ -549,7 +547,7 @@ void Path::expand2 (pair<float,string> max) {
 
   
 
-  bool uptmp = updated;
+  bool uptmp = fm.updated;
 
   
 //  cerr << "BEGIN" << endl;
@@ -570,9 +568,9 @@ void Path::expand2 (pair<float,string> max) {
           if (fm.chisq.active) fm.chisq.Calc(legs[i]->occurrences.elements);
           // GRAPHSTATE
           graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.edgelabel, legs[i]->occurrences.maxdegree );
-          outl = graphstate.to_s(legs[i]->occurrences.frequency);
+          fm.outl = graphstate.to_s(legs[i]->occurrences.frequency);
 
-          if (!fm.do_backbone) result << outl;
+          if (!fm.do_backbone) fm.result << fm.outl;
 
           // RECURSE
           float cmax = maxi ( maxi ( fm.chisq.sig, max.first ), fm.chisq.p );
@@ -590,14 +588,14 @@ void Path::expand2 (pair<float,string> max) {
           ){   // UB-PRUNING
 
             PatternTree tree ( *this, i );
-            if (max.first<fm.chisq.p) { updated = true; tree.expand ( pair<float, string>(fm.chisq.p, outl) ); }
+            if (max.first<fm.chisq.p) { fm.updated = true; tree.expand ( pair<float, string>(fm.chisq.p, fm.outl) ); }
             else tree.expand (max);
           }
 
           else {
-            if (fm.do_backbone && updated) { 
-              result << max.second;
-              updated=false;
+            if (fm.do_backbone && fm.updated) { 
+              fm.result << max.second;
+              fm.updated=false;
             }
           }
 
@@ -612,9 +610,9 @@ void Path::expand2 (pair<float,string> max) {
 
 
 
-  updated=uptmp;
+  fm.updated=uptmp;
     
-  statistics.patternsize--;
+  fm.statistics.patternsize--;
 
 
 //  cerr << "backtracking p" << endl;
@@ -638,13 +636,13 @@ void Path::expand () {
 
       // GRAPHSTATE AND OUTPUT
       graphstate.insertNode ( tuple.connectingnode, tuple.edgelabel, legs[i]->occurrences.maxdegree );
-      outl = graphstate.to_s(legs[i]->occurrences.frequency);
-      if (!fm.do_backbone) result << outl;
+      fm.outl = graphstate.to_s(legs[i]->occurrences.frequency);
+      if (!fm.do_backbone) fm.result << fm.outl;
 
       // RECURSE
       Path path (*this, i);
-      updated = true;
-      path.expand2 (pair<float, string>(fm.chisq.p, outl));
+      fm.updated = true;
+      path.expand2 (pair<float, string>(fm.chisq.p, fm.outl));
       graphstate.deleteNode ();
 
     }

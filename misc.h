@@ -40,7 +40,7 @@ typedef unsigned int Frequency;
 #define maxi(a, b) ( (a)>(b) ? (a) : (b) )
 
 extern int level; // 3 : all, 2 : paths and trees, 1 : paths
-extern int maxsize; // maximal size
+//extern int maxsize; // maximal size
 
 inline void setmax ( short unsigned int &a, short unsigned int b ) { if ( b > a ) a = b; }
 
@@ -69,7 +69,7 @@ class Statistics {
 
 
 
-extern Statistics statistics;
+//extern Statistics statistics;
 
 
 inline vector<string>& operator<<(vector<string>& res, string s) {
