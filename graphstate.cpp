@@ -8,7 +8,7 @@
 #include <sstream>
 #include "fminer.h"
 
-extern FMiner fm;
+extern FMiner* fm;
 
 GraphState graphstate;
 
@@ -43,7 +43,7 @@ void GraphState::deleteStartNode () {
 
 void GraphState::insertNode ( int from, EdgeLabel edgelabel, short unsigned int maxdegree  ) {
   NodeLabel fromlabel = nodes[from].label, tolabel;
-  DatabaseEdgeLabel &dataedgelabel = fm.database.edgelabels[  fm.database.edgelabelsindexes[edgelabel]];
+  DatabaseEdgeLabel &dataedgelabel = fm->database.edgelabels[  fm->database.edgelabelsindexes[edgelabel]];
   if ( dataedgelabel.fromnodelabel == fromlabel )
     tolabel = dataedgelabel.tonodelabel;
   else
@@ -279,13 +279,13 @@ int GraphState::enumerateSpanning () {
 
 
 void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
-    oss << fm.database.nodelabels[nodes[cur_n].label].inputlabel; // output nodelabel
+    oss << fm->database.nodelabels[nodes[cur_n].label].inputlabel; // output nodelabel
     int fanout = (int) nodes[cur_n].edges.size ();
     for ( int j = 0; j < fanout; j++ ) {
         GraphState::GSEdge &edge = nodes[cur_n].edges[j];
         if ( edge.tonode != from_n) {
             if (fanout>2) oss << "(";
-            oss <<  (char) (fm.database.edgelabels[fm.database.edgelabelsindexes[edge.edgelabel]].inputedgelabel);
+            oss <<  (char) (fm->database.edgelabels[fm->database.edgelabelsindexes[edge.edgelabel]].inputedgelabel);
             DfsOut(edge.tonode, oss, cur_n);
             if (fanout>2) oss << ")";
         }
@@ -297,7 +297,7 @@ string GraphState::to_s ( unsigned int frequency ) {
   bool DO_YAML = true;
   if (getenv("FMINER_LAZAR")) DO_YAML = false;
 
-  if (!fm.chisq.active || fm.chisq.p >= fm.chisq.sig) {
+  if (!fm->chisq.active || fm->chisq.p >= fm->chisq.sig) {
 
       ostringstream oss;
 
@@ -313,14 +313,14 @@ string GraphState::to_s ( unsigned int frequency ) {
       if (DO_YAML) oss << "\", ";
 
       // output chisq
-      if (fm.chisq.active) {
-        if (DO_YAML) oss << setprecision(4) << fm.chisq.p << ", ";
+      if (fm->chisq.active) {
+        if (DO_YAML) oss << setprecision(4) << fm->chisq.p << ", ";
         else oss << "\t";
       }
 
       // output freq
-      if (fm.chisq.active) {
-          if (frequency != (fm.chisq.fa+fm.chisq.fi)) { cerr << "Error: wrong counts!" << endl; exit(1); }
+      if (fm->chisq.active) {
+          if (frequency != (fm->chisq.fa+fm->chisq.fi)) { cerr << "Error: wrong counts!" << endl; exit(1); }
       }
       else { 
           if (DO_YAML) oss << ", " << frequency;
@@ -328,14 +328,14 @@ string GraphState::to_s ( unsigned int frequency ) {
       }
 
       // output occurrences
-      if (fm.chisq.active) {
+      if (fm->chisq.active) {
           oss << '[';
 
           list<Tid>::iterator iter;
 
           vector<Tid> ids_a;
-          for (iter = fm.chisq.fa_list.begin(); iter != fm.chisq.fa_list.end(); iter++) {
-              ids_a.push_back((fm.database.trees[(*iter)]->line_nr)-1);
+          for (iter = fm->chisq.fa_list.begin(); iter != fm->chisq.fa_list.end(); iter++) {
+              ids_a.push_back((fm->database.trees[(*iter)]->line_nr)-1);
           }
           if (DO_YAML) {
               sort(ids_a.begin(),ids_a.end());
@@ -348,8 +348,8 @@ string GraphState::to_s ( unsigned int frequency ) {
           }
 
           vector<Tid> ids_i;
-          for (iter = fm.chisq.fi_list.begin(); iter != fm.chisq.fi_list.end(); iter++) {
-              ids_i.push_back((fm.database.trees[(*iter)]->line_nr)-1);
+          for (iter = fm->chisq.fi_list.begin(); iter != fm->chisq.fi_list.end(); iter++) {
+              ids_i.push_back((fm->database.trees[(*iter)]->line_nr)-1);
           }
           if (DO_YAML) {
               sort(ids_i.begin(),ids_i.end());

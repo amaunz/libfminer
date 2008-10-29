@@ -14,7 +14,7 @@
 
 using namespace std;
 
-extern FMiner fm;
+extern FMiner* fm;
 
 struct PathTuple {
   Depth depth;

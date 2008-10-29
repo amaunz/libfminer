@@ -32,13 +32,13 @@ class FMiner {
     FMiner (int type, unsigned int minfreq, float chisq_val, bool do_backbone);
     ~FMiner ();
     void SetDynamicUpperBound(bool val) {
-      if ((val == false) && (!do_backbone || !do_pruning)) { cerr << "Error! Dynamic Upper Bound Adjustment cannot be switched off!" << endl; exit(1); }
-      else adjust_ub=val;
+//      if ((val == false) && (!do_backbone || !do_pruning)) { cerr << "Error! Dynamic Upper Bound Adjustment cannot be switched off!" << endl; exit(1); }
+//      else adjust_ub=val;
+      adjust_ub=val;
     }
     void SetPruning(bool val) {do_pruning=val;}
-    void AddChiSqNa(){chisq.na++;}
-    void AddChiSqNi(){chisq.ni++;}
-    void AddChiSqN(){chisq.n=chisq.na+chisq.ni;}
+    void AddChiSqNa(){chisq.na++;chisq.n++;}
+    void AddChiSqNi(){chisq.ni++;chisq.n++;}
     
   private:
     Database database;

@@ -7,7 +7,7 @@
 #include "misc.h"
 #include "fminer.h"
 
-extern FMiner fm;
+extern FMiner* fm;
 
 int maxsize = ( 1 << ( sizeof(NodeId)*8 ) ) - 1; // safe default for the largest allowed pattern
 
@@ -71,12 +71,12 @@ void PatternTree::addExtensionLegs ( Tuple &tuple, LegOccurrences &legoccurrence
   else
     extend ( legoccurrences );
 
-  if ( candidatelegsoccurrences[pathlowestlabel].frequency >= fm.minfreq )
+  if ( candidatelegsoccurrences[pathlowestlabel].frequency >= fm->minfreq )
     // this is the first possible extension, as we force this label to be the lowest!
     addLeg ( graphstate.lastNode (), tuple.depth + 1, pathlowestlabel, candidatelegsoccurrences[pathlowestlabel] );
 
   for ( int i = 0; (unsigned) i < candidatelegsoccurrences.size (); i++ ) {
-    if ( candidatelegsoccurrences[i].frequency >= fm.minfreq && i != pathlowestlabel )
+    if ( candidatelegsoccurrences[i].frequency >= fm->minfreq && i != pathlowestlabel )
       addLeg ( graphstate.lastNode (), tuple.depth + 1, i, candidatelegsoccurrences[i] );
   }
 
@@ -792,42 +792,42 @@ PatternTree::PatternTree ( PatternTree &parenttree, unsigned int legindex ) {
 }
 
 void PatternTree::expand (pair<float, string> max) {
-  fm.statistics.patternsize++;
-  if ( fm.statistics.patternsize > (int) fm.statistics.frequenttreenumbers.size () ) {
-    fm.statistics.frequenttreenumbers.resize ( fm.statistics.patternsize, 0 );
-    fm.statistics.frequentpathnumbers.resize ( fm.statistics.patternsize, 0 );
-    fm.statistics.frequentgraphnumbers.resize ( fm.statistics.patternsize, 0 );
+  fm->statistics.patternsize++;
+  if ( fm->statistics.patternsize > (int) fm->statistics.frequenttreenumbers.size () ) {
+    fm->statistics.frequenttreenumbers.resize ( fm->statistics.patternsize, 0 );
+    fm->statistics.frequentpathnumbers.resize ( fm->statistics.patternsize, 0 );
+    fm->statistics.frequentgraphnumbers.resize ( fm->statistics.patternsize, 0 );
   }
-  ++fm.statistics.frequenttreenumbers[fm.statistics.patternsize-1];
-  if ( fm.statistics.patternsize == ((1<<(sizeof(NodeId)*8))-1) ) {
-    fm.statistics.patternsize--;
+  ++fm->statistics.frequenttreenumbers[fm->statistics.patternsize-1];
+  if ( fm->statistics.patternsize == ((1<<(sizeof(NodeId)*8))-1) ) {
+    fm->statistics.patternsize--;
     return;
   }
     
-  if (fm.do_backbone && (legs.size()==0)) {
-    if (fm.updated)
-        fm.result << max.second;
-        fm.updated = false;
+  if (fm->do_backbone && (legs.size()==0)) {
+    if (fm->updated)
+        fm->result << max.second;
+        fm->updated = false;
   }
  
 //bool t_rec=false;
   for ( int i = legs.size () - 1; i >= 0; i-- ) {
 
     // Calculate chisq
-    if (fm.chisq.active) fm.chisq.Calc(legs[i]->occurrences.elements);
+    if (fm->chisq.active) fm->chisq.Calc(legs[i]->occurrences.elements);
 
     // GRAPHSTATE
     graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.label, legs[i]->occurrences.maxdegree );
-    fm.outl = graphstate.to_s(legs[i]->occurrences.frequency);
-    if (!fm.do_backbone) fm.result << fm.outl;
+    fm->outl = graphstate.to_s(legs[i]->occurrences.frequency);
+    if (!fm->do_backbone) fm->result << fm->outl;
 
     // RECURSE
-    float cmax = maxi ( maxi ( fm.chisq.sig, max.first ), fm.chisq.p );
+    float cmax = maxi ( maxi ( fm->chisq.sig, max.first ), fm->chisq.p );
 
-    if ( ( !fm.do_pruning || 
+    if ( ( !fm->do_pruning || 
                (
-                 (  !fm.adjust_ub && (fm.chisq.u >= fm.chisq.sig) ) || 
-                 (   fm.adjust_ub && (fm.chisq.u >= cmax) )
+                 (  !fm->adjust_ub && (fm->chisq.u >= fm->chisq.sig) ) || 
+                 (   fm->adjust_ub && (fm->chisq.u >= cmax) )
                )
              ) &&
          (
@@ -837,13 +837,13 @@ void PatternTree::expand (pair<float, string> max) {
     ) {   // UB-PRUNING
 
         PatternTree p ( *this, i );
-        if (fm.chisq.p>max.first) { fm.updated = true; p.expand (pair<float, string>(fm.chisq.p,fm.outl)); }
+        if (fm->chisq.p>max.first) { fm->updated = true; p.expand (pair<float, string>(fm->chisq.p,fm->outl)); }
         else p.expand (max);
     }
     else {
-        if (fm.do_backbone && fm.updated) {
-            fm.result << max.second;
-            fm.updated = false;
+        if (fm->do_backbone && fm->updated) {
+            fm->result << max.second;
+            fm->updated = false;
         }
     }
 
@@ -853,7 +853,7 @@ void PatternTree::expand (pair<float, string> max) {
 
 
 
-  fm.statistics.patternsize--;
+  fm->statistics.patternsize--;
 
 }
 
@@ -868,11 +868,11 @@ PatternTree::~PatternTree () {
 
 /*
 ostream &operator<< ( ostream &stream, Tuple &tuple ) {
-  DatabaseEdgeLabel edgelabel = fm.database.edgelabels[fm.database.edgelabelsindexes[tuple.label]];
+  DatabaseEdgeLabel edgelabel = fm->database.edgelabels[fm->database.edgelabelsindexes[tuple.label]];
   stream << "(" << tuple.depth << ","
-         << fm.database.nodelabels[edgelabel.fromnodelabel].inputlabel << "-"
+         << fm->database.nodelabels[edgelabel.fromnodelabel].inputlabel << "-"
          << edgelabel.inputedgelabel << "-"
-         << fm.database.nodelabels[edgelabel.tonodelabel].inputlabel << "[" << (int) tuple.label << "])";
+         << fm->database.nodelabels[edgelabel.tonodelabel].inputlabel << "[" << (int) tuple.label << "])";
 
   return stream;
 }
