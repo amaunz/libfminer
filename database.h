@@ -107,7 +107,7 @@ struct DatabaseEdgeLabel {
 
 class Database {
   public:
-    Database () { }
+    Database(Frequency minfreq) : minfreq(minfreq) { }
     vector<DatabaseTreePtr> trees;
     map<Tid, DatabaseTreePtr> trees_map;
     vector<DatabaseNodeLabel> nodelabels;
@@ -138,6 +138,8 @@ class Database {
   
   	// Perform DFS through tree to identify cycles
     void determineCycledNodes ( DatabaseTreePtr tree, vector<int> &nodestack, vector<bool> &visited1, vector<bool> &visited2 );
+  private:
+    Frequency minfreq;
 };
 
 //extern Database database;

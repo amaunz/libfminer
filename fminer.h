@@ -6,12 +6,18 @@
 #include "database.h"
 #include "misc.h"
 #include "constraints.h"
+#include "closeleg.h"
 
 class FMiner {
 
   friend class Path;
   friend class PatternTree;
   friend class GraphState;
+  friend void addCloseExtensions ( vector<CloseLegPtr> &targetcloselegs, int number );
+  friend CloseLegOccurrences* join(LegOccurrences&, CloseLegOccurrences&);
+  friend CloseLegOccurrences* join(CloseLegOccurrences&, CloseLegOccurrences&);
+  friend LegOccurrences* join(LegOccurrences&, NodeId, LegOccurrences&);
+  friend LegOccurrences* join(LegOccurrences&);
 
   public:
     FMiner ();
@@ -27,7 +33,7 @@ class FMiner {
     void AddChiSqNi(){chisq.ni++;}
     void AddChiSqN(){chisq.n=chisq.na+chisq.ni;}
     
-    Database database;
+    Database database; // public because heavily used in main
   private:
     Statistics statistics;
     vector<string> result;

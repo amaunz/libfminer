@@ -16,7 +16,7 @@ typedef unsigned int Depth; // unsigned int is more efficient than short, but re
 typedef unsigned int Tid;
 typedef unsigned int Frequency;
 
-extern Frequency minfreq;
+//extern Frequency minfreq;
 
 #define NOTID ((Tid) -1)
 #define NOEDGELABEL ((EdgeLabel) -1)

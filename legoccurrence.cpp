@@ -117,7 +117,7 @@ LegOccurrencesPtr join ( LegOccurrences &legoccsdata1, NodeId connectingnode, Le
   }
   while ( true );
 
-  if ( frequency >= minfreq ) {
+  if ( frequency >= fm.minfreq ) {
     legoccurrences.parent = &legoccsdata1;
     legoccurrences.number = legoccsdata1.number + 1;
     legoccurrences.frequency = frequency;
@@ -128,7 +128,7 @@ LegOccurrencesPtr join ( LegOccurrences &legoccsdata1, NodeId connectingnode, Le
 }
 
 LegOccurrencesPtr join ( LegOccurrences &legoccsdata ) {
-  if ( legoccsdata.selfjoin < minfreq ) 
+  if ( legoccsdata.selfjoin < fm.minfreq ) 
     return NULL;
   legoccurrences.elements.resize ( 0 );
   vector<LegOccurrence> &legoccs = legoccsdata.elements;

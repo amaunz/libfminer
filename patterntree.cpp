@@ -75,12 +75,12 @@ void PatternTree::addExtensionLegs ( Tuple &tuple, LegOccurrences &legoccurrence
   else
     extend ( legoccurrences );
 
-  if ( candidatelegsoccurrences[pathlowestlabel].frequency >= minfreq )
+  if ( candidatelegsoccurrences[pathlowestlabel].frequency >= fm.minfreq )
     // this is the first possible extension, as we force this label to be the lowest!
     addLeg ( graphstate.lastNode (), tuple.depth + 1, pathlowestlabel, candidatelegsoccurrences[pathlowestlabel] );
 
   for ( int i = 0; (unsigned) i < candidatelegsoccurrences.size (); i++ ) {
-    if ( candidatelegsoccurrences[i].frequency >= minfreq && i != pathlowestlabel )
+    if ( candidatelegsoccurrences[i].frequency >= fm.minfreq && i != pathlowestlabel )
       addLeg ( graphstate.lastNode (), tuple.depth + 1, i, candidatelegsoccurrences[i] );
   }
 

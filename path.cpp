@@ -168,7 +168,7 @@ Path::Path ( Path &parentpath, unsigned int legindex ) {
     // build OccurrenceLists
     extend ( leg.occurrences );
     for (unsigned int i = 0; i < candidatelegsoccurrences.size (); i++ ) {
-      if ( candidatelegsoccurrences[i].frequency >= minfreq ) {
+      if ( candidatelegsoccurrences[i].frequency >= fm.minfreq ) {
         PathLegPtr leg2 = new PathLeg;
         legs.push_back ( leg2 );
         leg2->tuple.edgelabel = i;
@@ -280,7 +280,7 @@ Path::Path ( Path &parentpath, unsigned int legindex ) {
 
   extend ( leg.occurrences );
   for ( unsigned int i = 0; i < candidatelegsoccurrences.size (); i++ ) {
-    if ( candidatelegsoccurrences[i].frequency >= minfreq ) {
+    if ( candidatelegsoccurrences[i].frequency >= fm.minfreq ) {
       PathLegPtr leg2 = new PathLeg;
       legs.push_back ( leg2 );
       leg2->tuple.edgelabel = i;
