@@ -20,6 +20,9 @@ $(LIB1_REALNAME): $(OBJ)
 .o:
 	$(CC) $(CXXFLAGS) $(LIBS) $@
 
+.PHONY:
+doc: Doxyfile Mainpage.h
+	-doxygen Doxyfile
 
 .PHONY:
 clean:
