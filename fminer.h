@@ -35,6 +35,7 @@ class FMiner {
     bool AddCompound(string smiles, unsigned int comp_id); //!< Add a Compound to the database
     bool AddActivity(bool act, unsigned int comp_id); //!< Add an activity to the database
     int GetNoRootNodes() {return database.nodelabels.size();} //!< Get no of root node (element type)
+    int GetNoCompounds() {return database.trees.size();}
     vector<string>* MineRoot(int j); //!< Mine fragments rooted at the j-th root node (element type)
 
     void SetDynamicUpperBound(bool val) {adjust_ub=val;} //!< Pass 'false' here to disable dynamic upper bound pruning (e.g. for performance measures).
