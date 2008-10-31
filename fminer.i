@@ -2,10 +2,10 @@
 %module fminer
 %{
 #include "fminer.h"
+#include "globals.h"
 %}
 
 class FMiner {
-    public:
         FMiner ();
         FMiner (int type, unsigned int minfreq);
         FMiner (int type, unsigned int minfreq, float chisq_val, bool do_backbone);
@@ -16,4 +16,5 @@ class FMiner {
         vector<string>* MineRoot(int j);
         void SetDynamicUpperBound(bool val);
         void SetPruning(bool val);
+
 };
