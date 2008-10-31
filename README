@@ -1,0 +1,4 @@
+LibFMiner
+To create documentation with doxygen, do 'make doc'. The documentation explains API, constructor usage and options.
+
+Andreas Maunz, 2008
