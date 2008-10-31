@@ -1,4 +1,9 @@
-/** @mainpage FMiner (libfminer)
+/** @mainpage LibFMiner (libfminer)
+ *
+ * LibFMiner
+ *
+ * This is the FMiner library.
+ * Latest scientific documentation is available from http://github.com/amaunz/fminer-doc/tree/master.
  * 
  *  @section sec1 Abstract
  *  FMiner implements a method for efficiently mining relevant tree-shaped molecular fragments, each representing a geometrical classes, with minimum frequency and statistical constraints. Experimental results with four test datasets suggest that the approach is able to optimize correlation with chemical endpoints as well as inter-feature entropy. The mined fragments represent classes of fragments sharing a common core structure (backbone). The proposed method reduces feature set sizes and runtime by >90% and >60% compared to ordinary tree mining. Validation with several publicly available carcinogenicity datasets shows that their expressiveness is comparable to the complete set of tree-shaped fragments and is significantly higher than linear fragments.

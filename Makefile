@@ -27,4 +27,4 @@ doc: Doxyfile Mainpage.h
 
 .PHONY:
 clean:
-	-rm -rf *.o *.so*
+	-rm -rf *.o *.so* doc
