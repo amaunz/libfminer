@@ -3,10 +3,12 @@
  * LibFMiner
  *
  * This is the FMiner library.
+ * The official FMiner application that uses this library is available from http://github.com/amaunz/fminer/tree/master.
  * Latest scientific documentation is available from http://github.com/amaunz/fminer-doc/tree/master.
+ * To create documentation with doxygen, do 'make doc'. The documentation explains API, constructor usage and options.
  * 
  *  @section sec1 Abstract
- *  FMiner implements a method for efficiently mining relevant tree-shaped molecular fragments, each representing a geometrical classes, with minimum frequency and statistical constraints. Experimental results with four test datasets suggest that the approach is able to optimize correlation with chemical endpoints as well as inter-feature entropy. The mined fragments represent classes of fragments sharing a common core structure (backbone). The proposed method reduces feature set sizes and runtime by >90% and >60% compared to ordinary tree mining. Validation with several publicly available carcinogenicity datasets shows that their expressiveness is comparable to the complete set of tree-shaped fragments and is significantly higher than linear fragments.
+ *  LibFMiner implements a method for efficiently mining relevant tree-shaped molecular fragments, each representing a geometrical classes, with minimum frequency and statistical constraints. Experimental results with four test datasets suggest that the approach is able to optimize correlation with chemical endpoints as well as inter-feature entropy. The mined fragments represent classes of fragments sharing a common core structure (backbone). The proposed method reduces feature set sizes and runtime by >90% and >60% compared to ordinary tree mining. Validation with several publicly available carcinogenicity datasets shows that their expressiveness is comparable to the complete set of tree-shaped fragments and is significantly higher than linear fragments.
  *
  *  \subsection ssec1 Licence
  *
@@ -14,7 +16,7 @@
  * - Gaston: Siegfried Nijssen and Joost Kok. A Quickstart in Frequent Structure Mining Can Make a Difference. Proceedings of the SIGKDD, 2004 (http://www.liacs.nl/home/snijssen/gaston/)
  * - OpenBabel: The Open Babel Package, version 2.1.1 http://openbabel.sourceforge.net/ (accessed Jul 2008)
  *
- *  @section sec2 Example program using the FMiner API
+ *  @section sec2 Example program using the LibFMiner API
  *  The following code retrieves a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output is in YAML format and takes the form
  *  \code
  *  - [ smarts,    p_chisq,    occ_list_active,    occ_list_inactive ]
