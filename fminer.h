@@ -8,6 +8,7 @@
 #include "constraints.h"
 #include "closeleg.h"
 
+
 class FMiner {
 
   friend class Path;

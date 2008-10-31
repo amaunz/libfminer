@@ -21,9 +21,12 @@ $(LIB1_REALNAME): $(OBJ)
 .o: .c.h
 	$(CC) $(CXXFLAGS) $(LIBS) $@
 
+fminer_wrap.cpp: fminer.i
+	swig -c++ -ruby -Wall -o $@ $<
+
 .PHONY:
 doc: Doxyfile Mainpage.h
-	-doxygen Doxyfile
+	-doxygen $<
 
 .PHONY:
 clean:
