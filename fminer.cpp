@@ -21,8 +21,14 @@ FMiner::FMiner(int type, unsigned int minfreq, float chisq_val, bool do_backbone
 
 vector<string>* FMiner::MineRoot(int j) {
     if (!init_mining_done) {
-                      database.edgecount (); database.reorder (); initLegStatics (); graphstate.init (); 
-                      if (!do_pruning || !do_backbone) fm->SetDynamicUpperBound(false); init_mining_done=true; 
+                        each (database.trees) {
+                            if (database.trees[i]->activity == -1) {
+                                cerr << "Error! ID " << database.trees[i]->orig_tid << " is missing activity information." << endl;
+                                exit(1);
+                            }
+                        }
+                        database.edgecount (); database.reorder (); initLegStatics (); graphstate.init (); 
+                        if (!do_pruning || !do_backbone) fm->SetDynamicUpperBound(false); init_mining_done=true; 
                     }
 
     result.clear();

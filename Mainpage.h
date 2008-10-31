@@ -14,25 +14,40 @@
  *
  * Documentation for YAML can be found at: http://yaml.org/spec/cvs/current.html
  *
- *  \code
- *  FMiner* fm= new FMiner();
+ * \code
  *
- *  fm->AddCompound ("COC1=CC=C(C=C1)C2=NC(=C([NH]2)C3=CC=CC=C3)C4=CC=CC=C4" , 1);
+ * #include "fminer.h"
+ *
+ * #include <iostream>
+ * #include <string.h>
+ *
+ * using namespace std;
+ *
+ * FMiner* fm;
+ *
+ * int main(int argc, char *argv[], char *envp) {
+ * 
+ *   fm= new FMiner();
+ *
+ *   fm->AddCompound ("COC1=CC=C(C=C1)C2=NC(=C([NH]2)C3=CC=CC=C3)C4=CC=CC=C4" , 1);
  *      // ... continue adding compounds
- *  fm->AddCompound ("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2" , 4069);
+ *   fm->AddCompound ("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2" , 4069);
  *
- *  fm->AddActivity((bool) true, 1);
+ *   fm->AddActivity((bool) true, 1);
  *      // ... continue adding activities (true for active, false for inactive)
- *  fm->AddActivity((bool) false, 4069);
+ *   fm->AddActivity((bool) false, 4069);
  *
- *  for ( int j = 0; j < (int) fm->GetNoRootNodes(); j++ ) {
- *    vector<string>* result = fm->MineRoot(j);
- *    each (*result) {
- *      cout << (*result)[i] << endl;
- *    }
- *  }
+ *   cerr << fm->GetNoCompounds() << " compounds" << endl;
  *
- *  delete fm;
+ *   for ( int j = 0; j < (int) fm->GetNoRootNodes(); j++ ) {
+ *      vector<string>* result = fm->MineRoot(j);
+ *      for( int i = 0; i < result->size(); i++) {
+ *        cout << (*result)[i] << endl;
+ *      }
+ *   }
+ *
+ *   delete fm;
+ * }
  *
  *  \endcode
  *
