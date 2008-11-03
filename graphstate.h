@@ -3,18 +3,19 @@
 // Siegfried Nijssen, snijssen@liacs.nl, feb 2004.
 #ifndef GRAPHSTATE_H
 #define GRAPHSTATE_H
-#include "misc.h"
 #include <vector>
 #include <iostream>
+
+#include "misc.h"
 #include "database.h"
 #include "closeleg.h"
 #include "patterntree.h"
+
 using namespace std;
 
 typedef unsigned int Mark;
 
 class GraphState;
-
 extern GraphState graphstate;
 
 class GraphState {

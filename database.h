@@ -8,12 +8,12 @@
 #include <map>
 #include <fstream>
 #include <sstream>
-#include "legoccurrence.h"
-#include "misc.h"
 
 #include <openbabel/mol.h>
 #include "openbabel/obconversion.h"
 
+#include "legoccurrence.h"
+#include "misc.h"
 
 using namespace std;
 using namespace OpenBabel;
@@ -107,7 +107,7 @@ struct DatabaseEdgeLabel {
 
 class Database {
   public:
-    Database(Frequency minfreq) : minfreq(minfreq) { }
+    Database() {}
     vector<DatabaseTreePtr> trees;
     map<Tid, DatabaseTreePtr> trees_map;
     vector<DatabaseNodeLabel> nodelabels;
@@ -141,7 +141,5 @@ class Database {
   private:
     Frequency minfreq;
 };
-
-//extern Database database;
 
 #endif

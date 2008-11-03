@@ -5,6 +5,7 @@
 #define LEGOCCURRENCE_H
 #include <iostream>
 #include <vector>
+
 #include "misc.h"
 
 using namespace std;

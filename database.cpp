@@ -1,4 +1,4 @@
-// database.cpp
+// database->cpp
 // Andreas Maunz, andreas@maunz.de, jul 2008
 // Siegfried Nijssen, snijssen@liacs.nl, jan 2004.
 #include "database.h"
@@ -29,6 +29,9 @@ ostream &operator<< ( ostream &stream, DatabaseTree &databasetree ) {
 }
 
 
+
+
+
 bool Database::readTree (string smi, Tid tid, Tid orig_tid, int line_nr) {
 
     OBMol mol;
@@ -49,20 +52,13 @@ bool Database::readTree (string smi, Tid tid, Tid orig_tid, int line_nr) {
         return(0);
     }
 
-    /*
-    if (!mol.Kekulize()) {
-        cerr << "Unable to Kekulize molecule" << endl;
-        return(0);
-    }
-    */
-
-//    cerr << "You entered: " << endl << smi;
-//    cerr << " (" << mol.NumAtoms() << " Atoms)" << endl;
-
 
     // create and store new tree object
     DatabaseTreePtr tree = new DatabaseTree ( tid , orig_tid , line_nr );
-    trees.push_back ( tree );
+
+
+    // SEGFAULT
+    trees.push_back(tree);
     trees_map[orig_tid] = tree;
 
     int nodessize = 0, edgessize = 0;
@@ -139,9 +135,6 @@ bool Database::readTree (string smi, Tid tid, Tid orig_tid, int line_nr) {
         tree->nodes.push_back ( nodes[i] );
     }
     //cerr << endl;
-
-
-
 
     InputEdgeLabel inputedgelabel;
     InputNodeId nodeid1, nodeid2;
@@ -279,9 +272,17 @@ bool Database::readTree (string smi, Tid tid, Tid orig_tid, int line_nr) {
             nodestack.pop_back ();
         }
     }
-
     return(1);
 }
+
+
+
+
+
+
+
+
+
 
 // TREE                      
 // determine internal cycles 

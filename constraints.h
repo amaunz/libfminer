@@ -10,7 +10,7 @@
 #include "legoccurrence.h"
 #include "database.h"
 
-//extern Database database;
+extern Database* database;
 
 class Constraint {};
 
@@ -22,7 +22,7 @@ class ChisqConstraint : public Constraint {
     bool active;
     list<Tid> fa_list, fi_list;
 
-    ChisqConstraint (float sig, Database* db) : na(0), ni(0), n(0), fa(0), fi(0), sig(sig), chisq(0.0), p(0.0), u(0.0), active(0), db(db) {}
+    ChisqConstraint (float sig) : na(0), ni(0), n(0), fa(0), fi(0), sig(sig), chisq(0.0), p(0.0), u(0.0), active(0) {}
 
     //!< Calculate chi^2 of current and upper bound for chi^2 of more specific features (see Morishita and Sese, 2000)
     template <typename OccurrenceType>
@@ -47,7 +47,6 @@ class ChisqConstraint : public Constraint {
 
 
     private:
-    Database* db;
 
     //!< Calculates chi^2 and upper bound values
     float ChiSq(float x, float y);
@@ -61,11 +60,11 @@ class ChisqConstraint : public Constraint {
 
       each (legocc) { 
 
-        if (db->trees[legocc[i].tid]->activity == 1) {
+        if (database->trees[legocc[i].tid]->activity == 1) {
             fa_list.push_back(legocc[i].tid); 
         }
 
-        else if (db->trees[legocc[i].tid]->activity == 0) {
+        else if (database->trees[legocc[i].tid]->activity == 0) {
             fi_list.push_back(legocc[i].tid); 
         }
 

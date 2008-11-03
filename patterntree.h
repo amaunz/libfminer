@@ -5,16 +5,19 @@
 #define PATTERNTREE_H
 #include <iostream>
 #include <vector>
+#include <iomanip>
+#include <algorithm>
+
 #include "misc.h"
 #include "database.h"
 #include "legoccurrence.h"
 #include "path.h"
 #include "closeleg.h"
-#include <iomanip>
 
 using namespace std;
 
 extern bool updated;
+extern unsigned int minfreq;
 
 struct Tuple {
   Depth depth;

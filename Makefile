@@ -23,7 +23,7 @@ $(LIB1_REALNAME): $(OBJ)
 	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJ)
 	-ln -sf $@ $(LIB1_SONAME)
 	-ln -sf $@ $(LIB1)
-.o: .c.h
+.o: .cpp.h
 	$(CC) $(CXXFLAGS) $(LIBS) $@
 $(LIB2): fminer_wrap.o $(OBJ)
 	g++ -shared /usr/local/lib/libopenbabel.so *.o -o $@

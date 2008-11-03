@@ -4,9 +4,8 @@
 #include <vector>
 #include "misc.h"
 #include "closeleg.h"
-#include "fminer.h"
 
-extern FMiner* fm;
+extern unsigned int minfreq;
 
 CloseLegOccurrences closelegoccurrences;
 
@@ -16,7 +15,7 @@ void addCloseExtensions ( vector<CloseLegPtr> &targetcloselegs, int number ) {
       if ( candidatecloselegsoccsused[i] ) {
         vector<CloseLegOccurrences> &edgelabeloccs = candidatecloselegsoccs[i];
         for ( EdgeLabel j = 0; j < edgelabeloccs.size (); j++ ) {
-          if ( edgelabeloccs[j].frequency >= fm->minfreq ) {
+          if ( edgelabeloccs[j].frequency >= minfreq ) {
             CloseLegPtr closelegptr = new CloseLeg;
             closelegptr->tuple.label = j;
             closelegptr->tuple.to = i;
@@ -79,7 +78,7 @@ CloseLegOccurrencesPtr join ( LegOccurrences &legoccsdata, CloseLegOccurrences &
     }
   }
 
-  if ( frequency >= fm->minfreq ) {
+  if ( frequency >= minfreq ) {
     closelegoccurrences.frequency = frequency;
     return &closelegoccurrences;
   }
@@ -122,7 +121,7 @@ CloseLegOccurrencesPtr join ( CloseLegOccurrences &closelegoccsdata1, CloseLegOc
     }
   }
 
-  if ( frequency >= fm->minfreq ) {
+  if ( frequency >= minfreq ) {
     closelegoccurrences.frequency = frequency;
     return &closelegoccurrences;
   }

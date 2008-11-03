@@ -4,6 +4,7 @@
 #ifndef CLOSELEG_H
 #define CLOSELEG_H
 #include <vector>
+
 #include "misc.h"
 #include "legoccurrence.h"
 

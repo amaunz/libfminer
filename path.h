@@ -10,11 +10,8 @@
 #include "legoccurrence.h"
 #include "closeleg.h"
 #include "constraints.h"
-#include "fminer.h"
 
 using namespace std;
-
-extern FMiner* fm;
 
 struct PathTuple {
   Depth depth;
