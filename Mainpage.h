@@ -1,22 +1,22 @@
-/** @mainpage LibFMiner (libfminer)
+/** @mainpage LibFminer (libfminer)
  *
- * LibFMiner
+ * LibFminer
  *
- * This is the FMiner library.
- * The official FMiner application that uses this library is available from http://github.com/amaunz/fminer/tree/master.
+ * This is the Fminer library.
+ * The official Fminer application that uses this library is available from http://github.com/amaunz/fminer/tree/master.
  * Latest scientific documentation is available from http://github.com/amaunz/fminer-doc/tree/master.
  * To create documentation with doxygen, do 'make doc'. The documentation explains API, constructor usage and options.
  * 
  *  @section sec1 Abstract
- *  LibFMiner implements a method for efficiently mining relevant tree-shaped molecular fragments, each representing a geometrical classes, with minimum frequency and statistical constraints. Experimental results with four test datasets suggest that the approach is able to optimize correlation with chemical endpoints as well as inter-feature entropy. The mined fragments represent classes of fragments sharing a common core structure (backbone). The proposed method reduces feature set sizes and runtime by >90% and >60% compared to ordinary tree mining. Validation with several publicly available carcinogenicity datasets shows that their expressiveness is comparable to the complete set of tree-shaped fragments and is significantly higher than linear fragments.
+ *  LibFminer implements a method for efficiently mining relevant tree-shaped molecular fragments, each representing a geometrical classes, with minimum frequency and statistical constraints. Experimental results with four test datasets suggest that the approach is able to optimize correlation with chemical endpoints as well as inter-feature entropy. The mined fragments represent classes of fragments sharing a common core structure (backbone). The proposed method reduces feature set sizes and runtime by >90% and >60% compared to ordinary tree mining. Validation with several publicly available carcinogenicity datasets shows that their expressiveness is comparable to the complete set of tree-shaped fragments and is significantly higher than linear fragments.
  *
  *  \subsection ssec1 Licence
  *
- *   LibFMiner is free software ('free' as in 'freedom', see LICENSE). LibFMiner uses code from the following projects which are free in the same sense:
+ *   LibFminer is free software ('free' as in 'freedom', see LICENSE). LibFminer uses code from the following projects which are free in the same sense:
  * - Gaston: Siegfried Nijssen and Joost Kok. A Quickstart in Frequent Structure Mining Can Make a Difference. Proceedings of the SIGKDD, 2004 (http://www.liacs.nl/home/snijssen/gaston/)
  * - OpenBabel: The Open Babel Package, version 2.1.1 http://openbabel.sourceforge.net/ (accessed Jul 2008)
  *
- *  @section sec2 Example program using the LibFMiner API
+ *  @section sec2 Example program using the LibFminer API
  *  The following code retrieves a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output is in YAML format and takes the form
  *  \code
  *  - [ smarts,    p_chisq,    occ_list_active,    occ_list_inactive ]
@@ -33,11 +33,11 @@
  *
  * using namespace std;
  *
- * FMiner* fm;
+ * Fminer* fm;
  *
  * int main(int argc, char *argv[], char *envp) {
  * 
- *   fm= new FMiner();
+ *   fm= new Fminer();
  *
  *   AddCompound ("COC1=CC=C(C=C1)C2=NC(=C([NH]2)C3=CC=CC=C3)C4=CC=CC=C4" , 1);
  *      // ... continue adding compounds
@@ -66,15 +66,15 @@
  * The above program uses the standard settings:
  * \code
  *  //! Constructor for standard settings: 95% significance level, minimum frequency 2, type trees, dynamic upper bound, BBRC
- *  FMiner ();
+ *  Fminer ();
  *  \endcode
 
  * There also exist more flexible constructors:
  * \code
  * //! Like standard constructor, but type and minimum frequency configurable
- * FMiner (int type, unsigned int minfreq);
+ * Fminer (int type, unsigned int minfreq);
  * //! Like standard constructor, but type, minimum frequency, significance level and BBRC configurable
- * FMiner (int type, unsigned int minfreq, float chisq_val, bool do_backbone);
+ * Fminer (int type, unsigned int minfreq, float chisq_val, bool do_backbone);
  * \endcode
 
 *

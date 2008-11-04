@@ -2,13 +2,13 @@
 %module fminer
 %{
 #include "fminer.h"
-#include "globals.h"
 %}
 
-class FMiner {
-        FMiner ();
-        FMiner (int type, unsigned int minfreq);
-        FMiner (int type, unsigned int minfreq, float chisq_val, bool do_backbone);
+class Fminer {
+        static void Test();
+        Fminer ();
+        Fminer (int type, unsigned int minfreq);
+        Fminer (int type, unsigned int minfreq, float chisq_val, bool do_backbone);
         bool AddCompound(string smiles, unsigned int comp_id);
         bool AddActivity(bool act, unsigned int comp_id);
         int GetNoRootNodes();
@@ -16,5 +16,4 @@ class FMiner {
         vector<string>* MineRoot(int j);
         void SetDynamicUpperBound(bool val);
         void SetPruning(bool val);
-
 };

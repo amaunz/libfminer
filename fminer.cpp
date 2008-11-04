@@ -1,36 +1,42 @@
 #include "fminer.h"
 
-
-FMiner::FMiner() : init_mining_done(false) {
-  Init();
+Fminer::Fminer() : init_mining_done(false) {
+  outl = NULL; database = NULL; statistics = NULL; chisq = NULL; result = NULL;
+  Reset();
 }
 
-FMiner::FMiner(int _type, unsigned int _minfreq) : init_mining_done(false) {
+Fminer::Fminer(int _type, unsigned int _minfreq) : init_mining_done(false) {
   if ((_type != 1) && (_type != 2)) { cerr << "Error! Invalid value '" << _type << "' for parameter type." << endl; exit(1); }
   if (_minfreq < 1) { cerr << "Error! Invalid value '" << _minfreq << "' for parameter minfreq." << endl; exit(1); }
+  outl = NULL; database = NULL; statistics = NULL; chisq = NULL; result = NULL;
+  Reset();
   type = _type;
   minfreq = _minfreq;
-  Init();
 }
 
-FMiner::FMiner(int _type, unsigned int _minfreq, float _chisq_val, bool _do_backbone) : init_mining_done(false) {
+Fminer::Fminer(int _type, unsigned int _minfreq, float _chisq_val, bool _do_backbone) : init_mining_done(false) {
   if (_chisq_val < 0.0 || _chisq_val > 1.0) { cerr << "Error! Invalid value '" << _chisq_val << "' for parameter chisq->" << endl; exit(1); }
   if ((_type != 1) && (_type != 2)) { cerr << "Error! Invalid value '" << _type << "' for parameter type." << endl; exit(1); }
   if (_minfreq < 1) { cerr << "Error! Invalid value '" << _minfreq << "' for parameter minfreq." << endl; exit(1); }
-  Init();
+  outl = NULL; database = NULL; statistics = NULL; chisq = NULL; result = NULL;
+  Reset();
   type = _type;
   minfreq = _minfreq;
   do_backbone = _do_backbone;
   chisq->sig = _chisq_val;
 }
 
+Fminer::~Fminer() {
+    delete database; delete statistics; delete chisq; delete result; delete outl;
+}
 
-void FMiner::Init() { 
-    database = new Database();
-    statistics = new Statistics();
-    chisq = new ChisqConstraint(0.95);
-    result = &r;
-    outl = new string();
+
+void Fminer::Reset() { 
+    delete database; database = new Database();
+    delete statistics; statistics = new Statistics();
+    delete chisq; chisq = new ChisqConstraint(0.95);
+    delete result; result = &r;
+    delete outl; outl = new string();
 
     comp_runner=1; 
     comp_no=0; 
@@ -38,7 +44,7 @@ void FMiner::Init() {
 }
 
 
-vector<string>* FMiner::MineRoot(unsigned int j) {
+vector<string>* Fminer::MineRoot(unsigned int j) {
     if (!init_mining_done) {
                         each (database->trees) {
                             if (database->trees[i]->activity == -1) {
@@ -60,7 +66,7 @@ vector<string>* FMiner::MineRoot(unsigned int j) {
     return result;
 }
 
-bool FMiner::AddCompound(string smiles, unsigned int comp_id) {
+bool Fminer::AddCompound(string smiles, unsigned int comp_id) {
     bool insert_done=false;
     if (comp_id<=0) { cerr << "Error! IDs must be of type: Int > 0." << endl;}
     else {
@@ -74,7 +80,7 @@ bool FMiner::AddCompound(string smiles, unsigned int comp_id) {
     return insert_done;
 }
 
-bool FMiner::AddActivity(bool act, unsigned int comp_id) {
+bool Fminer::AddActivity(bool act, unsigned int comp_id) {
     if (database->trees_map[comp_id] == NULL) { 
         cerr << "No structure for ID " << comp_id << ". Ignoring entry!" << endl; return false; 
     }

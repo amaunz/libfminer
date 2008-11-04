@@ -7,7 +7,7 @@ LIB2          = $(NAME).so
 
 # OPTIONS
 INCLUDE       = /usr/local/include/openbabel-2.0/
-OBJ           = database.o patterntree.o legoccurrence.o closeleg.o graphstate.o path.o constraints.o fminer.o
+OBJ           = closeleg.o constraints.o database.o graphstate.o legoccurrence.o path.o patterntree.o
 CC            = g++
 CXXFLAGS      = -g -Wall -O3 -I$(INCLUDE) -fPIC
 LIBS	      = -lm -ldl -lopenbabel -lgsl -lgslcblas
@@ -19,20 +19,20 @@ all: $(LIB1_REALNAME)
 ruby: $(LIB2)
 
 # REAL FILE TARGETS
-$(LIB1_REALNAME): $(OBJ)
-	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJ)
+$(LIB1_REALNAME): $(OBJ) $(NAME).o
+	$(CC) -shared -Wl,-soname,$@ -o $@ $^
 	-ln -sf $@ $(LIB1_SONAME)
 	-ln -sf $@ $(LIB1)
 .o: .cpp.h
 	$(CC) $(CXXFLAGS) $(LIBS) $@
-$(LIB2): fminer_wrap.o $(OBJ)
-	g++ -shared /usr/local/lib/libopenbabel.so *.o -o $@
+$(LIB2): $(NAME)_wrap.o $(OBJ)
+	g++ -shared /usr/local/lib/libopenbabel.so $^ -o $@
 
 # HELPER TARGETS
 $(NAME)_wrap.cpp: $(NAME).i
-	swig -c++ -ruby -Wall -o $@ $<
+	swig -Wall -c++ -ruby -Wall -o $@ $^
 $(NAME)_wrap.o: $(NAME)_wrap.cpp
-	g++ -c -g -Wall -I$(INCLUDE) -I/usr/local/lib/ruby/1.8/i686-linux/ $<
+	g++ -c -g -Wall -I$(INCLUDE) -I/usr/local/lib/ruby/1.8/i686-linux/ $^
 .PHONY:
 doc: Doxyfile Mainpage.h
 	-doxygen $<
