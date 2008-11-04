@@ -8,8 +8,8 @@ bool updated;
 bool adjust_ub;
 bool do_pruning;
 
-string* outl;
-Database* database;
-Statistics* statistics;
-ChisqConstraint* chisq;
-vector<string>* result;
+string* outl=NULL;
+Database* database=NULL;
+Statistics* statistics=NULL;
+ChisqConstraint* chisq=NULL;
+vector<string>* result=NULL;

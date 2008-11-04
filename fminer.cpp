@@ -1,8 +1,10 @@
 #include "fminer.h"
+#include "globals.h"
 
 Fminer::Fminer() : init_mining_done(false) {
   outl = NULL; database = NULL; statistics = NULL; chisq = NULL; result = NULL;
   Reset();
+  Defaults();
 }
 
 Fminer::Fminer(int _type, unsigned int _minfreq) : init_mining_done(false) {
@@ -10,6 +12,7 @@ Fminer::Fminer(int _type, unsigned int _minfreq) : init_mining_done(false) {
   if (_minfreq < 1) { cerr << "Error! Invalid value '" << _minfreq << "' for parameter minfreq." << endl; exit(1); }
   outl = NULL; database = NULL; statistics = NULL; chisq = NULL; result = NULL;
   Reset();
+  Defaults();
   type = _type;
   minfreq = _minfreq;
 }
@@ -20,29 +23,40 @@ Fminer::Fminer(int _type, unsigned int _minfreq, float _chisq_val, bool _do_back
   if (_minfreq < 1) { cerr << "Error! Invalid value '" << _minfreq << "' for parameter minfreq." << endl; exit(1); }
   outl = NULL; database = NULL; statistics = NULL; chisq = NULL; result = NULL;
   Reset();
+  Defaults();
   type = _type;
   minfreq = _minfreq;
-  do_backbone = _do_backbone;
   chisq->sig = _chisq_val;
+  do_backbone = _do_backbone;
 }
 
 Fminer::~Fminer() {
-    delete database; delete statistics; delete chisq; delete result; delete outl;
+    delete database;
+    delete statistics; 
+    delete chisq; 
+    delete outl;
 }
-
 
 void Fminer::Reset() { 
     delete database; database = new Database();
     delete statistics; statistics = new Statistics();
     delete chisq; chisq = new ChisqConstraint(0.95);
-    delete result; result = &r;
+    chisq->active = true; 
+    result = &r;
     delete outl; outl = new string();
 
     comp_runner=1; 
     comp_no=0; 
-    chisq->active = true; 
 }
 
+void Fminer::Defaults() {
+    minfreq = 2;
+    type = 2;
+    do_backbone = true;
+    updated = true;
+    adjust_ub = true;
+    do_pruning = true;
+}
 
 vector<string>* Fminer::MineRoot(unsigned int j) {
     if (!init_mining_done) {
