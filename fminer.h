@@ -31,8 +31,8 @@ class Fminer {
     int GetNoCompounds() {return database->trees.size();}
     vector<string>* MineRoot(unsigned int j); //!< Mine fragments rooted at the j-th root node (element type)
 
-    void SetDynamicUpperBound(bool val) {adjust_ub=val;} //!< Pass 'false' here to disable dynamic upper bound pruning (e.g. for performance measures).
-    void SetPruning(bool val) {do_pruning=val;} //!< Pass 'false' here to disable statistical pruning completely.
+    void SetDynamicUpperBound(bool val); //!< Pass 'false' here to disable dynamic upper bound pruning (e.g. for performance measures).
+    void SetPruning(bool val); //!< Pass 'false' here to disable statistical pruning completely.
     void Reset(); //!< Use this to clear the database before feeding new compounds and activities
     void Defaults(); //!< Use this to set default parameters as in default constructor
         

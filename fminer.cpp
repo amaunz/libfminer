@@ -27,7 +27,7 @@ Fminer::Fminer(int _type, unsigned int _minfreq, float _chisq_val, bool _do_back
   type = _type;
   minfreq = _minfreq;
   chisq->sig = _chisq_val;
-  do_backbone = _do_backbone;
+  do_backbone = _do_backbone; if (!do_backbone) SetDynamicUpperBound(false);
 }
 
 Fminer::~Fminer() {
@@ -47,15 +47,16 @@ void Fminer::Reset() {
 
     comp_runner=1; 
     comp_no=0; 
+    init_mining_done = false;
 }
 
 void Fminer::Defaults() {
     minfreq = 2;
     type = 2;
     do_backbone = true;
-    updated = true;
     adjust_ub = true;
     do_pruning = true;
+    updated = true;
 }
 
 vector<string>* Fminer::MineRoot(unsigned int j) {
@@ -67,7 +68,8 @@ vector<string>* Fminer::MineRoot(unsigned int j) {
                             }
                         }
                         database->edgecount (); database->reorder (); initLegStatics (); graphstate.init (); 
-                        if (!do_pruning || !do_backbone) SetDynamicUpperBound(false); init_mining_done=true; 
+                        if (!do_pruning || !do_backbone) {SetDynamicUpperBound(false);} init_mining_done=true; 
+                        
                     }
 
     result->clear();
@@ -104,3 +106,20 @@ bool Fminer::AddActivity(bool act, unsigned int comp_id) {
         return true;
     }
 }
+
+void Fminer::SetDynamicUpperBound(bool val) {
+    adjust_ub=val; 
+    if ((!do_pruning && adjust_ub) || (!do_backbone && adjust_ub)) {
+        cerr << "Error! Can't switch on dynamic upper bound pruning: statistical metrical pruning or backbone mining is disabled!" << endl; 
+        exit(1); 
+    }
+}
+
+void Fminer::SetPruning(bool val) {
+    do_pruning=val; 
+    if (!do_pruning && adjust_ub) {
+        cerr << "Error! Can't switch off statistical metrical pruning: dynamic upper bound pruning is enabled." << endl; 
+        exit(1); 
+    }
+}
+
