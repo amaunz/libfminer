@@ -104,6 +104,8 @@
 *
  * \subsection Options Options Description
  *
+ * The following parameters and switches are normally configure via the constructor. At a later point, you may change those settings via public setter methods and get their values via public getter methods, see the <code>Fminer</code> API.
+ *
  * Constraint parameters:
  *  - Subgraph type, choices are paths and trees. <code>type</code> may be  1 (paths) and 2 (trees). Default is 2.
  *  - Minimum frequency constraint, used for anti-monotonic pruning. <code>minfreq</code> may be 1,2,... Default is 2.

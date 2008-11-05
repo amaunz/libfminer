@@ -7,6 +7,7 @@ bool do_backbone;
 bool updated;
 bool adjust_ub;
 bool do_pruning;
+bool instance_present;
 
 string* outl=NULL;
 Database* database=NULL;
