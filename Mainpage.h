@@ -16,7 +16,13 @@
  * - Gaston: Siegfried Nijssen and Joost Kok. A Quickstart in Frequent Structure Mining Can Make a Difference. Proceedings of the SIGKDD, 2004 (http://www.liacs.nl/home/snijssen/gaston/)
  * - OpenBabel: The Open Babel Package, version 2.1.1 http://openbabel.sourceforge.net/ (accessed Jul 2008)
  *
- *  @section sec2 Example program using the LibFminer API
+ *  @section sec2 Portability
+ *  LibFminer is a self-contained library, written in C++. It depends on OpenBabel (<code>libopenbabel</code>) and GNU Scientific Library (<code>libgsl</code>) libraries.
+ *  \subsection Portability
+ *  The dependency libraries are available for Linux, Mac and Windows, so porting to the latter two platforms should be easy. A Windows-Version will also be released by the author in the near future.
+ *  The API can be made available to other languages. A config file for Swig to automagically create languages bindings exists (<code>fminer.i</code>). The Makefile features a target that creates ruby bindings using this file (<code>make fminer.so</code>).
+ *
+ *  @section sec3 Example program using the LibFminer API
  *  The following code retrieves a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output is in YAML format and takes the form
  *  \code
  *  - [ smarts,    p_chisq,    occ_list_active,    occ_list_inactive ]
@@ -24,40 +30,58 @@
  *
  * Documentation for YAML can be found at: http://yaml.org/spec/cvs/current.html
  *
+ * \subsection CPP C++
+ *
+ *
  * \code
- *
  * #include "fminer.h"
- *
  * #include <iostream>
  * #include <string.h>
- *
  * using namespace std;
  *
  * Fminer* fm;
- *
  * int main(int argc, char *argv[], char *envp) {
- * 
  *   fm= new Fminer();
- *
  *   AddCompound ("COC1=CC=C(C=C1)C2=NC(=C([NH]2)C3=CC=CC=C3)C4=CC=CC=C4" , 1);
  *      // ... continue adding compounds
  *   AddCompound ("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2" , 4069);
- *
  *   AddActivity((bool) true, 1);
  *      // ... continue adding activities (true for active, false for inactive)
  *   AddActivity((bool) false, 4069);
- *
  *   cerr << GetNoCompounds() << " compounds" << endl;
- *
  *   for ( int j = 0; j < (int) GetNoRootNodes(); j++ ) {
  *      vector<string>* result = MineRoot(j);
  *      for( int i = 0; i < result->size(); i++) {
  *        cout << (*result)[i] << endl;
  *      }
  *   }
- *
  *   delete fm;
  * }
+ *
+ *  \endcode
+ *
+ * \subsection Ruby Ruby
+ *
+ * This example assumes that you have created ruby bindings using <code>make fminer.so</code>.
+ * \code
+ *
+ * require 'fminer'
+ * fm = Fminer::Fminer.new()
+ * fm.AddCompound("COC1=CC=C(C=C1)C2=NC(=C([NH]2)C3=CC=CC=C3)C4=CC=CC=C4" , 1)
+ *    // ... continue adding compounds
+ * fm.AddCompound("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2" , 4069)
+ * fm.AddActivity(true, 1)
+ *    // ... continue adding activities (true for active, false for inactive)
+ * fm.AddActivity(false, 4096)
+ * print fm.GetNoCompounds()  
+ * puts " compounds"
+ * (0 .. fm.GetNoRootNodes()-1).each do |j|
+ *    result = fm.MineRoot(j)
+ *    puts "Results"
+ *    (0 .. result.size-1).each do |i|
+ *        puts result[i]
+ *   end
+ * end
  *
  *  \endcode
  *
