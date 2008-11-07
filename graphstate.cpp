@@ -10,6 +10,7 @@
 
 GraphState graphstate;
 extern ChisqConstraint* chisq;
+extern bool console_out;
 
 GraphState::GraphState () {
 }
@@ -371,6 +372,8 @@ string GraphState::to_s ( unsigned int frequency ) {
       }
 
       if (DO_YAML) oss << " ]";
+
+      console_out ? oss << "\n" : oss << "";
 
 
       return oss.str();

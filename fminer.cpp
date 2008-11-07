@@ -83,6 +83,11 @@ void Fminer::Defaults() {
     adjust_ub = true;
     do_pruning = true;
     updated = true;
+    console_out = false;
+}
+
+void Fminer::SetConsoleOut(bool val) {
+    console_out=val;
 }
 
 vector<string>* Fminer::MineRoot(unsigned int j) {

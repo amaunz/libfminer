@@ -23,7 +23,6 @@ class Fminer {
     Fminer (int _type, unsigned int _minfreq, float chisq_val, bool _do_backbone);
 
     ~Fminer();
-
     
     bool AddCompound(string smiles, unsigned int comp_id); //!< Add a compound to the database.
     bool AddActivity(bool act, unsigned int comp_id); //!< Add an activity to the database.
@@ -49,6 +48,7 @@ class Fminer {
 
     void Reset(); //!< Use this to clear the database before feeding new compounds and activities.
     void Defaults(); //!< Use this to set default parameters as in default constructor.
+    void SetConsoleOut(bool val); //!< Set this to true to disable usage of esult vector and directly print to the console (saves memory)
         
   private:
     void AddChiSqNa(){chisq->na++;chisq->n++;}

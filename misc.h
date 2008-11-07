@@ -46,6 +46,7 @@ inline void setmax ( short unsigned int &a, short unsigned int b ) { if ( b > a 
 
 class Statistics {
   public:
+//    Statistics() : patternsize(0) {}
     vector<unsigned int> frequenttreenumbers;
     vector<unsigned int> frequentpathnumbers;
     vector<unsigned int> frequentgraphnumbers;

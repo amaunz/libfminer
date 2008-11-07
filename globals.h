@@ -8,6 +8,7 @@ bool updated;
 bool adjust_ub;
 bool do_pruning;
 bool instance_present;
+bool console_out;
 
 string* outl=NULL;
 Database* database=NULL;

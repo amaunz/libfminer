@@ -9,6 +9,7 @@ extern unsigned int minfreq;
 extern bool do_backbone;
 extern bool adjust_ub;
 extern bool do_pruning;
+extern bool console_out;
 
 extern Database* database;
 extern ChisqConstraint* chisq;
@@ -813,7 +814,8 @@ void PatternTree::expand (pair<float, string> max) {
     
   if (do_backbone && (legs.size()==0)) {
     if (updated)
-        (*result) << max.second;
+        if (!console_out) (*result) << max.second;
+        else cout << max.second;
         updated = false;
   }
  
@@ -826,7 +828,10 @@ void PatternTree::expand (pair<float, string> max) {
     // GRAPHSTATE
     graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.label, legs[i]->occurrences.maxdegree );
     (*outl) = graphstate.to_s(legs[i]->occurrences.frequency);
-    if (!do_backbone) (*result) << (*outl);
+    if (!do_backbone) { 
+        if (!console_out) (*result) << (*outl);
+        else cout << (*outl);
+    }
 
     // RECURSE
     float cmax = maxi ( maxi ( chisq->sig, max.first ), chisq->p );
@@ -849,7 +854,8 @@ void PatternTree::expand (pair<float, string> max) {
     }
     else {
         if (do_backbone && updated) {
-            (*result) << max.second;
+            if (!console_out) (*result) << max.second;
+            else cout << max.second;
             updated = false;
         }
     }

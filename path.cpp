@@ -15,6 +15,7 @@ extern bool adjust_ub;
 extern bool do_pruning;
 extern bool do_backbone;
 extern int type;
+extern bool console_out;
 
 extern Database* database;
 extern ChisqConstraint* chisq;
@@ -446,7 +447,8 @@ void Path::expand2 (pair<float,string> max) {
   // FREE STRUCTURES: we have reached a leaf
   if (do_backbone && (pathlegs.size()==0)) { 
     if (updated) { 
-        (*result) << max.second;
+        if (!console_out) (*result) << max.second;
+        else cout << max.second;
         updated = false;
     }
   }
@@ -480,7 +482,10 @@ void Path::expand2 (pair<float,string> max) {
     (*outl) = graphstate.to_s(legs[index]->occurrences.frequency);
 
     // immediate output
-    if (!do_backbone) (*result) << (*outl);
+    if (!do_backbone) { 
+        if (!console_out) (*result) << (*outl);
+        else cout << (*outl);
+    }
 
     // RECURSE
     float cmax = maxi ( maxi ( chisq->sig, max.first ), chisq->p );
@@ -502,7 +507,8 @@ void Path::expand2 (pair<float,string> max) {
     }
     else {
         if (do_backbone && updated) {  // FREE STRUCTURES: search was pruned
-            (*result) << max.second;
+            if (!console_out) (*result) << max.second;
+            else cout << max.second;
             updated=false;
         }
     }
@@ -525,7 +531,10 @@ void Path::expand2 (pair<float,string> max) {
     (*outl) = graphstate.to_s(legs[index]->occurrences.frequency);
 
     // immediate output
-    if (!do_backbone) (*result) << (*outl);
+    if (!do_backbone) {
+        if (!console_out) (*result) << (*outl);
+        else cout << (*outl);
+    }
 
     // RECURSE
     float cmax = maxi ( maxi ( chisq->sig, max.first ), chisq->p );
@@ -547,7 +556,8 @@ void Path::expand2 (pair<float,string> max) {
     }
     else {
         if (do_backbone && updated) { // FREE STRUCTURES: search was pruned
-            (*result) << max.second;
+            if (!console_out) (*result) << max.second;
+            else cout << max.second;
             updated=false;
         }
     }
@@ -583,7 +593,11 @@ void Path::expand2 (pair<float,string> max) {
           graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.edgelabel, legs[i]->occurrences.maxdegree );
           (*outl) = graphstate.to_s(legs[i]->occurrences.frequency);
 
-          if (!do_backbone) (*result) << (*outl);
+          if (!do_backbone) { 
+             if (!console_out) (*result) << (*outl);
+             else cout << outl;
+          }
+
 
           // RECURSE
           float cmax = maxi ( maxi ( chisq->sig, max.first ), chisq->p );
@@ -607,7 +621,8 @@ void Path::expand2 (pair<float,string> max) {
 
           else {
             if (do_backbone && updated) { 
-              (*result) << max.second;
+              if (!console_out) (*result) << max.second;
+              else cout << max.second;
               updated=false;
             }
           }
@@ -649,7 +664,10 @@ void Path::expand () {
       // GRAPHSTATE AND OUTPUT
       graphstate.insertNode ( tuple.connectingnode, tuple.edgelabel, legs[i]->occurrences.maxdegree );
       (*outl) = graphstate.to_s(legs[i]->occurrences.frequency);
-      if (!do_backbone) (*result) << (*outl);
+      if (!do_backbone) { 
+        if (!console_out) (*result) << (*outl);
+        else cout << (*outl);
+      }
 
       // RECURSE
       Path path (*this, i);
