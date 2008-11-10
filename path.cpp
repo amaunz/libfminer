@@ -9,6 +9,8 @@
 #include <openbabel/data.h> 
 #include "misc.h"
 
+#define DO_OUTPUT true
+
 extern GraphState graphstate;
 extern unsigned int minfreq;
 extern bool adjust_ub;
@@ -447,8 +449,10 @@ void Path::expand2 (pair<float,string> max) {
   // FREE STRUCTURES: we have reached a leaf
   if (do_backbone && (pathlegs.size()==0)) { 
     if (updated) { 
-        if (!console_out) (*result) << max.second;
-        else cout << max.second;
+        if (DO_OUTPUT) {
+            if (!console_out) (*result) << max.second;
+            else cout << max.second;
+        }
         updated = false;
     }
   }
@@ -482,9 +486,11 @@ void Path::expand2 (pair<float,string> max) {
     (*outl) = graphstate.to_s(legs[index]->occurrences.frequency);
 
     // immediate output
-    if (!do_backbone) { 
-        if (!console_out) (*result) << (*outl);
-        else cout << (*outl);
+    if (DO_OUTPUT) {
+        if (!do_backbone) { 
+            if (!console_out) (*result) << (*outl);
+            else cout << (*outl);
+        }
     }
 
     // RECURSE
@@ -507,8 +513,10 @@ void Path::expand2 (pair<float,string> max) {
     }
     else {
         if (do_backbone && updated) {  // FREE STRUCTURES: search was pruned
-            if (!console_out) (*result) << max.second;
-            else cout << max.second;
+            if (DO_OUTPUT) {
+                if (!console_out) (*result) << max.second;
+                else cout << max.second;
+            }
             updated=false;
         }
     }
@@ -531,9 +539,11 @@ void Path::expand2 (pair<float,string> max) {
     (*outl) = graphstate.to_s(legs[index]->occurrences.frequency);
 
     // immediate output
-    if (!do_backbone) {
-        if (!console_out) (*result) << (*outl);
-        else cout << (*outl);
+    if (DO_OUTPUT) {
+        if (!do_backbone) {
+            if (!console_out) (*result) << (*outl);
+            else cout << (*outl);
+        }
     }
 
     // RECURSE
@@ -556,8 +566,10 @@ void Path::expand2 (pair<float,string> max) {
     }
     else {
         if (do_backbone && updated) { // FREE STRUCTURES: search was pruned
-            if (!console_out) (*result) << max.second;
-            else cout << max.second;
+            if (DO_OUTPUT) {
+                if (!console_out) (*result) << max.second;
+                else if (DO_OUTPUT) cout << max.second;
+            }
             updated=false;
         }
     }
@@ -593,11 +605,12 @@ void Path::expand2 (pair<float,string> max) {
           graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.edgelabel, legs[i]->occurrences.maxdegree );
           (*outl) = graphstate.to_s(legs[i]->occurrences.frequency);
 
-          if (!do_backbone) { 
-             if (!console_out) (*result) << (*outl);
-             else cout << outl;
+          if (DO_OUTPUT) {
+              if (!do_backbone) { 
+                 if (!console_out) (*result) << (*outl);
+                 else cout << outl;
+              }
           }
-
 
           // RECURSE
           float cmax = maxi ( maxi ( chisq->sig, max.first ), chisq->p );
@@ -621,8 +634,10 @@ void Path::expand2 (pair<float,string> max) {
 
           else {
             if (do_backbone && updated) { 
-              if (!console_out) (*result) << max.second;
-              else cout << max.second;
+              if (DO_OUTPUT) {
+                  if (!console_out) (*result) << max.second;
+                  else  cout << max.second;
+              }
               updated=false;
             }
           }
@@ -664,9 +679,11 @@ void Path::expand () {
       // GRAPHSTATE AND OUTPUT
       graphstate.insertNode ( tuple.connectingnode, tuple.edgelabel, legs[i]->occurrences.maxdegree );
       (*outl) = graphstate.to_s(legs[i]->occurrences.frequency);
-      if (!do_backbone) { 
-        if (!console_out) (*result) << (*outl);
-        else cout << (*outl);
+      if (DO_OUTPUT) {
+          if (!do_backbone) { 
+            if (!console_out) (*result) << (*outl);
+            else cout << (*outl);
+          }
       }
 
       // RECURSE

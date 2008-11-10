@@ -42,15 +42,15 @@
  * Fminer* fm;
  * int main(int argc, char *argv[], char *envp) {
  *   fm= new Fminer();
- *   AddCompound ("COC1=CC=C(C=C1)C2=NC(=C([NH]2)C3=CC=CC=C3)C4=CC=CC=C4" , 1);
+ *   fm->AddCompound ("COC1=CC=C(C=C1)C2=NC(=C([NH]2)C3=CC=CC=C3)C4=CC=CC=C4" , 1);
  *      // ... continue adding compounds
- *   AddCompound ("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2" , 4069);
- *   AddActivity((bool) true, 1);
+ *   fm->AddCompound ("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2" , 4069);
+ *   fm->AddActivity((bool) true, 1);
  *      // ... continue adding activities (true for active, false for inactive)
- *   AddActivity((bool) false, 4069);
- *   cerr << GetNoCompounds() << " compounds" << endl;
- *   for ( int j = 0; j < (int) GetNoRootNodes(); j++ ) {
- *      vector<string>* result = MineRoot(j);
+ *   fm->AddActivity((bool) false, 4069);
+ *   cerr << fm->GetNoCompounds() << " compounds" << endl;
+ *   for ( int j = 0; j < (int) fm->GetNoRootNodes(); j++ ) {
+ *      vector<string>* result = fm->MineRoot(j);
  *      for( int i = 0; i < result->size(); i++) {
  *        cout << (*result)[i] << endl;
  *      }

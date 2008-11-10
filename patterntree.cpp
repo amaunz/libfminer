@@ -4,6 +4,8 @@
 #include "patterntree.h"
 #include "graphstate.h"
 
+#define DO_OUTPUT true
+
 extern GraphState graphstate;
 extern unsigned int minfreq;
 extern bool do_backbone;
@@ -814,8 +816,10 @@ void PatternTree::expand (pair<float, string> max) {
     
   if (do_backbone && (legs.size()==0)) {
     if (updated)
-        if (!console_out) (*result) << max.second;
-        else cout << max.second;
+        if (DO_OUTPUT) {
+            if (!console_out) (*result) << max.second;
+            else cout << max.second;
+        }
         updated = false;
   }
  
@@ -828,9 +832,11 @@ void PatternTree::expand (pair<float, string> max) {
     // GRAPHSTATE
     graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.label, legs[i]->occurrences.maxdegree );
     (*outl) = graphstate.to_s(legs[i]->occurrences.frequency);
-    if (!do_backbone) { 
-        if (!console_out) (*result) << (*outl);
-        else cout << (*outl);
+    if (DO_OUTPUT) {
+        if (!do_backbone) { 
+            if (!console_out) (*result) << (*outl);
+            else cout << (*outl);
+        }
     }
 
     // RECURSE
@@ -854,8 +860,10 @@ void PatternTree::expand (pair<float, string> max) {
     }
     else {
         if (do_backbone && updated) {
-            if (!console_out) (*result) << max.second;
-            else cout << max.second;
+            if (DO_OUTPUT) {
+                if (!console_out) (*result) << max.second;
+                else cout << max.second;
+            }
             updated = false;
         }
     }

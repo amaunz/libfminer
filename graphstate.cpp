@@ -331,40 +331,31 @@ string GraphState::to_s ( unsigned int frequency ) {
       if (chisq->active) {
           oss << '[';
 
-          list<Tid>::iterator iter;
+          set<Tid>::iterator iter;
 
-          vector<Tid> ids_a;
-          for (iter = chisq->fa_list.begin(); iter != chisq->fa_list.end(); iter++) {
-              ids_a.push_back((database->trees[(*iter)]->line_nr)-1);
-          }
           if (DO_YAML) {
-              sort(ids_a.begin(),ids_a.end());
-              for (unsigned int i=0; i<ids_a.size(); i++) {
-                  if (i != 0) oss << ",";
+              for (iter = chisq->fa_set.begin(); iter != chisq->fa_set.end(); iter++) {
+                  if (iter != chisq->fa_set.begin()) oss << ",";
                   oss << " ";
-                  oss << ids_a[i];
+                  oss << *iter;
               }
               oss << "], [";
           }
 
-          vector<Tid> ids_i;
-          for (iter = chisq->fi_list.begin(); iter != chisq->fi_list.end(); iter++) {
-              ids_i.push_back((database->trees[(*iter)]->line_nr)-1);
-          }
           if (DO_YAML) {
-              sort(ids_i.begin(),ids_i.end());
-              for (unsigned int i=0; i<ids_i.size(); i++) {
-                  if (i != 0) oss << ",";
+              for (iter = chisq->fi_set.begin(); iter != chisq->fi_set.end(); iter++) {
+                  if (iter != chisq->fi_set.begin()) oss << ",";
                   oss << " ";
-                  oss << ids_i[i];
+                  oss << *iter;
               }
           }
 
           if (!DO_YAML) {
-              ids_i.insert(ids_i.end(),ids_a.begin(),ids_a.end());
-              sort(ids_i.begin(), ids_i.end());
-              for (unsigned int i=0; i<ids_i.size(); i++) {
-                  oss << " " << ids_i[i];
+              set<Tid> ids;
+              ids.insert(chisq->fa_set.begin(), chisq->fa_set.end());
+              ids.insert(chisq->fi_set.begin(), chisq->fi_set.end());
+              for (iter = ids.begin(); iter != ids.end(); iter++) {
+                  oss << " " << *iter;
               }
           }
           if (!DO_YAML) oss << " ]";

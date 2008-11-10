@@ -3,7 +3,7 @@
 #ifndef CONSTRAINTS_H
 #define CONSTRAINTS_H
 
-#include <list>
+#include <set>
 #include <gsl/gsl_cdf.h>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_statistics.h>
@@ -20,7 +20,7 @@ class ChisqConstraint : public Constraint {
     unsigned int fa, fi;
     float sig, chisq, p, u;
     bool active;
-    list<Tid> fa_list, fi_list;
+    set<Tid> fa_set, fi_set;
 
     ChisqConstraint (float sig) : na(0), ni(0), n(0), fa(0), fi(0), sig(sig), chisq(0.0), p(0.0), u(0.0), active(0) {}
 
@@ -31,8 +31,8 @@ class ChisqConstraint : public Constraint {
         chisq = 0.0; p = 0.0; u = 0.0;
 
         LegActivityOccurrence(legocc);
-        fa = fa_list.size(); // fa is y(I) in Morishita and Sese
-        fi = fi_list.size(); // fi is x(I)-y(I)  in Morishita and Sese
+        fa = fa_set.size(); // fa is y(I) in Morishita and Sese
+        fi = fi_set.size(); // fi is x(I)-y(I)  in Morishita and Sese
 
         // chisq_p for current feature
         p = ChiSq(fa+fi, fa);
@@ -55,25 +55,21 @@ class ChisqConstraint : public Constraint {
     template <typename OccurrenceType>
     void LegActivityOccurrence(vector<OccurrenceType>& legocc) {
 
-      fa_list.clear();
-      fi_list.clear();
+      fa_set.clear();
+      fi_set.clear();
 
       each (legocc) { 
 
         if (database->trees[legocc[i].tid]->activity == 1) {
-            fa_list.push_back(legocc[i].tid); 
+            fa_set.insert(legocc[i].tid); 
         }
 
         else if (database->trees[legocc[i].tid]->activity == 0) {
-            fi_list.push_back(legocc[i].tid); 
+            fi_set.insert(legocc[i].tid); 
         }
 
       }
 
-      fa_list.sort();
-      fa_list.unique();
-      fi_list.sort();
-      fi_list.unique();
     }
     
 
