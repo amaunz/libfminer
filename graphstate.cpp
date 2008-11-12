@@ -291,6 +291,7 @@ void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
             switch (iel) {
             case -1:
                 oss << ':';
+                break;
             case 1:
                 oss << '-';
                 break;
