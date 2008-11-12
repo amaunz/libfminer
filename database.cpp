@@ -79,16 +79,21 @@ bool Database::readTree (string smi, Tid tid, Tid orig_tid, int line_nr) {
 
         //cerr << " " << (*atom)->GetType() << " (idx " << (*atom)->GetIdx() << ")" << endl;
 
-        InputNodeLabel inputnodelabel;
+        InputNodeLabel inputnodelabel=0;
 
         // set atom type as label
-        InputNodeLabel symbol;
+        // code for 'c' is set to -1 (aromatic carbon).
+        ((*atom)->IsAromatic() && ((*atom)->GetAtomicNum()==6)) ? inputnodelabel = -1 : inputnodelabel = (*atom)->GetAtomicNum();
+/*
+        string symbol;
         ((*atom)->IsAromatic() && ((*atom)->GetAtomicNum()==6)) ? symbol = "c" : symbol = etab.GetSymbol((*atom)->GetAtomicNum());
-//        cerr << symbol;
-//        cerr << (int) symbol;
-        inputnodelabel = symbol;
+        cerr << "\'" << symbol << "\' ";
+        istringstream iss(symbol);
+        iss>>inputnodelabel;
+        cerr << inputnodelabel << " ";
 //        inputnodelabel = (*atom)->GetAtomicNum();
 //        cerr << inputnodelabel;
+*/
         nodessize++;
 
         // Insert into map, using subsequent numbering for internal labels:

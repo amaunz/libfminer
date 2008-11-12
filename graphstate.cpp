@@ -279,7 +279,8 @@ int GraphState::enumerateSpanning () {
 
 
 void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
-    oss << database->nodelabels[nodes[cur_n].label].inputlabel; // output nodelabel
+    InputNodeLabel inl = database->nodelabels[nodes[cur_n].label].inputlabel;
+    (inl!=-1) ? oss << etab.GetSymbol(inl) : oss << "c"; // output nodelabel
     int fanout = (int) nodes[cur_n].edges.size ();
     for ( int j = 0; j < fanout; j++ ) {
         GraphState::GSEdge &edge = nodes[cur_n].edges[j];
@@ -303,7 +304,7 @@ string GraphState::to_s ( unsigned int frequency ) {
 
       if (DO_YAML) oss << "- [ ";
 
-      // output smiles
+      // output smarts 
       if (DO_YAML) oss << "\"";
       int i;
       for ( i = nodes.size()-1; i >= 0; i-- ) {   // edges

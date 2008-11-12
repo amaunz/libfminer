@@ -8,6 +8,7 @@
 #include <map>
 #include <fstream>
 #include <sstream>
+#include <cstdio>
 
 #include <openbabel/mol.h>
 #include "openbabel/obconversion.h"
@@ -19,7 +20,7 @@ using namespace std;
 using namespace OpenBabel;
 
 typedef short InputEdgeLabel;
-typedef string InputNodeLabel;
+typedef short InputNodeLabel;
 typedef short InputNodeId;
 typedef unsigned int CombinedInputLabel;
 //typedef OBAtom* OBAtomPtr;

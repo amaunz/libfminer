@@ -33,7 +33,10 @@ Path::Path ( NodeLabel startnodelabel ) {
     nodelabels.push_back ( startnodelabel );
     frontsymmetry = backsymmetry = totalsymmetry = 0;
 
-    cerr << "Root: " << database->nodelabels[startnodelabel].inputlabel << endl; 
+    InputNodeLabel inl = database->nodelabels[startnodelabel].inputlabel;
+    cerr << "Root: ";
+    (inl != -1) ? cerr << etab.GetSymbol(database->nodelabels[startnodelabel].inputlabel) : cerr << "c";
+    cerr << endl; 
 
     DatabaseNodeLabel &databasenodelabel = database->nodelabels[startnodelabel];
 
