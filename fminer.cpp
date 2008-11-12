@@ -92,16 +92,18 @@ void Fminer::SetConsoleOut(bool val) {
 
 vector<string>* Fminer::MineRoot(unsigned int j) {
     if (!init_mining_done) {
-                        each (database->trees) {
-                            if (database->trees[i]->activity == -1) {
-                                cerr << "Error! ID " << database->trees[i]->orig_tid << " is missing activity information." << endl;
-                                exit(1);
-                            }
-                        }
-                        database->edgecount (); database->reorder (); initLegStatics (); graphstate.init (); 
-                        if (!do_pruning || !do_backbone) {SetDynamicUpperBound(false);} init_mining_done=true; 
-                        
-                    }
+        if (chisq->active) {
+            each (database->trees) {
+                if (database->trees[i]->activity == -1) {
+                    cerr << "Error! ID " << database->trees[i]->orig_tid << " is missing activity information." << endl;
+                    exit(1);
+                }
+            }
+        }
+        database->edgecount (); database->reorder (); initLegStatics (); graphstate.init (); 
+        if (!do_pruning || !do_backbone) {SetDynamicUpperBound(false);} init_mining_done=true; 
+        
+    }
 
     result->clear();
     if (j >= database->nodelabels.size()) { cerr << "Error! Root node does not exist." << endl;  exit(1); }
@@ -111,6 +113,10 @@ vector<string>* Fminer::MineRoot(unsigned int j) {
     }
 
     return result;
+}
+
+void Fminer::ReadGsp(FILE* gsp){
+    database->readGsp(gsp);
 }
 
 bool Fminer::AddCompound(string smiles, unsigned int comp_id) {
@@ -153,8 +159,20 @@ void Fminer::SetChisqSig(float _chisq_val) {
     chisq->sig = _chisq_val;
 }
 
+void Fminer::SetChisqActive(bool _val) {
+    chisq->active = _val;
+    if (_val == false) {
+        SetBackbone(false);
+        SetPruning(false);
+        SetDynamicUpperBound(false);
+    }
+}
+
 void Fminer::SetBackbone(bool _do_backbone) {
-    do_backbone = _do_backbone; if (!do_backbone) SetDynamicUpperBound(false);
+    cerr << "Setting Backbone to " << _do_backbone << endl;
+    do_backbone = _do_backbone; 
+    if (!do_backbone) SetDynamicUpperBound(false);
+    if (!chisq->active && do_backbone) { cerr << "Error: can't activate backbone mining when Chisq-Constraint is inactive (1)." << endl; exit(1); }
 }
 
 int Fminer::GetType(){return type;}
@@ -167,6 +185,7 @@ bool Fminer::GetPruning() {return do_pruning;}
 
 void Fminer::SetDynamicUpperBound(bool val) {
     adjust_ub=val; 
+    if (!chisq->active && val) { cerr << "Error: can't activate dynamic upper bound pruning when Chisq-Constraint is inactive (2)." << endl; exit(1); }
     if ((!do_pruning && adjust_ub) || (!do_backbone && adjust_ub)) {
         cerr << "Error! Can't switch on dynamic upper bound pruning: statistical metrical pruning or backbone mining is disabled!" << endl; 
         exit(1); 
@@ -175,6 +194,7 @@ void Fminer::SetDynamicUpperBound(bool val) {
 
 void Fminer::SetPruning(bool val) {
     do_pruning=val; 
+    if (!chisq->active && val) { cerr << "Error: can't activate statistical pruning when Chisq-Constraint is inactive (3)." << endl; exit(1); }
     if (!do_pruning && adjust_ub) {
         cerr << "Error! Can't switch off statistical metrical pruning: dynamic upper bound pruning is enabled." << endl; 
         exit(1); 

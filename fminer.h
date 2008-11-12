@@ -24,6 +24,7 @@ class Fminer {
 
     ~Fminer();
     
+    void ReadGsp(FILE* gsp); //!< Read in a gSpan file
     bool AddCompound(string smiles, unsigned int comp_id); //!< Add a compound to the database.
     bool AddActivity(bool act, unsigned int comp_id); //!< Add an activity to the database.
     int GetNoRootNodes() {return database->nodelabels.size();} //!< Get no of root node (element type).
@@ -38,7 +39,8 @@ class Fminer {
     void SetType(int _type); //!< Set type 1 (paths) or 2 (trees) here.
     void SetMinfreq(int _minfreq); //!< Set minimum frequency (>=1 here).
     void SetChisqSig(float _chisq_val); //!< Set significance threshold here (between 0 and 1).
-    void SetBackbone(bool _do_backbone); //! Specify here whether to mine BBRC representatives.
+    void SetChisqActive(bool _val); //!< Specifiy whether Chisq constraint should be used.
+    void SetBackbone(bool _do_backbone); //!< Specify here whether to mine BBRC representatives.
     
     bool GetDynamicUpperBound(); //!< Get whether dynamic upper bound pruning is used.
     bool GetPruning(); //!< Get whether statistical metrical pruning is used.

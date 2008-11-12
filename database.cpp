@@ -152,21 +152,8 @@ bool Database::readTreeSmi (string smi, Tid tid, Tid orig_tid, int line_nr) {
             int bondorder = (*bond)->GetBondOrder();
 
             // set input edge label
-            switch (bondorder) {
-            case 1:
-                inputedgelabel = (InputEdgeLabel) '-';
-                break;
-            case 2:
-                inputedgelabel = (InputEdgeLabel) '=';
-                break;               
-            case 3:
-                inputedgelabel = (InputEdgeLabel) '#';
-                break;
-            default:
-                cerr << "ERROR! Bond order of " << bondorder << " is not supported!" << endl;
-                return(0);
-            }
-            if ((*bond)->IsAromatic()) inputedgelabel = (InputEdgeLabel) ':';
+            inputedgelabel = bondorder;
+            if ((*bond)->IsAromatic()) inputedgelabel = -1;
 //            inputedgelabel = (*bond)->GetBondOrder();
 
 //            cerr << nodeid1 << inputedgelabel << "(" << (*bond)->IsAromatic() << ")" << nodeid2 << " ";

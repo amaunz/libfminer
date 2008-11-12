@@ -282,11 +282,29 @@ void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
     InputNodeLabel inl = database->nodelabels[nodes[cur_n].label].inputlabel;
     (inl!=-1) ? oss << etab.GetSymbol(inl) : oss << "c"; // output nodelabel
     int fanout = (int) nodes[cur_n].edges.size ();
+    InputEdgeLabel iel;
     for ( int j = 0; j < fanout; j++ ) {
         GraphState::GSEdge &edge = nodes[cur_n].edges[j];
         if ( edge.tonode != from_n) {
             if (fanout>2) oss << "(";
-            oss <<  (char) (database->edgelabels[database->edgelabelsindexes[edge.edgelabel]].inputedgelabel);
+            iel = database->edgelabels[database->edgelabelsindexes[edge.edgelabel]].inputedgelabel;
+            switch (iel) {
+            case -1:
+                oss << ':';
+            case 1:
+                oss << '-';
+                break;
+            case 2:
+                oss << '=';
+                break;               
+            case 3:
+                oss << '#';
+                break;
+            default:
+                cerr << "ERROR! Bond order of " << iel << " is not supported!" << endl;
+                exit(1);
+            }
+//            oss <<  (char) (database->edgelabels[database->edgelabelsindexes[edge.edgelabel]].inputedgelabel);
             DfsOut(edge.tonode, oss, cur_n);
             if (fanout>2) oss << ")";
         }

@@ -405,7 +405,6 @@ bool Path::is_normal ( EdgeLabel edgelabel ) {
 
 void Path::expand2 (pair<float,string> max) {
 
-
   vector<unsigned int> forwpathlegs; forwpathlegs.clear();
   vector<unsigned int> backwpathlegs; backwpathlegs.clear();
   vector<unsigned int> pathlegs; pathlegs.clear();
