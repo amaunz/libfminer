@@ -32,7 +32,7 @@ ostream &operator<< ( ostream &stream, DatabaseTree &databasetree ) {
 
 
 
-bool Database::readTree (string smi, Tid tid, Tid orig_tid, int line_nr) {
+bool Database::readTreeSmi (string smi, Tid tid, Tid orig_tid, int line_nr) {
 
     OBMol mol;
 
@@ -84,16 +84,6 @@ bool Database::readTree (string smi, Tid tid, Tid orig_tid, int line_nr) {
         // set atom type as label
         // code for 'c' is set to -1 (aromatic carbon).
         ((*atom)->IsAromatic() && ((*atom)->GetAtomicNum()==6)) ? inputnodelabel = -1 : inputnodelabel = (*atom)->GetAtomicNum();
-/*
-        string symbol;
-        ((*atom)->IsAromatic() && ((*atom)->GetAtomicNum()==6)) ? symbol = "c" : symbol = etab.GetSymbol((*atom)->GetAtomicNum());
-        cerr << "\'" << symbol << "\' ";
-        istringstream iss(symbol);
-        iss>>inputnodelabel;
-        cerr << inputnodelabel << " ";
-//        inputnodelabel = (*atom)->GetAtomicNum();
-//        cerr << inputnodelabel;
-*/
         nodessize++;
 
         // Insert into map, using subsequent numbering for internal labels:
@@ -280,6 +270,176 @@ bool Database::readTree (string smi, Tid tid, Tid orig_tid, int line_nr) {
     return(1);
 }
 
+void Database::readGsp (FILE* input) {
+//  Tid tid;
+  Tid tid2 = 0; 
+
+  char array[100];
+  fgets ( array, 100, input );
+
+  while ( !feof ( input ) ) {
+    readTreeGsp ( input, tid2 );
+    fgets ( array, 100, input );
+    tid2++;
+  }
+
+}
+
+int readint ( FILE *input ) {
+  char car = fgetc ( input );
+  while ( car < '0' || car > '9' ) {
+    if ( feof ( input ) )
+      return -1;
+    car = fgetc ( input );
+  }
+  int n = car - '0';
+  car = fgetc ( input );
+  while ( car >= '0' && car <= '9' ) {
+    n = n * 10 + car - '0';
+    car = fgetc ( input );
+  }
+
+  return n;
+}
+
+
+char readcommand ( FILE *input ) {
+  char car = fgetc ( input );
+  while ( car < 'a' || car > 'z' ) {
+    if ( feof ( input ) )
+      return -1;
+    car = fgetc ( input );
+  }
+  return car;
+}
+
+void Database::readTreeGsp ( FILE *input, Tid tid ) {
+  InputNodeLabel inputnodelabel;
+
+  DatabaseTreePtr tree = new DatabaseTree ( tid , tid , tid );
+  trees.push_back ( tree );
+
+  char command;
+  int dummy;
+  int nodessize = 0, edgessize = 0;
+  command = readcommand ( input );
+  
+  static vector<DatabaseTreeNode> nodes;
+  static vector<vector<DatabaseTreeEdge> > edges;
+  nodes.resize ( 0 );
+
+  while ( command == 'v' ) {
+    dummy = readint ( input );
+    inputnodelabel = readint ( input );
+    if ( dummy != nodessize ) {
+      cerr << "Error reading input file - node number does not correspond to its position." << endl;
+      exit ( 1 );
+    }
+    nodessize++;
+
+    map_insert_pair ( nodelabelmap ) p = nodelabelmap.insert ( make_pair ( inputnodelabel, nodelabels.size () ) );
+    if ( p.second ) {
+      vector_push_back ( DatabaseNodeLabel, nodelabels, nodelabel );
+      nodelabel.inputlabel = inputnodelabel;
+      nodelabel.occurrences.parent = NULL;
+      nodelabel.occurrences.number = 1;
+      nodelabel.lasttid = tid;
+    }
+    else {
+      DatabaseNodeLabel &nodelabel = nodelabels[p.first->second];
+      if ( nodelabel.lasttid != tid )
+        nodelabel.frequency++;
+      nodelabel.lasttid = tid;
+    }
+    
+    vector_push_back ( DatabaseTreeNode, nodes, node );
+    node.nodelabel = p.first->second;
+    node.incycle = false;
+
+    command = readcommand ( input );
+  }
+
+  tree->nodes.reserve ( nodessize );
+  if ( (int) edges.size () < nodessize )
+    edges.resize ( nodessize );
+  for ( int i = 0; i < nodessize; i++ ) {
+    edges[i].resize ( 0 );
+    tree->nodes.push_back ( nodes[i] );
+  }
+  
+  InputEdgeLabel inputedgelabel;
+  InputNodeId nodeid1, nodeid2;
+
+  while ( !feof ( input ) && command == 'e' ) {
+    nodeid1 = readint ( input );
+    nodeid2 = readint ( input );
+    inputedgelabel = readint ( input );
+    NodeLabel node2label = tree->nodes[nodeid2].nodelabel;
+    NodeLabel node1label = tree->nodes[nodeid1].nodelabel;
+    CombinedInputLabel combinedinputlabel;
+    if ( node1label > node2label ) {
+      NodeLabel temp = node1label;
+      node1label = node2label;
+      node2label = temp;
+    }
+    combinedinputlabel = combineInputLabels ( inputedgelabel, node1label, node2label );
+
+    map_insert_pair ( edgelabelmap ) p = edgelabelmap.insert ( make_pair ( combinedinputlabel, edgelabels.size () ) );
+    if ( p.second ) {
+      vector_push_back ( DatabaseEdgeLabel, edgelabels, edgelabel );
+      edgelabel.fromnodelabel = node1label;
+      edgelabel.tonodelabel = node2label;
+      edgelabel.inputedgelabel = inputedgelabel;
+      edgelabel.lasttid = tid;
+    }
+    else {
+      DatabaseEdgeLabel &edgelabel = edgelabels[p.first->second];
+      if ( edgelabel.lasttid != tid )
+        edgelabel.frequency++;
+      edgelabel.lasttid = tid;
+    }
+
+    vector_push_back ( DatabaseTreeEdge, edges[nodeid1], edge );
+    edge.edgelabel = p.first->second;
+    edge.tonode = nodeid2;
+
+    vector_push_back ( DatabaseTreeEdge, edges[nodeid2], edge2 );
+    edge2.edgelabel = p.first->second;
+    edge2.tonode = nodeid1;
+
+    edgessize++;
+
+    command = readcommand ( input );
+  }
+
+  tree->edges = new DatabaseTreeEdge[edgessize * 2];
+  int pos = 0;
+  for ( int i = 0; i < nodessize; i++ ) {
+    int s = edges[i].size ();
+    tree->nodes[i].edges._size = s;
+    tree->nodes[i].edges.array = tree->edges + pos;
+    for ( int j = 0; j < s; j++, pos++ ) {
+      tree->edges[pos] = edges[i][j];
+    }
+  }
+  
+  static vector<int> nodestack;
+  static vector<bool> visited1, visited2;
+  nodestack.resize ( 0 );
+  visited1.resize ( 0 );
+  visited1.resize ( nodessize, false );
+  visited2.resize ( 0 );
+  visited2.resize ( nodessize, false );
+  for ( int i = 0; i < nodessize; i++ ) {
+    if ( !visited1[i] ) {
+      nodestack.push_back ( i );
+      visited1[i] = visited2[i] = true;
+      determineCycledNodes ( tree, nodestack, visited1, visited2 );
+      visited2[i] = false;
+      nodestack.pop_back ();
+    }
+  }
+}
 
 
 

@@ -117,7 +117,7 @@ bool Fminer::AddCompound(string smiles, unsigned int comp_id) {
     bool insert_done=false;
     if (comp_id<=0) { cerr << "Error! IDs must be of type: Int > 0." << endl;}
     else {
-        if (database->readTree (smiles, comp_no, comp_id, comp_runner)) {
+        if (database->readTreeSmi (smiles, comp_no, comp_id, comp_runner)) {
             insert_done=true;
             comp_no++;
         }

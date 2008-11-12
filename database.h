@@ -135,7 +135,9 @@ class Database {
 
     void printTrees ();
     ~Database ();
-    bool readTree (string smi, Tid tid , Tid orig_tid, int line_nr);
+    bool readTreeSmi (string smi, Tid tid , Tid orig_tid, int line_nr);
+    void readGsp (FILE* input);
+    void readTreeGsp (FILE *input, Tid tid);
   
   	// Perform DFS through tree to identify cycles
     void determineCycledNodes ( DatabaseTreePtr tree, vector<int> &nodestack, vector<bool> &visited1, vector<bool> &visited2 );
