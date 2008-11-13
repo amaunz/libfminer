@@ -16,8 +16,6 @@ Fminer::Fminer() : init_mining_done(false) {
 
 Fminer::Fminer(int _type, unsigned int _minfreq) : init_mining_done(false) {
   if (!instance_present) {
-      if ((_type != 1) && (_type != 2)) { cerr << "Error! Invalid value '" << _type << "' for parameter type." << endl; exit(1); }
-      if (_minfreq < 1) { cerr << "Error! Invalid value '" << _minfreq << "' for parameter minfreq." << endl; exit(1); }
       database = NULL; statistics = NULL; chisq = NULL; result = NULL; outl = NULL; 
       Reset();
       Defaults();
@@ -34,9 +32,6 @@ Fminer::Fminer(int _type, unsigned int _minfreq) : init_mining_done(false) {
 
 Fminer::Fminer(int _type, unsigned int _minfreq, float _chisq_val, bool _do_backbone) : init_mining_done(false) {
   if (!instance_present) {
-      if (_chisq_val < 0.0 || _chisq_val > 1.0) { cerr << "Error! Invalid value '" << _chisq_val << "' for parameter chisq->" << endl; exit(1); }
-      if ((_type != 1) && (_type != 2)) { cerr << "Error! Invalid value '" << _type << "' for parameter type." << endl; exit(1); }
-      if (_minfreq < 1) { cerr << "Error! Invalid value '" << _minfreq << "' for parameter minfreq." << endl; exit(1); }
       database = NULL; statistics = NULL; chisq = NULL; result = NULL; outl = NULL; 
       Reset();
       Defaults();
@@ -103,8 +98,8 @@ vector<string>* Fminer::MineRoot(unsigned int j) {
             }
         }
         database->edgecount (); database->reorder (); initLegStatics (); graphstate.init (); 
-        if (!do_pruning || !do_backbone) {SetDynamicUpperBound(false);} init_mining_done=true; 
-        
+        if (!do_pruning || !do_backbone) SetDynamicUpperBound(false); 
+        init_mining_done=true; 
     }
 
     result->clear();
@@ -170,13 +165,40 @@ void Fminer::SetChisqActive(bool _val) {
     }
 }
 
-void Fminer::SetBackbone(bool _do_backbone) {
-    cerr << "Setting Backbone to " << _do_backbone << endl;
-    do_backbone = _do_backbone; 
-    if (!do_backbone) SetDynamicUpperBound(false);
-    if (!chisq->active && do_backbone) { cerr << "Error: can't activate backbone mining when Chisq-Constraint is inactive (1)." << endl; exit(1); }
+void Fminer::SetPruning(bool val) {
+    do_pruning=val;
+    if (!do_pruning) {
+        if (GetBackbone()) cerr << "Notice: Switching off mining for backbone refinement class representatives." << endl;
+        SetBackbone(false);
+    }
 }
 
+void Fminer::SetBackbone(bool val) {
+    do_backbone = val; 
+    SetPruning(true);
+    if (!do_backbone) { 
+        if (GetDynamicUpperBound()) cerr << "Notice: Switching off dynamic upper bound pruning." << endl;
+        SetDynamicUpperBound(false); 
+    }
+}
+
+void Fminer::SetDynamicUpperBound(bool val) {
+    adjust_ub=val; 
+    SetBackbone(true);
+    SetPruning(true);
+}
+
+
+
+void Fminer::SetAromatic(bool val) {
+    aromatic = val;
+}
+
+void Fminer::SetRefineSingles(bool val) {
+    refine_singles = val;
+}
+
+bool Fminer::GetConsoleOut(){return console_out;}
 int Fminer::GetType(){return type;}
 int Fminer::GetMinfreq(){return minfreq;}
 bool Fminer::GetChisqSig(){return chisq->sig;}
@@ -187,29 +209,4 @@ bool Fminer::GetPruning() {return do_pruning;}
 bool Fminer::GetAromatic() {return aromatic;}
 bool Fminer::GetRefineSingles() {return refine_singles;}
 
-void Fminer::SetDynamicUpperBound(bool val) {
-    adjust_ub=val; 
-    if (!chisq->active && val) { cerr << "Error: can't activate dynamic upper bound pruning when Chisq-Constraint is inactive (2)." << endl; exit(1); }
-    if ((!do_pruning && adjust_ub) || (!do_backbone && adjust_ub)) {
-        cerr << "Error! Can't switch on dynamic upper bound pruning: statistical metrical pruning or backbone mining is disabled!" << endl; 
-        exit(1); 
-    }
-}
-
-void Fminer::SetPruning(bool val) {
-    do_pruning=val; 
-    if (!chisq->active && val) { cerr << "Error: can't activate statistical pruning when Chisq-Constraint is inactive (3)." << endl; exit(1); }
-    if (!do_pruning && adjust_ub) {
-        cerr << "Error! Can't switch off statistical metrical pruning: dynamic upper bound pruning is enabled." << endl; 
-        exit(1); 
-    }
-}
-
-void Fminer::SetAromatic(bool val) {
-    aromatic = val;
-}
-
-void Fminer::SetRefineSingles(bool val) {
-    refine_singles = val;
-}
 

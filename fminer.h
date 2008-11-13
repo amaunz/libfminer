@@ -32,22 +32,23 @@ class Fminer {
     int GetNoCompounds() {return database->trees.size();}
     vector<string>* MineRoot(unsigned int j); //!< Mine fragments rooted at the j-th root node (element type).
 
+    bool GetConsoleOut(); //!< Get output to console
     int GetType(); //!< Get type.
     int GetMinfreq(); //!< Get minimum frequency.
     bool GetChisqSig(); //!< Get significance threshold here.
-    bool GetBackbone(); //! Get whether BBRC representatives should be mined.
 
     void SetType(int _type); //!< Set type 1 (paths) or 2 (trees) here.
     void SetMinfreq(int _minfreq); //!< Set minimum frequency (>=1 here).
     void SetChisqSig(float _chisq_val); //!< Set significance threshold here (between 0 and 1).
     void SetChisqActive(bool _val); //!< Specifiy whether Chisq constraint should be used.
-    void SetBackbone(bool _do_backbone); //!< Specify here whether to mine BBRC representatives.
     
+    bool GetBackbone(); //! Get whether BBRC representatives should be mined.
     bool GetDynamicUpperBound(); //!< Get whether dynamic upper bound pruning is used.
     bool GetPruning(); //!< Get whether statistical metrical pruning is used.
     bool GetAromatic(); //!< Get whether aromatic rings should be perceived instead of Kekule notation
     bool GetRefineSingles(); //!< Get whether fragments with frequency 1 should be refined
 
+    void SetBackbone(bool val); //!< Pass 'false' here to switch off mining for BBRC representatives.
     void SetDynamicUpperBound(bool val); //!< Pass 'false' here to disable dynamic upper bound pruning (e.g. for performance measures).
     void SetPruning(bool val); //!< Pass 'false' here to disable statistical metrical pruning completely.
     void SetAromatic(bool val); //!< Pass 'false' here to disable aromatic rings and use Kekule notation
