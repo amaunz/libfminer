@@ -47,11 +47,16 @@ bool Database::readTreeSmi (string smi, Tid tid, Tid orig_tid, int line_nr) {
         return(0);
     }   
 
+/*
+    if (!mol.PerceiveKekuleBonds()) {
+        cerr << "Unable to kekulize molecule" << endl;
+        return(0);
+    }
+*/
     if (!mol.DeleteHydrogens()) {
         cerr << "Unable to delete hydrogens" << endl;
         return(0);
     }
-
 
     // create and store new tree object
     DatabaseTreePtr tree = new DatabaseTree ( tid , orig_tid , line_nr );
@@ -153,7 +158,7 @@ bool Database::readTreeSmi (string smi, Tid tid, Tid orig_tid, int line_nr) {
 
             // set input edge label
             inputedgelabel = bondorder;
-            if ((*bond)->IsAromatic()) inputedgelabel = -1;
+            if ((*bond)->IsAromatic()) inputedgelabel = 4;
 //            inputedgelabel = (*bond)->GetBondOrder();
 
 //            cerr << nodeid1 << inputedgelabel << "(" << (*bond)->IsAromatic() << ")" << nodeid2 << " ";

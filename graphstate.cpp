@@ -289,9 +289,6 @@ void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
             if (fanout>2) oss << "(";
             iel = database->edgelabels[database->edgelabelsindexes[edge.edgelabel]].inputedgelabel;
             switch (iel) {
-            case -1:
-                oss << ':';
-                break;
             case 1:
                 oss << '-';
                 break;
@@ -300,6 +297,9 @@ void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
                 break;               
             case 3:
                 oss << '#';
+                break;
+            case 4:
+                oss << ':';
                 break;
             default:
                 cerr << "ERROR! Bond order of " << iel << " is not supported!" << endl;
