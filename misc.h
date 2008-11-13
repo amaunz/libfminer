@@ -54,7 +54,7 @@ class Statistics {
     void print () {
         int total = 0, total2 = 0, total3 = 0;
         for (unsigned int i = 0; i < frequenttreenumbers.size (); i++ ) {
-          cout << "Frequent " << i + 2
+          cerr << "Frequent " << i + 2
                << " cyclic graphs: " << frequentgraphnumbers[i]
                << " real trees: " << frequenttreenumbers[i]
                << " paths: " << frequentpathnumbers[i]
@@ -63,7 +63,7 @@ class Statistics {
           total2 += frequenttreenumbers[i];
           total3 += frequentpathnumbers[i];
         }
-        cout << "TOTAL:" << endl
+        cerr << "TOTAL:" << endl
            << "Frequent cyclic graphs: " << total << " real trees: " << total2 << " paths: " << total3 << " total: " << total + total2 + total3 << endl;
     }  
 };

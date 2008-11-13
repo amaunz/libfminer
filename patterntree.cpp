@@ -12,6 +12,7 @@ extern bool do_backbone;
 extern bool adjust_ub;
 extern bool do_pruning;
 extern bool console_out;
+extern bool refine_singles;
 
 extern Database* database;
 extern ChisqConstraint* chisq;
@@ -849,7 +850,7 @@ void PatternTree::expand (pair<float, string> max) {
                )
              ) &&
          (
-            legs[i]->occurrences.frequency>1
+            refine_singles || (legs[i]->occurrences.frequency>1)
          )
     
     ) {   // UB-PRUNING

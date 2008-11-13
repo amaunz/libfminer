@@ -9,6 +9,7 @@
 
 extern bool adjust_ub;
 extern bool do_pruning;
+extern bool aromatic;
 extern ChisqConstraint* chisq;
 
 class Fminer {
@@ -44,9 +45,13 @@ class Fminer {
     
     bool GetDynamicUpperBound(); //!< Get whether dynamic upper bound pruning is used.
     bool GetPruning(); //!< Get whether statistical metrical pruning is used.
+    bool GetAromatic(); //!< Get whether aromatic rings should be perceived instead of Kekule notation
+    bool GetRefineSingles(); //!< Get whether fragments with frequency 1 should be refined
 
     void SetDynamicUpperBound(bool val); //!< Pass 'false' here to disable dynamic upper bound pruning (e.g. for performance measures).
     void SetPruning(bool val); //!< Pass 'false' here to disable statistical metrical pruning completely.
+    void SetAromatic(bool val); //!< Pass 'false' here to disable aromatic rings and use Kekule notation
+    void SetRefineSingles(bool val); //!< Pass 'true' here to enable refinement of fragments with frequency 1.
 
     void Reset(); //!< Use this to clear the database before feeding new compounds and activities.
     void Defaults(); //!< Use this to set default parameters as in default constructor.

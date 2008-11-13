@@ -18,6 +18,7 @@ extern bool do_pruning;
 extern bool do_backbone;
 extern int type;
 extern bool console_out;
+extern bool refine_singles;
 
 extern Database* database;
 extern ChisqConstraint* chisq;
@@ -405,6 +406,19 @@ bool Path::is_normal ( EdgeLabel edgelabel ) {
 
 void Path::expand2 (pair<float,string> max) {
 
+  statistics->patternsize++;
+  if ( (unsigned) statistics->patternsize > statistics->frequenttreenumbers.size () ) {
+    statistics->frequenttreenumbers.push_back ( 0 );
+    statistics->frequentpathnumbers.push_back ( 0 );
+    statistics->frequentgraphnumbers.push_back ( 0 );
+  }
+  ++statistics->frequentpathnumbers[statistics->patternsize-1];
+  
+  if ( statistics->patternsize == ((1<<(sizeof(NodeId)*8))-1) ) {
+    statistics->patternsize--;
+    return;
+  }
+
   vector<unsigned int> forwpathlegs; forwpathlegs.clear();
   vector<unsigned int> backwpathlegs; backwpathlegs.clear();
   vector<unsigned int> pathlegs; pathlegs.clear();
@@ -460,19 +474,6 @@ void Path::expand2 (pair<float,string> max) {
   }
 
 
-  statistics->patternsize++;
-  if ( (unsigned) statistics->patternsize > statistics->frequenttreenumbers.size () ) {
-    statistics->frequenttreenumbers.push_back ( 0 );
-    statistics->frequentpathnumbers.push_back ( 0 );
-    statistics->frequentgraphnumbers.push_back ( 0 );
-  }
-  ++statistics->frequentpathnumbers[statistics->patternsize-1];
-  
-  if ( statistics->patternsize == ((1<<(sizeof(NodeId)*8))-1) ) {
-    statistics->patternsize--;
-    return;
-  }
-
   
   
   // Grow Path forw
@@ -503,9 +504,10 @@ void Path::expand2 (pair<float,string> max) {
                (  !adjust_ub && (chisq->u >= chisq->sig) ) || 
                (   adjust_ub && (chisq->u >= cmax) )
              )
-         ) &&
+         ) 
+            &&
          (
-            legs[index]->occurrences.frequency>1
+            refine_singles || (legs[index]->occurrences.frequency>1)
          )
       ){   // UB-PRUNING
 
@@ -556,9 +558,10 @@ void Path::expand2 (pair<float,string> max) {
                (  !adjust_ub && (chisq->u >= chisq->sig) ) || 
                (   adjust_ub && (chisq->u >= cmax) )
              )
-         ) &&
+         ) 
+            &&
          (
-            legs[index]->occurrences.frequency>1
+            refine_singles || (legs[index]->occurrences.frequency>1)
          )
      ){   // UB-PRUNING
 
@@ -624,7 +627,7 @@ void Path::expand2 (pair<float,string> max) {
                )
              ) &&
              (
-                legs[i]->occurrences.frequency>1
+                refine_singles || (legs[i]->occurrences.frequency>1)
              )
     
           ){   // UB-PRUNING

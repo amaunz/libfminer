@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <iostream>
 
+extern bool aromatic;
 
 ostream &operator<< ( ostream &stream, DatabaseTreeEdge &databasetreeedge ) {
   stream << "DatabaseTreeEdge; edgelabel: " << databasetreeedge.edgelabel << "; tonode: " << databasetreeedge.tonode << endl;
@@ -47,12 +48,6 @@ bool Database::readTreeSmi (string smi, Tid tid, Tid orig_tid, int line_nr) {
         return(0);
     }   
 
-/*
-    if (!mol.PerceiveKekuleBonds()) {
-        cerr << "Unable to kekulize molecule" << endl;
-        return(0);
-    }
-*/
     if (!mol.DeleteHydrogens()) {
         cerr << "Unable to delete hydrogens" << endl;
         return(0);
@@ -88,7 +83,10 @@ bool Database::readTreeSmi (string smi, Tid tid, Tid orig_tid, int line_nr) {
 
         // set atom type as label
         // code for 'c' is set to -1 (aromatic carbon).
-        ((*atom)->IsAromatic() && ((*atom)->GetAtomicNum()==6)) ? inputnodelabel = -1 : inputnodelabel = (*atom)->GetAtomicNum();
+        if (aromatic) {
+            ((*atom)->IsAromatic() && ((*atom)->GetAtomicNum()==6)) ? inputnodelabel = -1 : inputnodelabel = (*atom)->GetAtomicNum();
+        }
+        else inputnodelabel = (*atom)->GetAtomicNum();
         nodessize++;
 
         // Insert into map, using subsequent numbering for internal labels:
@@ -158,8 +156,7 @@ bool Database::readTreeSmi (string smi, Tid tid, Tid orig_tid, int line_nr) {
 
             // set input edge label
             inputedgelabel = bondorder;
-            if ((*bond)->IsAromatic()) inputedgelabel = 4;
-//            inputedgelabel = (*bond)->GetBondOrder();
+            if (aromatic && (*bond)->IsAromatic()) inputedgelabel = 4;
 
 //            cerr << nodeid1 << inputedgelabel << "(" << (*bond)->IsAromatic() << ")" << nodeid2 << " ";
             NodeLabel node1label = tree->nodes[nodeid1].nodelabel;

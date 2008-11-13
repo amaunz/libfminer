@@ -84,6 +84,8 @@ void Fminer::Defaults() {
     do_pruning = true;
     updated = true;
     console_out = false;
+    aromatic = true;
+    refine_singles = false;
 }
 
 void Fminer::SetConsoleOut(bool val) {
@@ -182,6 +184,8 @@ bool Fminer::GetBackbone(){return do_backbone;}
 
 bool Fminer::GetDynamicUpperBound(){return adjust_ub;}
 bool Fminer::GetPruning() {return do_pruning;}
+bool Fminer::GetAromatic() {return aromatic;}
+bool Fminer::GetRefineSingles() {return refine_singles;}
 
 void Fminer::SetDynamicUpperBound(bool val) {
     adjust_ub=val; 
@@ -199,5 +203,13 @@ void Fminer::SetPruning(bool val) {
         cerr << "Error! Can't switch off statistical metrical pruning: dynamic upper bound pruning is enabled." << endl; 
         exit(1); 
     }
+}
+
+void Fminer::SetAromatic(bool val) {
+    aromatic = val;
+}
+
+void Fminer::SetRefineSingles(bool val) {
+    refine_singles = val;
 }
 
