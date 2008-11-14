@@ -98,7 +98,6 @@ vector<string>* Fminer::MineRoot(unsigned int j) {
             }
         }
         database->edgecount (); database->reorder (); initLegStatics (); graphstate.init (); 
-        if (!do_pruning || !do_backbone) SetDynamicUpperBound(false); 
         init_mining_done=true; 
     }
 
@@ -131,6 +130,7 @@ bool Fminer::AddCompound(string smiles, unsigned int comp_id) {
 }
 
 bool Fminer::AddActivity(bool act, unsigned int comp_id) {
+
     if (database->trees_map[comp_id] == NULL) { 
         cerr << "No structure for ID " << comp_id << ". Ignoring entry!" << endl; return false; 
     }
@@ -159,33 +159,36 @@ void Fminer::SetChisqSig(float _chisq_val) {
 void Fminer::SetChisqActive(bool _val) {
     chisq->active = _val;
     if (_val == false) {
+        SetDynamicUpperBound(false); //order important
         SetBackbone(false);
         SetPruning(false);
-        SetDynamicUpperBound(false);
     }
 }
 
 void Fminer::SetPruning(bool val) {
     do_pruning=val;
     if (!do_pruning) {
-        if (GetBackbone()) cerr << "Notice: Switching off mining for backbone refinement class representatives." << endl;
-        SetBackbone(false);
+        if (GetDynamicUpperBound()) cerr << "Notice: Disabling dynamic upper bound pruning." << endl;
+        SetDynamicUpperBound(false); 
     }
 }
 
 void Fminer::SetBackbone(bool val) {
-    do_backbone = val; 
-    SetPruning(true);
-    if (!do_backbone) { 
-        if (GetDynamicUpperBound()) cerr << "Notice: Switching off dynamic upper bound pruning." << endl;
-        SetDynamicUpperBound(false); 
+    do_backbone = val;
+    if (!do_backbone) {
+        if (GetDynamicUpperBound()) cerr << "Notice: Disabling dynamic upper bound pruning." << endl;
+        SetDynamicUpperBound(false);
     }
 }
 
 void Fminer::SetDynamicUpperBound(bool val) {
     adjust_ub=val; 
-    SetBackbone(true);
-    SetPruning(true);
+    if (adjust_ub) {
+        if (!GetPruning()) cerr << "Notice: Enabling statistical metrical pruning." << endl;
+        SetPruning(true);
+        if (!GetBackbone()) cerr << "Notice: Enabling mining for backbone refinement class representatives." << endl;
+        SetBackbone(true);
+    }
 }
 
 

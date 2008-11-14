@@ -462,7 +462,7 @@ void Path::expand2 (pair<float,string> max) {
   }
  
 
-  // FREE STRUCTURES: we have reached a leaf
+  // we have reached a leaf
   if (do_backbone && (pathlegs.size()==0)) { 
     if (updated) { 
         if (DO_OUTPUT) {

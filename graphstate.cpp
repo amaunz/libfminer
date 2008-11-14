@@ -6,7 +6,6 @@
 #include "misc.h"
 #include <queue>
 #include <sstream>
-//#include "fminer.h"
 
 GraphState graphstate;
 extern ChisqConstraint* chisq;
@@ -278,6 +277,41 @@ int GraphState::enumerateSpanning () {
 }
 
 
+void GraphState::print ( FILE *f ) {
+  static int counter = 0;
+  counter++;
+  putc ( 't', f );
+  putc ( ' ', f );
+  puti ( f, (int) counter );
+  putc ( '\n', f );
+  for ( int i = 0; i < (int) nodes.size (); i++ ) {
+    putc ( 'v', f );
+    putc ( ' ', f );
+    puti ( f, (int) i );
+    putc ( ' ', f );
+    puti ( f, (int) database->nodelabels[nodes[i].label].inputlabel );
+    putc ( '\n', f );
+  }
+  for ( int i = 0; i < (int) nodes.size (); i++ ) {
+    for ( int j = 0; j < (int) nodes[i].edges.size (); j++ ) {
+      GraphState::GSEdge &edge = nodes[i].edges[j];
+      if ( i < edge.tonode ) {
+        putc ( 'e', f );
+    putc ( ' ', f );
+    puti ( f, (int) i );
+    putc ( ' ', f );
+    puti ( f, (int) edge.tonode );
+    putc ( ' ', f );
+    puti ( f, (int) database->edgelabels[
+                 database->edgelabelsindexes[edge.edgelabel]
+           ].inputedgelabel );
+        putc ( '\n', f );
+      }
+    }
+  }
+}
+
+
 void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
     InputNodeLabel inl = database->nodelabels[nodes[cur_n].label].inputlabel;
     (inl!=-1) ? oss << etab.GetSymbol(inl) : oss << "c"; // output nodelabel
@@ -314,85 +348,94 @@ void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
 
 string GraphState::to_s ( unsigned int frequency ) {
 
-  bool DO_YAML = true;
-  if (getenv("FMINER_LAZAR")) DO_YAML = false;
+//    bool gsp_out = false;
+    bool DO_YAML = true;
+    if (getenv("FMINER_LAZAR")) DO_YAML = false;
 
-  if (!chisq->active || chisq->p >= chisq->sig) {
+    if (!chisq->active || chisq->p >= chisq->sig) {
 
-      ostringstream oss;
+/*
+        if (gsp_out) { 
+            print(stdout); return "";
+        }
+*/
 
-      if (DO_YAML) oss << "- [ ";
+//        else {
+          ostringstream oss;
 
-      // output smarts 
-      if (DO_YAML) oss << "\"";
-      int i;
-      for ( i = nodes.size()-1; i >= 0; i-- ) {   // edges
-          if (nodes[i].edges.size()==1) break;
-      }
-      DfsOut(i, oss, i);
-      if (DO_YAML) oss << "\", ";
+          if (DO_YAML) oss << "- [ ";
 
-      // output chisq
-      if (chisq->active) {
-        if (DO_YAML) oss << setprecision(4) << chisq->p << ", ";
-        else oss << "\t";
-      }
+          // output smarts 
+          if (DO_YAML) oss << "\"";
+          int i;
+          for ( i = nodes.size()-1; i >= 0; i-- ) {   // edges
+              if (nodes[i].edges.size()==1) break;
+          }
+          DfsOut(i, oss, i);
+          if (DO_YAML) oss << "\", ";
 
-      // output freq
-      if (chisq->active) {
-          if (frequency != (chisq->fa+chisq->fi)) { cerr << "Error: wrong counts!" << endl; exit(1); }
-      }
-      else { 
-          if (DO_YAML) oss << ", " << frequency;
-          else oss << "\t " << frequency;
-      }
-
-      // output occurrences
-      if (chisq->active) {
-          oss << '[';
-
-          set<Tid>::iterator iter;
-
-          if (DO_YAML) {
-              for (iter = chisq->fa_set.begin(); iter != chisq->fa_set.end(); iter++) {
-                  if (iter != chisq->fa_set.begin()) oss << ",";
-                  oss << " ";
-                  oss << *iter;
-              }
-              oss << "], [";
+          // output chisq
+          if (chisq->active) {
+            if (DO_YAML) oss << setprecision(4) << chisq->p << ", ";
+            else oss << "\t";
           }
 
-          if (DO_YAML) {
-              for (iter = chisq->fi_set.begin(); iter != chisq->fi_set.end(); iter++) {
-                  if (iter != chisq->fi_set.begin()) oss << ",";
-                  oss << " ";
-                  oss << *iter;
-              }
+          // output freq
+          if (chisq->active) {
+              if (frequency != (chisq->fa+chisq->fi)) { cerr << "Error: wrong counts!" << endl; exit(1); }
+          }
+          else { 
+              if (DO_YAML) oss << ", " << frequency;
+              else oss << "\t " << frequency;
           }
 
-          if (!DO_YAML) {
-              set<Tid> ids;
-              ids.insert(chisq->fa_set.begin(), chisq->fa_set.end());
-              ids.insert(chisq->fi_set.begin(), chisq->fi_set.end());
-              for (iter = ids.begin(); iter != ids.end(); iter++) {
-                  oss << " " << *iter;
+          // output occurrences
+          if (chisq->active) {
+              oss << '[';
+
+              set<Tid>::iterator iter;
+
+              if (DO_YAML) {
+                  for (iter = chisq->fa_set.begin(); iter != chisq->fa_set.end(); iter++) {
+                      if (iter != chisq->fa_set.begin()) oss << ",";
+                      oss << " ";
+                      oss << *iter;
+                  }
+                  oss << "], [";
               }
+
+              if (DO_YAML) {
+                  for (iter = chisq->fi_set.begin(); iter != chisq->fi_set.end(); iter++) {
+                      if (iter != chisq->fi_set.begin()) oss << ",";
+                      oss << " ";
+                      oss << *iter;
+                  }
+              }
+
+              if (!DO_YAML) {
+                  set<Tid> ids;
+                  ids.insert(chisq->fa_set.begin(), chisq->fa_set.end());
+                  ids.insert(chisq->fi_set.begin(), chisq->fi_set.end());
+                  for (iter = ids.begin(); iter != ids.end(); iter++) {
+                      oss << " " << *iter;
+                  }
+              }
+              if (!DO_YAML) oss << " ]";
+              else oss << " ]";
           }
-          if (!DO_YAML) oss << " ]";
-          else oss << " ]";
-      }
 
-      if (DO_YAML) oss << " ]";
+          if (DO_YAML) oss << " ]";
 
-      console_out ? oss << "\n" : oss << "";
+          console_out ? oss << "\n" : oss << "";
 
 
-      return oss.str();
+          return oss.str();
+       }
 
-  }
-  else return "";
-  
+//    }
+    else return "";
 }
+  
 
 
 void GraphState::undoState () {
@@ -1059,3 +1102,20 @@ end2:
 
   return 0;
 }
+
+void GraphState::puti ( FILE *f, int i ) { 
+  char array[100]; 
+  int k = 0; 
+  do { 
+    array[k] = ( i % 10 ) + '0'; 
+    i /= 10; 
+    k++; 
+  } 
+  while ( i != 0 ); 
+  do { 
+    k--; 
+    putc ( array[k], f ); 
+  } while ( k ); 
+}
+
+

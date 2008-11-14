@@ -23,8 +23,6 @@ typedef short InputEdgeLabel;
 typedef short InputNodeLabel;
 typedef short InputNodeId;
 typedef unsigned int CombinedInputLabel;
-//typedef OBAtom* OBAtomPtr;
-//typedef OBBond* OBBondPtr;
 
 #define combineInputLabels(label1,label2,label3) (label1 | ( ((unsigned int) label2 ) << 16 ) | ( ( (unsigned int) label3 ) << 24 ) )
 // maximum 255 node labels for now.
@@ -137,7 +135,7 @@ class Database {
     ~Database ();
     bool readTreeSmi (string smi, Tid tid , Tid orig_tid, int line_nr);
     void readGsp (FILE* input);
-    void readTreeGsp (FILE *input, Tid tid);
+    void readTreeGsp (FILE *input, Tid orig_tid, Tid tid);
   
   	// Perform DFS through tree to identify cycles
     void determineCycledNodes ( DatabaseTreePtr tree, vector<int> &nodestack, vector<bool> &visited1, vector<bool> &visited2 );

@@ -265,10 +265,12 @@ void Database::readGsp (FILE* input) {
 
   char array[100];
   fgets ( array, 100, input );
+  string tree_s = array; Tid orig_tid = (unsigned int) atoi((tree_s.substr(tree_s.find_first_of("123456789"))).c_str());
 
   while ( !feof ( input ) ) {
-    readTreeGsp ( input, tid2 );
+    readTreeGsp ( input, tid2, orig_tid );
     fgets ( array, 100, input );
+    tree_s = array; orig_tid = (unsigned int) atoi((tree_s.substr(tree_s.find_first_of("123456789"))).c_str());
     tid2++;
   }
 
@@ -295,18 +297,20 @@ int readint ( FILE *input ) {
 char readcommand ( FILE *input ) {
   char car = fgetc ( input );
   while ( car < 'a' || car > 'z' ) {
-    if ( feof ( input ) )
+    if ( feof ( input ) ) {
       return -1;
+    }
     car = fgetc ( input );
   }
   return car;
 }
 
-void Database::readTreeGsp ( FILE *input, Tid tid ) {
+void Database::readTreeGsp ( FILE *input, Tid tid , Tid orig_tid) {
   InputNodeLabel inputnodelabel;
 
-  DatabaseTreePtr tree = new DatabaseTree ( tid , tid , tid );
+  DatabaseTreePtr tree = new DatabaseTree ( tid , orig_tid , tid );
   trees.push_back ( tree );
+  trees_map[orig_tid] = tree;
 
   char command;
   int dummy;
@@ -399,6 +403,7 @@ void Database::readTreeGsp ( FILE *input, Tid tid ) {
     edgessize++;
 
     command = readcommand ( input );
+    if (command == 't') fseek (input, -1, SEEK_CUR);
   }
 
   tree->edges = new DatabaseTreeEdge[edgessize * 2];
