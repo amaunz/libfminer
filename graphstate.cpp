@@ -314,7 +314,7 @@ void GraphState::print ( FILE *f ) {
 
 void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
     InputNodeLabel inl = database->nodelabels[nodes[cur_n].label].inputlabel;
-    (inl!=-1) ? oss << etab.GetSymbol(inl) : oss << "c"; // output nodelabel
+    (inl!=600) ? oss << etab.GetSymbol(inl) : oss << "c"; // output nodelabel
     int fanout = (int) nodes[cur_n].edges.size ();
     InputEdgeLabel iel;
     for ( int j = 0; j < fanout; j++ ) {
@@ -348,19 +348,17 @@ void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
 
 string GraphState::to_s ( unsigned int frequency ) {
 
-//    bool gsp_out = false;
+    bool gsp_out = false;
     bool DO_YAML = true;
     if (getenv("FMINER_LAZAR")) DO_YAML = false;
 
     if (!chisq->active || chisq->p >= chisq->sig) {
 
-/*
         if (gsp_out) { 
             print(stdout); return "";
         }
-*/
 
-//        else {
+        else {
           ostringstream oss;
 
           if (DO_YAML) oss << "- [ ";
@@ -432,7 +430,7 @@ string GraphState::to_s ( unsigned int frequency ) {
           return oss.str();
        }
 
-//    }
+    }
     else return "";
 }
   

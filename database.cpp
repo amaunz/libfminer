@@ -84,7 +84,7 @@ bool Database::readTreeSmi (string smi, Tid tid, Tid orig_tid, int line_nr) {
         // set atom type as label
         // code for 'c' is set to -1 (aromatic carbon).
         if (aromatic) {
-            ((*atom)->IsAromatic() && ((*atom)->GetAtomicNum()==6)) ? inputnodelabel = -1 : inputnodelabel = (*atom)->GetAtomicNum();
+            ((*atom)->IsAromatic() && ((*atom)->GetAtomicNum()==6)) ? inputnodelabel = 600 : inputnodelabel = (*atom)->GetAtomicNum();
         }
         else inputnodelabel = (*atom)->GetAtomicNum();
         nodessize++;

@@ -6,7 +6,7 @@
 #include "path.h"
 #include "graphstate.h"
 #include <iomanip>
-#include <openbabel/data.h> 
+//#include <openbabel/data.h> 
 #include "misc.h"
 
 #define DO_OUTPUT true
@@ -36,7 +36,8 @@ Path::Path ( NodeLabel startnodelabel ) {
 
     InputNodeLabel inl = database->nodelabels[startnodelabel].inputlabel;
     cerr << "Root: ";
-    (inl != -1) ? cerr << etab.GetSymbol(database->nodelabels[startnodelabel].inputlabel) : cerr << "c";
+//    (inl != 600) ? cerr << etab.GetSymbol(inl) : cerr << "c";
+    cerr << inl; 
     cerr << endl; 
 
     DatabaseNodeLabel &databasenodelabel = database->nodelabels[startnodelabel];
