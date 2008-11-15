@@ -311,6 +311,39 @@ void GraphState::print ( FILE *f ) {
   }
 }
 
+void GraphState::print ( ostringstream& oss ) {
+  static int counter = 0;
+  counter++;
+  oss << 't';
+  oss << ' ';
+  oss << counter;
+  oss << '\n';
+  for ( int i = 0; i < (int) nodes.size (); i++ ) {
+    oss << 'v';
+    oss << ' ';
+    oss << (int) i;
+    oss << ' ';
+    oss << (int) database->nodelabels[nodes[i].label].inputlabel;
+    oss << '\n';
+  }
+  for ( int i = 0; i < (int) nodes.size (); i++ ) {
+    for ( int j = 0; j < (int) nodes[i].edges.size (); j++ ) {
+      GraphState::GSEdge &edge = nodes[i].edges[j];
+      if ( i < edge.tonode ) {
+    oss << 'e';
+    oss << ' ';
+    oss << (int) i;
+    oss << ' ';
+    oss << (int) edge.tonode;
+    oss << ' ';
+    oss << (int) database->edgelabels[
+                 database->edgelabelsindexes[edge.edgelabel]
+           ].inputedgelabel;
+        oss << '\n';
+      }
+    }
+  }
+}
 
 void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
     InputNodeLabel inl = database->nodelabels[nodes[cur_n].label].inputlabel;
@@ -348,19 +381,21 @@ void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
 
 string GraphState::to_s ( unsigned int frequency ) {
 
-    bool gsp_out = false;
+    bool gsp_out = true;
     bool DO_YAML = true;
     if (getenv("FMINER_LAZAR")) DO_YAML = false;
+    if (getenv("FMINER_SMARTS")) gsp_out = false; 
 
     if (!chisq->active || chisq->p >= chisq->sig) {
 
+        ostringstream oss;
+
         if (gsp_out) { 
+            //print(oss); return oss.str();
             print(stdout); return "";
         }
 
         else {
-          ostringstream oss;
-
           if (DO_YAML) oss << "- [ ";
 
           // output smarts 

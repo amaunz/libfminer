@@ -120,8 +120,11 @@
  * void SetPruning(bool val) {do_pruning=val;} //!< Pass 'false' here to disable statistical pruning completely.
  * \endcode
  *
+ * Output consists of blocks of gSpan graphs.
+ * When using SMARTS output (FMINER_SMARTS defined), each line is a YAML sequence, containing SMARTS fragment, p-value, and two sequences denoting positive and negative class occurrences (line numbers in Smiles file). When FMINER_LAZAR is set, the linfrag output format is used.
 
- * Define the FMINER_LAZAR environment variable to produce output in Linfrag format which can be used as input to Lazar.
+ * Define the FMINER_SMARTS environment variable to produce output in SMARTS format (e.g. <code>export FMINER_SMARTS=1</code>).
+ * Additionally define the FMINER_LAZAR environment variable to produce output in linfrag format which can be used as input to Lazar (e.g. <code>export FMINER_LAZAR=1</code>).
 
  * Andreas Maunz, 2008
  *
