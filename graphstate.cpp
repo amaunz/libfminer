@@ -311,70 +311,73 @@ void GraphState::print ( FILE *f ) {
   }
 }
 
-void GraphState::print ( ostringstream* oss ) {
+void GraphState::print ( string& oss ) {
   static int counter = 0;
   counter++;
-  (*oss) << 't';
-  (*oss) << ' ';
-  (*oss) << counter;
-  (*oss) << '\n';
+  oss.append( "t");
+  oss.append( " ");
+  char x[20]; 
+  sprintf(x, "%i", counter);
+  (oss.append( x)).append("\n");
   for ( int i = 0; i < (int) nodes.size (); i++ ) {
-    (*oss) << 'v';
-    (*oss) << ' ';
-    (*oss) << (int) i;
-    (*oss) << ' ';
-    (*oss) << (int) database->nodelabels[nodes[i].label].inputlabel;
-    (*oss) << '\n';
+    oss.append( "v");
+    oss.append( " ");
+    sprintf(x, "%i", i);
+    oss.append( x);
+    oss.append( " ");
+    sprintf(x, "%i", database->nodelabels[nodes[i].label].inputlabel);
+    oss.append( x);
+    oss.append( "\n");
   }
   for ( int i = 0; i < (int) nodes.size (); i++ ) {
     for ( int j = 0; j < (int) nodes[i].edges.size (); j++ ) {
       GraphState::GSEdge &edge = nodes[i].edges[j];
       if ( i < edge.tonode ) {
-    (*oss) << 'e';
-    (*oss) << ' ';
-    (*oss) << (int) i;
-    (*oss) << ' ';
-    (*oss) << (int) edge.tonode;
-    (*oss) << ' ';
-    (*oss) << (int) database->edgelabels[
-                 database->edgelabelsindexes[edge.edgelabel]
-           ].inputedgelabel;
-        (*oss) << '\n';
+    oss.append( "e");
+    oss.append( " ");
+    sprintf(x, "%i", i);
+    oss.append( x);
+    oss.append( " ");
+    sprintf(x, "%i", edge.tonode);
+    oss.append(x);
+    oss.append( " ");
+    sprintf(x, "%i", (int) database->edgelabels[database->edgelabelsindexes[edge.edgelabel]].inputedgelabel);
+    oss.append( x);
+        oss.append( "\n");
       }
     }
   }
 }
 
-void GraphState::DfsOut(int cur_n, ostringstream* oss, int from_n) {
+void GraphState::DfsOut(int cur_n, string& oss, int from_n) {
     InputNodeLabel inl = database->nodelabels[nodes[cur_n].label].inputlabel;
-    (inl!=600) ? (*oss) << etab.GetSymbol(inl) : (*oss) << "c"; // output nodelabel
+    (inl!=600) ? oss.append( etab.GetSymbol(inl)) : oss.append("c"); // output nodelabel
     int fanout = (int) nodes[cur_n].edges.size ();
     InputEdgeLabel iel;
     for ( int j = 0; j < fanout; j++ ) {
         GraphState::GSEdge &edge = nodes[cur_n].edges[j];
         if ( edge.tonode != from_n) {
-            if (fanout>2) (*oss) << "(";
+            if (fanout>2) oss.append ("(");
             iel = database->edgelabels[database->edgelabelsindexes[edge.edgelabel]].inputedgelabel;
             switch (iel) {
             case 1:
-                (*oss) << '-';
+                oss.append("-");
                 break;
             case 2:
-                (*oss) << '=';
+                oss.append("=");
                 break;               
             case 3:
-                (*oss) << '#';
+                oss.append("#");
                 break;
             case 4:
-                (*oss) << ':';
+                oss.append(":");
                 break;
             default:
                 cerr << "ERROR! Bond order of " << iel << " is not supported!" << endl;
                 exit(1);
             }
-//            oss <<  (char) (database->edgelabels[database->edgelabelsindexes[edge.edgelabel]].inputedgelabel);
             DfsOut(edge.tonode, oss, cur_n);
-            if (fanout>2) (*oss) << ")";
+            if (fanout>2) oss.append(")");
         }
     }
 }
@@ -389,28 +392,28 @@ string GraphState::to_s ( unsigned int frequency ) {
 
     if (!chisq->active || chisq->p >= chisq->sig) {
 
-        ostringstream oss;
+        string oss;
 
         if (gsp_out) { 
-            print(&oss); return oss.str();
+            print(oss); return oss;
         }
 
         else {
-          if (DO_YAML) oss << "- [ ";
+          if (DO_YAML) oss.append ("- [ ");
 
           // output smarts 
-          if (DO_YAML) oss << "\"";
+          if (DO_YAML) oss.append ("\"");
           int i;
           for ( i = nodes.size()-1; i >= 0; i-- ) {   // edges
               if (nodes[i].edges.size()==1) break;
           }
-          DfsOut(i, &oss, i);
-          if (DO_YAML) oss << "\", ";
+          DfsOut(i, oss, i);
+          if (DO_YAML) oss.append ("\", ");
 
           // output chisq
           if (chisq->active) {
-            if (DO_YAML) oss << setprecision(4) << chisq->p << ", ";
-            else oss << "\t";
+            if (DO_YAML) { char x[20]; sprintf(x,"%.4f", chisq->p); (oss.append(x)).append(", "); }
+            else oss.append("\t");
           }
 
           // output freq
@@ -418,30 +421,34 @@ string GraphState::to_s ( unsigned int frequency ) {
               if (frequency != (chisq->fa+chisq->fi)) { cerr << "Error: wrong counts!" << endl; exit(1); }
           }
           else { 
-              if (DO_YAML) oss << ", " << frequency;
-              else oss << "\t " << frequency;
+              char x[20]; sprintf(x,"%i", frequency); 
+              if (DO_YAML) { (oss.append (", ")).append(x); }
+              else oss.append ("\t ").append(x);
           }
 
           // output occurrences
           if (chisq->active) {
-              oss << '[';
+              oss.append ("[");
 
               set<Tid>::iterator iter;
 
+              char x[20];
               if (DO_YAML) {
                   for (iter = chisq->fa_set.begin(); iter != chisq->fa_set.end(); iter++) {
-                      if (iter != chisq->fa_set.begin()) oss << ",";
-                      oss << " ";
-                      oss << *iter;
+                      if (iter != chisq->fa_set.begin()) oss.append (",");
+                      sprintf(x,"%i", (*iter)); 
+                      oss.append (" ");
+                      oss.append (x);
                   }
-                  oss << "], [";
+                  oss.append ("], [");
               }
 
               if (DO_YAML) {
                   for (iter = chisq->fi_set.begin(); iter != chisq->fi_set.end(); iter++) {
-                      if (iter != chisq->fi_set.begin()) oss << ",";
-                      oss << " ";
-                      oss << *iter;
+                      if (iter != chisq->fi_set.begin()) oss.append (",");
+                      sprintf(x,"%i", (*iter)); 
+                      oss.append (" ");
+                      oss.append (x);
                   }
               }
 
@@ -450,19 +457,20 @@ string GraphState::to_s ( unsigned int frequency ) {
                   ids.insert(chisq->fa_set.begin(), chisq->fa_set.end());
                   ids.insert(chisq->fi_set.begin(), chisq->fi_set.end());
                   for (iter = ids.begin(); iter != ids.end(); iter++) {
-                      oss << " " << *iter;
+                      sprintf(x,"%i", (*iter)); 
+                      (oss.append (" ")).append(x);
                   }
               }
-              if (!DO_YAML) oss << " ]";
-              else oss << " ]";
+              if (!DO_YAML) oss.append (" ]");
+              else oss.append (" ]");
           }
 
-          if (DO_YAML) oss << " ]";
+          if (DO_YAML) oss.append (" ]");
 
-          console_out ? oss << "\n" : oss << "";
+          console_out ? oss.append ("\n") : oss.append ("");
 
 
-          return oss.str();
+          return oss;
        }
 
     }
