@@ -11,8 +11,8 @@ bool instance_present;
 bool console_out;
 bool aromatic;
 bool refine_singles;
+string outl;
 
-string* outl=NULL;
 Database* database=NULL;
 Statistics* statistics=NULL;
 ChisqConstraint* chisq=NULL;

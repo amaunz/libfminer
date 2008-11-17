@@ -3,7 +3,7 @@
 
 Fminer::Fminer() : init_mining_done(false) {
   if (!instance_present) {
-      database = NULL; statistics = NULL; chisq = NULL; result = NULL; outl = NULL; 
+      database = NULL; statistics = NULL; chisq = NULL; result = NULL;
       Reset();
       Defaults();
       instance_present=true;
@@ -16,7 +16,7 @@ Fminer::Fminer() : init_mining_done(false) {
 
 Fminer::Fminer(int _type, unsigned int _minfreq) : init_mining_done(false) {
   if (!instance_present) {
-      database = NULL; statistics = NULL; chisq = NULL; result = NULL; outl = NULL; 
+      database = NULL; statistics = NULL; chisq = NULL; result = NULL;
       Reset();
       Defaults();
       SetType(_type);
@@ -32,7 +32,7 @@ Fminer::Fminer(int _type, unsigned int _minfreq) : init_mining_done(false) {
 
 Fminer::Fminer(int _type, unsigned int _minfreq, float _chisq_val, bool _do_backbone) : init_mining_done(false) {
   if (!instance_present) {
-      database = NULL; statistics = NULL; chisq = NULL; result = NULL; outl = NULL; 
+      database = NULL; statistics = NULL; chisq = NULL; result = NULL;
       Reset();
       Defaults();
       SetType(_type);
@@ -64,7 +64,7 @@ void Fminer::Reset() {
     chisq->active = true; 
 
     result = &r;
-    delete outl; outl = new string();
+    outl = "";
 
     comp_runner=1; 
     comp_no=0; 

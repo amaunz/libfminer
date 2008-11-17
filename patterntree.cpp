@@ -17,7 +17,7 @@ extern bool refine_singles;
 extern Database* database;
 extern ChisqConstraint* chisq;
 extern vector<string>* result;
-extern string* outl;
+extern string outl;
 extern Statistics* statistics;
 
 int maxsize = ( 1 << ( sizeof(NodeId)*8 ) ) - 1; // safe default for the largest allowed pattern
@@ -832,11 +832,11 @@ void PatternTree::expand (pair<float, string> max) {
 
     // GRAPHSTATE
     graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.label, legs[i]->occurrences.maxdegree );
-    (*outl) = graphstate.to_s(legs[i]->occurrences.frequency);
+    outl = graphstate.to_s(legs[i]->occurrences.frequency);
     if (DO_OUTPUT) {
         if (!do_backbone) { 
-            if (!console_out) (*result) << (*outl);
-            else cout << (*outl);
+            if (!console_out) (*result) << outl;
+            else cout << outl;
         }
     }
 
@@ -856,7 +856,7 @@ void PatternTree::expand (pair<float, string> max) {
     ) {   // UB-PRUNING
 
         PatternTree p ( *this, i );
-        if (chisq->p>max.first) { updated = true; p.expand (pair<float, string>(chisq->p,(*outl))); }
+        if (chisq->p>max.first) { updated = true; p.expand (pair<float, string>(chisq->p,outl)); }
         else p.expand (max);
     }
     else {

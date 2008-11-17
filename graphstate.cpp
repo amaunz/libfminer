@@ -311,62 +311,62 @@ void GraphState::print ( FILE *f ) {
   }
 }
 
-void GraphState::print ( ostringstream& oss ) {
+void GraphState::print ( ostringstream* oss ) {
   static int counter = 0;
   counter++;
-  oss << 't';
-  oss << ' ';
-  oss << counter;
-  oss << '\n';
+  (*oss) << 't';
+  (*oss) << ' ';
+  (*oss) << counter;
+  (*oss) << '\n';
   for ( int i = 0; i < (int) nodes.size (); i++ ) {
-    oss << 'v';
-    oss << ' ';
-    oss << (int) i;
-    oss << ' ';
-    oss << (int) database->nodelabels[nodes[i].label].inputlabel;
-    oss << '\n';
+    (*oss) << 'v';
+    (*oss) << ' ';
+    (*oss) << (int) i;
+    (*oss) << ' ';
+    (*oss) << (int) database->nodelabels[nodes[i].label].inputlabel;
+    (*oss) << '\n';
   }
   for ( int i = 0; i < (int) nodes.size (); i++ ) {
     for ( int j = 0; j < (int) nodes[i].edges.size (); j++ ) {
       GraphState::GSEdge &edge = nodes[i].edges[j];
       if ( i < edge.tonode ) {
-    oss << 'e';
-    oss << ' ';
-    oss << (int) i;
-    oss << ' ';
-    oss << (int) edge.tonode;
-    oss << ' ';
-    oss << (int) database->edgelabels[
+    (*oss) << 'e';
+    (*oss) << ' ';
+    (*oss) << (int) i;
+    (*oss) << ' ';
+    (*oss) << (int) edge.tonode;
+    (*oss) << ' ';
+    (*oss) << (int) database->edgelabels[
                  database->edgelabelsindexes[edge.edgelabel]
            ].inputedgelabel;
-        oss << '\n';
+        (*oss) << '\n';
       }
     }
   }
 }
 
-void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
+void GraphState::DfsOut(int cur_n, ostringstream* oss, int from_n) {
     InputNodeLabel inl = database->nodelabels[nodes[cur_n].label].inputlabel;
-    (inl!=600) ? oss << etab.GetSymbol(inl) : oss << "c"; // output nodelabel
+    (inl!=600) ? (*oss) << etab.GetSymbol(inl) : (*oss) << "c"; // output nodelabel
     int fanout = (int) nodes[cur_n].edges.size ();
     InputEdgeLabel iel;
     for ( int j = 0; j < fanout; j++ ) {
         GraphState::GSEdge &edge = nodes[cur_n].edges[j];
         if ( edge.tonode != from_n) {
-            if (fanout>2) oss << "(";
+            if (fanout>2) (*oss) << "(";
             iel = database->edgelabels[database->edgelabelsindexes[edge.edgelabel]].inputedgelabel;
             switch (iel) {
             case 1:
-                oss << '-';
+                (*oss) << '-';
                 break;
             case 2:
-                oss << '=';
+                (*oss) << '=';
                 break;               
             case 3:
-                oss << '#';
+                (*oss) << '#';
                 break;
             case 4:
-                oss << ':';
+                (*oss) << ':';
                 break;
             default:
                 cerr << "ERROR! Bond order of " << iel << " is not supported!" << endl;
@@ -374,10 +374,11 @@ void GraphState::DfsOut(int cur_n, ostringstream& oss, int from_n) {
             }
 //            oss <<  (char) (database->edgelabels[database->edgelabelsindexes[edge.edgelabel]].inputedgelabel);
             DfsOut(edge.tonode, oss, cur_n);
-            if (fanout>2) oss << ")";
+            if (fanout>2) (*oss) << ")";
         }
     }
 }
+
 
 string GraphState::to_s ( unsigned int frequency ) {
 
@@ -391,8 +392,7 @@ string GraphState::to_s ( unsigned int frequency ) {
         ostringstream oss;
 
         if (gsp_out) { 
-            //print(oss); return oss.str();
-            print(stdout); return "";
+            print(&oss); return oss.str();
         }
 
         else {
@@ -404,7 +404,7 @@ string GraphState::to_s ( unsigned int frequency ) {
           for ( i = nodes.size()-1; i >= 0; i-- ) {   // edges
               if (nodes[i].edges.size()==1) break;
           }
-          DfsOut(i, oss, i);
+          DfsOut(i, &oss, i);
           if (DO_YAML) oss << "\", ";
 
           // output chisq
