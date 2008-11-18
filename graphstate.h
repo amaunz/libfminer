@@ -87,10 +87,15 @@ class GraphState {
     void deleteEdge ( GSEdge &edge ); // pushes deleted edge on stack
     void reinsertEdge (); // reinserts last edge on the stack
     NodeId lastNode () const { return nodes.size () - 1; }
-    void print ( string& oss );
+
     void print ( FILE *f );
+    void DfsOut(int cur_n, int from_n);
+    void to_s ( string& oss );
+
+    void print ( unsigned int frequency );
     void DfsOut(int cur_n, string& oss, int from_n);
     string to_s ( unsigned int frequency );
+
     void puti(FILE* f, int i);
 };
 

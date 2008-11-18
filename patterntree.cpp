@@ -832,11 +832,12 @@ void PatternTree::expand (pair<float, string> max) {
 
     // GRAPHSTATE
     graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.label, legs[i]->occurrences.maxdegree );
-    outl = graphstate.to_s(legs[i]->occurrences.frequency);
+//    outl = graphstate.to_s(legs[i]->occurrences.frequency);
     if (DO_OUTPUT) {
         if (!do_backbone) { 
-            if (!console_out) (*result) << outl;
-            else cout << outl;
+            if (!console_out) (*result) << graphstate.to_s(legs[i]->occurrences.frequency);
+//            else cout << outl;
+            else graphstate.print(legs[i]->occurrences.frequency);
         }
     }
 
