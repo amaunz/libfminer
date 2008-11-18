@@ -683,7 +683,7 @@ void Path::expand () {
       // GRAPHSTATE AND OUTPUT
       graphstate.insertNode ( tuple.connectingnode, tuple.edgelabel, legs[i]->occurrences.maxdegree );
       if (DO_OUTPUT) {
-          if (!do_backbone) { 
+          if (!do_backbone && legs[i]->occurrences.frequency>=minfreq) { 
             if (!console_out) (*result) << graphstate.to_s(legs[i]->occurrences.frequency);
             else graphstate.print(legs[i]->occurrences.frequency);
           }
