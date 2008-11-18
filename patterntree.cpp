@@ -4,8 +4,6 @@
 #include "patterntree.h"
 #include "graphstate.h"
 
-#define DO_OUTPUT true
-
 extern GraphState graphstate;
 extern unsigned int minfreq;
 extern bool do_backbone;
@@ -13,6 +11,7 @@ extern bool adjust_ub;
 extern bool do_pruning;
 extern bool console_out;
 extern bool refine_singles;
+extern bool do_output;
 
 extern Database* database;
 extern ChisqConstraint* chisq;
@@ -816,7 +815,7 @@ void PatternTree::expand (pair<float, string> max) {
     
   if (do_backbone && (legs.size()==0)) {
     if (updated)
-        if (DO_OUTPUT) {
+        if (do_output) {
             if (!console_out) (*result) << max.second;
             else cout << max.second;
         }
@@ -830,7 +829,7 @@ void PatternTree::expand (pair<float, string> max) {
 
     // GRAPHSTATE
     graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.label, legs[i]->occurrences.maxdegree );
-    if (DO_OUTPUT) {
+    if (do_output) {
         if (!do_backbone) { 
             if (!console_out) (*result) << graphstate.to_s(legs[i]->occurrences.frequency);
             else graphstate.print(legs[i]->occurrences.frequency);
@@ -858,7 +857,7 @@ void PatternTree::expand (pair<float, string> max) {
     }
     else {
         if (do_backbone && updated) {
-            if (DO_OUTPUT) {
+            if (do_output) {
                 if (!console_out) (*result) << max.second;
                 else cout << max.second;
             }

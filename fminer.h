@@ -45,19 +45,21 @@ class Fminer {
     bool GetBackbone(); //! Get whether BBRC representatives should be mined.
     bool GetDynamicUpperBound(); //!< Get whether dynamic upper bound pruning is used.
     bool GetPruning(); //!< Get whether statistical metrical pruning is used.
-    bool GetAromatic(); //!< Get whether aromatic rings should be perceived instead of Kekule notation
-    bool GetRefineSingles(); //!< Get whether fragments with frequency 1 should be refined
+    bool GetAromatic(); //!< Get whether aromatic rings should be perceived instead of Kekule notation.
+    bool GetRefineSingles(); //!< Get whether fragments with frequency 1 should be refined.
+    bool GetDoOutput(); //!< Get whether output is enabled.
 
     void SetBackbone(bool val); //!< Pass 'false' here to switch off mining for BBRC representatives.
     void SetDynamicUpperBound(bool val); //!< Pass 'false' here to disable dynamic upper bound pruning (e.g. for performance measures).
     void SetPruning(bool val); //!< Pass 'false' here to disable statistical metrical pruning completely.
     void SetAromatic(bool val); //!< Pass 'false' here to disable aromatic rings and use Kekule notation
     void SetRefineSingles(bool val); //!< Pass 'true' here to enable refinement of fragments with frequency 1.
+    void SetDoOutput(bool val); //!< Pass 'false' here to disable output.
 
     void Reset(); //!< Use this to clear the database before feeding new compounds and activities.
     void Defaults(); //!< Use this to set default parameters as in default constructor.
-    void SetConsoleOut(bool val); //!< Set this to true to disable usage of esult vector and directly print to the console (saves memory)
-        
+    void SetConsoleOut(bool val); //!< Set this to true to disable usage of result vector and directly print each fragment to the console (saves memory).
+    
   private:
     void AddChiSqNa(){chisq->na++;chisq->n++;}
     void AddChiSqNi(){chisq->ni++;chisq->n++;}

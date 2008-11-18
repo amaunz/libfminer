@@ -80,6 +80,7 @@ void Fminer::Defaults() {
     console_out = false;
     aromatic = true;
     refine_singles = false;
+    do_output=true;
 }
 
 void Fminer::SetConsoleOut(bool val) {
@@ -200,6 +201,10 @@ void Fminer::SetRefineSingles(bool val) {
     refine_singles = val;
 }
 
+void Fminer::SetDoOutput(bool val) {
+    do_output = val;
+}
+
 bool Fminer::GetConsoleOut(){return console_out;}
 int Fminer::GetType(){return type;}
 int Fminer::GetMinfreq(){return minfreq;}
@@ -210,5 +215,7 @@ bool Fminer::GetDynamicUpperBound(){return adjust_ub;}
 bool Fminer::GetPruning() {return do_pruning;}
 bool Fminer::GetAromatic() {return aromatic;}
 bool Fminer::GetRefineSingles() {return refine_singles;}
+bool Fminer::GetDoOutput() {return do_output;}
+
 
 
