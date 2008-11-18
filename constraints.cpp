@@ -7,7 +7,7 @@ float ChisqConstraint::ChiSq(float x, float y) {
 
         float pp = 0.0, ea = 0.0, ei = 0.0, impact = 0.0;
         
-        impact = (float)x/(float)n;
+        impact = x/(float)n;
         ea = na * impact; 
         ei = ni * impact; 
 

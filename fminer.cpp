@@ -64,7 +64,6 @@ void Fminer::Reset() {
     chisq->active = true; 
 
     result = &r;
-    outl = "";
 
     comp_runner=1; 
     comp_no=0; 
@@ -153,6 +152,7 @@ void Fminer::SetMinfreq(int _minfreq) {
 
 void Fminer::SetChisqSig(float _chisq_val) {
     if (_chisq_val < 0.0 || _chisq_val > 1.0) { cerr << "Error! Invalid value '" << _chisq_val << "' for parameter chisq->" << endl; exit(1); }
+//    chisq->sig = gsl_cdf_chisq_Pinv(_chisq_val, 1);
     chisq->sig = _chisq_val;
 }
 

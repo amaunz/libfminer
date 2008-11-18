@@ -23,7 +23,6 @@ extern bool refine_singles;
 extern Database* database;
 extern ChisqConstraint* chisq;
 extern vector<string>* result;
-extern string outl;
 extern Statistics* statistics;
 
 
@@ -487,15 +486,12 @@ void Path::expand2 (pair<float,string> max) {
           
     // GRAPHSTATE AND OUTPUT
     graphstate.insertNode ( legs[index]->tuple.connectingnode, legs[index]->tuple.edgelabel, legs[index]->occurrences.maxdegree );
-//    outl = graphstate.to_s(legs[index]->occurrences.frequency);
 
 
     // immediate output
     if (DO_OUTPUT) {
         if (!do_backbone) {
-//            if (!console_out) (*result) << outl;
             if (!console_out) (*result) << graphstate.to_s(legs[index]->occurrences.frequency);
-//            else cout << outl;
             else graphstate.print(legs[index]->occurrences.frequency);
         }
     }
@@ -517,7 +513,7 @@ void Path::expand2 (pair<float,string> max) {
       ){   // UB-PRUNING
 
       Path path ( *this, index );
-      if (max.first<chisq->p) { updated = true; path.expand2 ( pair<float, string>(chisq->p, outl)); }
+      if (max.first<chisq->p) { updated = true; path.expand2 ( pair<float, string>(chisq->p, graphstate.to_s(legs[index]->occurrences.frequency))); }
       else path.expand2 (max);
     }
     else {
@@ -545,14 +541,11 @@ void Path::expand2 (pair<float,string> max) {
 
     // GRAPHSTATE AND OUTPUT
     graphstate.insertNode ( legs[index]->tuple.connectingnode, legs[index]->tuple.edgelabel, legs[index]->occurrences.maxdegree );
-//    outl = graphstate.to_s(legs[index]->occurrences.frequency);
 
     // immediate output
     if (DO_OUTPUT) {
         if (!do_backbone) {
-//            if (!console_out) (*result) << outl;
             if (!console_out) (*result) << graphstate.to_s(legs[index]->occurrences.frequency);
-//            else cout << outl;
             else graphstate.print(legs[index]->occurrences.frequency);
         }
     }
@@ -573,7 +566,7 @@ void Path::expand2 (pair<float,string> max) {
      ){   // UB-PRUNING
 
       Path path ( *this, index );
-      if (max.first<chisq->p) { updated = true; path.expand2 ( pair<float, string>(chisq->p, outl)); }
+      if (max.first<chisq->p) { updated = true; path.expand2 ( pair<float, string>(chisq->p, graphstate.to_s(legs[index]->occurrences.frequency))); }
       else path.expand2 (max);
     }
     else {
@@ -615,13 +608,10 @@ void Path::expand2 (pair<float,string> max) {
           if (chisq->active) chisq->Calc(legs[i]->occurrences.elements);
           // GRAPHSTATE
           graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.edgelabel, legs[i]->occurrences.maxdegree );
-//          outl = graphstate.to_s(legs[i]->occurrences.frequency);
 
           if (DO_OUTPUT) {
               if (!do_backbone) { 
-//                 if (!console_out) (*result) << outl;
                  if (!console_out) (*result) << graphstate.to_s(legs[i]->occurrences.frequency);
-//                 else cout << outl;
                  else graphstate.print(legs[i]->occurrences.frequency);
               }
           }
@@ -642,7 +632,7 @@ void Path::expand2 (pair<float,string> max) {
           ){   // UB-PRUNING
 
             PatternTree tree ( *this, i );
-            if (max.first<chisq->p) { updated = true; tree.expand ( pair<float, string>(chisq->p, outl) ); }
+            if (max.first<chisq->p) { updated = true; tree.expand ( pair<float, string>(chisq->p, graphstate.to_s(legs[i]->occurrences.frequency)) ); }
             else tree.expand (max);
           }
 
@@ -692,12 +682,9 @@ void Path::expand () {
 
       // GRAPHSTATE AND OUTPUT
       graphstate.insertNode ( tuple.connectingnode, tuple.edgelabel, legs[i]->occurrences.maxdegree );
-//      outl = graphstate.to_s(legs[i]->occurrences.frequency);
       if (DO_OUTPUT) {
           if (!do_backbone) { 
-//            if (!console_out) (*result) << outl;
             if (!console_out) (*result) << graphstate.to_s(legs[i]->occurrences.frequency);
-//            else cout << outl;
             else graphstate.print(legs[i]->occurrences.frequency);
           }
       }
@@ -705,7 +692,7 @@ void Path::expand () {
       // RECURSE
       Path path (*this, i);
       updated = true;
-      path.expand2 (pair<float, string>(chisq->p, outl));
+      path.expand2 (pair<float, string>(chisq->p, graphstate.to_s(legs[i]->occurrences.frequency)));
       graphstate.deleteNode ();
 
     }

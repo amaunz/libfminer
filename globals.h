@@ -11,7 +11,6 @@ bool instance_present;
 bool console_out;
 bool aromatic;
 bool refine_singles;
-string outl;
 
 Database* database=NULL;
 Statistics* statistics=NULL;
