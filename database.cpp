@@ -7,6 +7,7 @@
 #include <iostream>
 
 extern bool aromatic;
+extern unsigned int minfreq;
 
 ostream &operator<< ( ostream &stream, DatabaseTreeEdge &databasetreeedge ) {
   stream << "DatabaseTreeEdge; edgelabel: " << databasetreeedge.edgelabel << "; tonode: " << databasetreeedge.tonode << endl;
@@ -260,7 +261,6 @@ bool Database::readTreeSmi (string smi, Tid tid, Tid orig_tid, int line_nr) {
 }
 
 void Database::readGsp (FILE* input) {
-//  Tid tid;
   Tid tid2 = 0; 
 
   char array[100];
@@ -502,7 +502,6 @@ bool operator< ( const DatabaseTreeEdge &a, const DatabaseTreeEdge &b ) {
 void Database::reorder () {
     
 
-
     // PHASE I: LABEL EDGES ACCORDING TO FREQUENCY
   //  cerr << "REORDER" << endl;
 
@@ -538,9 +537,14 @@ void Database::reorder () {
     // Now, use the ranked indices to re-number frequent edge labels with their rank
     for (unsigned int i = 0; i < edgelabelsindexes.size (); i++ ) {
         edgelabels[edgelabelsindexes[i]].edgelabel = i;                 // fill in the edge labels for the first time
-                                                                        // the edgelabel is the rank found by REORDER
+//     #define DEBUG
+     #ifdef DEBUG
+    DatabaseEdgeLabel &label = edgelabels[edgelabelsindexes[i]];
+    cout << (int) nodelabels[label.tonodelabel].inputlabel 
+         << "[" << (int) label.inputedgelabel << "]" 
+	 << (int) nodelabels[label.fromnodelabel].inputlabel <<"-->" << i <<endl;
+     #endif                                                                   // the edgelabel is the rank found by REORDER
     }
-
 
 
     // PHASE II: REMOVE INFREQUENT EDGES FROM NODES

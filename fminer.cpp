@@ -97,7 +97,7 @@ vector<string>* Fminer::MineRoot(unsigned int j) {
                 }
             }
         }
-        database->edgecount (); database->reorder (); initLegStatics (); graphstate.init (); 
+        database->edgecount (); cerr << "Edgecount" << endl; database->reorder (); cerr << "Reorder" << endl; initLegStatics (); graphstate.init (); 
         init_mining_done=true; 
     }
 

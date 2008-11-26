@@ -139,8 +139,6 @@ class Database {
   
   	// Perform DFS through tree to identify cycles
     void determineCycledNodes ( DatabaseTreePtr tree, vector<int> &nodestack, vector<bool> &visited1, vector<bool> &visited2 );
-  private:
-    Frequency minfreq;
 };
 
 #endif
