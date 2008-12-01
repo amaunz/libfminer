@@ -385,7 +385,7 @@ void GraphState::print ( unsigned int frequency ) {
           }
           // output freq
           if (chisq->active) {
-              if (frequency != (chisq->fa+chisq->fi)) { cerr << "Error: wrong counts!" << endl; exit(1); }
+              if (frequency != (chisq->fa+chisq->fi)) { cerr << "Error: wrong counts! " << frequency << "!=" << chisq->fa + chisq->fi << "(" << chisq->fa << "+" << chisq->fi << ")" << endl; }
           }
           else { 
               if (do_yaml) { printf("%i", frequency); }
@@ -547,7 +547,7 @@ string GraphState::to_s ( unsigned int frequency ) {
 
           // output freq
           if (chisq->active) {
-              if (frequency != (chisq->fa+chisq->fi)) { cerr << "Error: wrong counts!" << endl; exit(1); }
+              if (frequency != (chisq->fa+chisq->fi)) { cerr << "Error: wrong counts " << frequency << "!=" << chisq->fa << "+" << chisq->fi << endl; }
           }
           else { 
               char x[20]; sprintf(x,"%i", frequency); 
