@@ -55,6 +55,7 @@ class Fminer {
     void SetAromatic(bool val); //!< Pass 'false' here to disable aromatic rings and use Kekule notation
     void SetRefineSingles(bool val); //!< Pass 'true' here to enable refinement of fragments with frequency 1.
     void SetDoOutput(bool val); //!< Pass 'false' here to disable output.
+    void SetFreeStructures(bool val); //!< Pass 'true' here to enable free structure mining.
 
     void Reset(); //!< Use this to clear the database before feeding new compounds and activities.
     void Defaults(); //!< Use this to set default parameters as in default constructor.

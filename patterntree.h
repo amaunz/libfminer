@@ -44,7 +44,7 @@ class PatternTree {
   public:
     PatternTree ( Path &path, unsigned int legindex );
     ~PatternTree ();
-    void expand (pair<float, string> max);
+    void expand (pair<float, string> max, unsigned int supp);
   private:
     void checkIfIndeedNormal ();
     /* inline */ void addExtensionLegs ( Tuple &tuple, LegOccurrences &legoccurrences );

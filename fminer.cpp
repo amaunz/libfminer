@@ -205,6 +205,15 @@ void Fminer::SetDoOutput(bool val) {
     do_output = val;
 }
 
+void Fminer::SetFreeStructures(bool val){
+    free_structures = val;
+    if (free_structures && GetBackbone()) {
+         cerr << "Notice: Disabling mining for backbone refinement class representatives." << endl;
+         SetBackbone(false);
+    }
+}
+
+
 bool Fminer::GetConsoleOut(){return console_out;}
 int Fminer::GetType(){return type;}
 int Fminer::GetMinfreq(){return minfreq;}

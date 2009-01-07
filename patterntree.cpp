@@ -12,6 +12,7 @@ extern bool do_pruning;
 extern bool console_out;
 extern bool refine_singles;
 extern bool do_output;
+extern bool free_structures;
 
 extern Database* database;
 extern ChisqConstraint* chisq;
@@ -800,7 +801,7 @@ PatternTree::PatternTree ( PatternTree &parenttree, unsigned int legindex ) {
   }
 }
 
-void PatternTree::expand (pair<float, string> max) {
+void PatternTree::expand (pair<float, string> max, unsigned int supp) {
   statistics->patternsize++;
   if ( statistics->patternsize > (int) statistics->frequenttreenumbers.size () ) {
     statistics->frequenttreenumbers.resize ( statistics->patternsize, 0 );
@@ -831,8 +832,10 @@ void PatternTree::expand (pair<float, string> max) {
     graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.label, legs[i]->occurrences.maxdegree );
     if (do_output) {
         if (!do_backbone) { 
-            if (!console_out) (*result) << graphstate.to_s(legs[i]->occurrences.frequency);
-            else graphstate.print(legs[i]->occurrences.frequency);
+            if (!free_structures || (legs[i]->occurrences.frequency != supp)) {
+                if (!console_out) (*result) << graphstate.to_s(legs[i]->occurrences.frequency);
+                else graphstate.print(legs[i]->occurrences.frequency);
+            }
         }
     }
 
@@ -852,8 +855,8 @@ void PatternTree::expand (pair<float, string> max) {
     ) {   // UB-PRUNING
 
         PatternTree p ( *this, i );
-        if (chisq->p>max.first) { updated = true; p.expand (pair<float, string>(chisq->p,graphstate.to_s(legs[i]->occurrences.frequency))); }
-        else p.expand (max);
+        if (chisq->p>max.first) { updated = true; p.expand (pair<float, string>(chisq->p,graphstate.to_s(legs[i]->occurrences.frequency)), legs[i]->occurrences.frequency); }
+        else p.expand (max, legs[i]->occurrences.frequency);
     }
     else {
         if (do_backbone && updated) {
