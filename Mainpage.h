@@ -2,9 +2,9 @@
  *
  * LibFminer
  *
- * This is the Fminer library.
+ * This is the Fminer library, available from  http://github.com/amaunz/libfminer/tree/master.
  * The official Fminer application that uses this library is available from http://github.com/amaunz/fminer/tree/master.
- * Latest scientific documentation is available from http://github.com/amaunz/fminer-doc/tree/master.
+ * Latest scientific documentation is available from http://www.maunz.de/ls_graph_mining_using_bbrcs.pdf.
  * To create documentation with doxygen, do 'make doc'. The documentation explains API, constructor usage and options.
  * 
  *  @section sec1 Abstract
@@ -44,7 +44,7 @@
  * - OpenBabel: The Open Babel Package, version 2.1.1 (http://openbabel.sourceforge.net/)
  * - GSL: GNU Scientific Library, version 0.1 (http://www.gnu.org/software/gsl/)
  *
- *   These licensing conditions mean, that you may only use LibFminer in whatever form, under the condition that your source code is also freely available.
+ *   These licensing conditions mean, that you may only use LibFminer, in whatever form, under the condition, that your source code is also freely available.
  *
  *  @section sec2 Portability
  *  LibFminer is a library, written in C++. It dynamically links to <code>libopenbabel</code> and <code>libgsl</code> libraries.
@@ -82,7 +82,6 @@
  *   cerr << fm->GetNoCompounds() << " compounds" << endl;
  *   // Toy example: special settings for mining all fragments
  *   fm->SetChisqSig(0); // use no significance constraint
- *   fm->SetMinfreq(1); // use minimum frequency 1
  *   fm->SetRefineSingles(true); // refine structures with support 1
  *   // gather results for every root node in vector instead of immediate output
  *   fm->SetConsoleOut(false);
@@ -114,7 +113,6 @@
  * puts " compounds"
  * # Toy example: special settings for mining all fragments
  * fm.SetChisqSig(0) # use no significance constraint
- * fm.SetMinfreq(1) # use minimum frequency 1
  * fm.SetRefineSingles(true) # refine structures with support 1
  * # gather results for every root node in vector instead of immediate output
  * fm.SetConsoleOut(false)
