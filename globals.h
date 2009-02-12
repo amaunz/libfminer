@@ -12,7 +12,6 @@ bool console_out;
 bool aromatic;
 bool refine_singles;
 bool do_output;
-bool free_structures;
 
 Database* database=NULL;
 Statistics* statistics=NULL;

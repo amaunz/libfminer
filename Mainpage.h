@@ -8,21 +8,52 @@
  * To create documentation with doxygen, do 'make doc'. The documentation explains API, constructor usage and options.
  * 
  *  @section sec1 Abstract
- *  LibFminer implements a method for efficiently mining relevant tree-shaped molecular fragments, each representing a geometrical classes, with minimum frequency and statistical constraints. Experimental results with four test datasets suggest that the approach is able to optimize correlation with chemical endpoints as well as inter-feature entropy. The mined fragments represent classes of fragments sharing a common core structure (backbone). The proposed method reduces feature set sizes and runtime by >90% and >60% compared to ordinary tree mining. Validation with several publicly available carcinogenicity datasets shows that their expressiveness is comparable to the complete set of tree-shaped fragments and is significantly higher than linear fragments.
+ *
+ *  We present a new approach to large-scale graph mining
+ *  based on so-called backbone refinement classes. The method
+ *  efficiently mines tree-shaped subgraph descriptors underminimum
+ *  frequency and significance constraints, using classes
+ *  of fragments to reduce feature set size and running times.
+ *  The classes are defined in terms of fragments sharing a common
+ *  backbone. The method is able to optimize structural
+ *  inter-feature entropy as opposed to occurrences, which is
+ *  characteristic for open or closed fragment mining. In the
+ *  experiments, the proposed method reduces feature set sizes
+ *  by >90 % and >30 % compared to complete tree mining and
+ *  open tree mining, respectively. Evaluation using crossvalidation
+ *  runs shows that their classification accuracy is similar
+ *  to the complete set of trees but significantly better than
+ *  that of open trees. Compared to open or closed fragment
+ *  mining, a large part of the search space can be pruned due
+ *  to an improved statistical constraint (dynamic upper bound
+ *  adjustment), which is also confirmed in the experiments in
+ *  lower running times compared to ordinary (static) upper
+ *  bound pruning. Further analysis using large-scale datasets
+ *  yields insight into important properties of the proposed descriptors,
+ *  such as the dataset coverage and the class size
+ *  represented by each descriptor. A final cross-validation run
+ *  confirms that the novel descriptors render large training sets
+ *  feasible which previously might have been intractable.
  *
  *  \subsection ssec1 Licence
  *
- *   LibFminer is free software ('free' as in 'freedom', see LICENSE). LibFminer uses code from the following projects which are free in the same sense:
+ *   LibFminer is licensed under the terms of the GNU General Public License (GPL, see LICENSE). LibFminer is derived from (i.e. includes code from) the following project, licensed under GPL:
  * - Gaston: Siegfried Nijssen and Joost Kok. A Quickstart in Frequent Structure Mining Can Make a Difference. Proceedings of the SIGKDD, 2004 (http://www.liacs.nl/home/snijssen/gaston/)
- * - OpenBabel: The Open Babel Package, version 2.1.1 http://openbabel.sourceforge.net/ (accessed Jul 2008)
+ *
+ *   LibFminer uses (i.e. is linked to) the following projects, also licensed under GPL:
+ * - OpenBabel: The Open Babel Package, version 2.1.1 (http://openbabel.sourceforge.net/)
+ * - GSL: GNU Scientific Library, version 0.1 (http://www.gnu.org/software/gsl/)
+ *
+ *   These licensing conditions mean, that you may only use LibFminer in whatever form, under the condition that your source code is also freely available.
  *
  *  @section sec2 Portability
- *  LibFminer is a self-contained library, written in C++. It depends on OpenBabel (<code>libopenbabel</code>) and GNU Scientific Library (<code>libgsl</code>) libraries.
- *  \subsection Portability
- *  The dependency libraries are available for Linux, Mac and Windows, so porting to the latter two platforms should be easy. A Windows-Version will also be released by the author in the near future.
+ *  LibFminer is a library, written in C++. It dynamically links to <code>libopenbabel</code> and <code>libgsl</code> libraries.
+ *  \subsection Dependencies
+ *  The dependency libraries are available for Linux, Mac and Windows, so porting to the latter two platforms should be easy.
  *  The API can be made available to other languages. A config file for Swig to automagically create languages bindings exists (<code>fminer.i</code>). The Makefile features a target that creates ruby bindings using this file (<code>make fminer.so</code>).
  *
  *  @section sec3 Example program using the LibFminer API
+ *  LibFminer uses the 'singleton' design pattern known from software engineering, i.e. class instantiation is restricted to one object.
  *  The following code retrieves a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output is in YAML format and takes the form
  *  \code
  *  - [ smarts,    p_chisq,    occ_list_active,    occ_list_inactive ]
@@ -43,12 +74,18 @@
  * int main(int argc, char *argv[], char *envp) {
  *   fm= new Fminer();
  *   fm->AddCompound ("COC1=CC=C(C=C1)C2=NC(=C([NH]2)C3=CC=CC=C3)C4=CC=CC=C4" , 1);
+ *   fm->AddCompound ("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2" , 2);
  *      // ... continue adding compounds
- *   fm->AddCompound ("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2" , 4069);
  *   fm->AddActivity((bool) true, 1);
+ *   fm->AddActivity((bool) false, 2);
  *      // ... continue adding activities (true for active, false for inactive)
- *   fm->AddActivity((bool) false, 4069);
  *   cerr << fm->GetNoCompounds() << " compounds" << endl;
+ *   // Toy example: special settings for mining all fragments
+ *   fm->SetChisqSig(0); // use no significance constraint
+ *   fm->SetMinfreq(1); // use minimum frequency 1
+ *   fm->SetRefineSingles(true); // refine structures with support 1
+ *   // gather results for every root node in vector instead of immediate output
+ *   fm->SetConsoleOut(false);
  *   for ( int j = 0; j < (int) fm->GetNoRootNodes(); j++ ) {
  *      vector<string>* result = fm->MineRoot(j);
  *      for( int i = 0; i < result->size(); i++) {
@@ -68,13 +105,19 @@
  * require 'fminer'
  * fm = Fminer::Fminer.new()
  * fm.AddCompound("COC1=CC=C(C=C1)C2=NC(=C([NH]2)C3=CC=CC=C3)C4=CC=CC=C4" , 1)
- *    // ... continue adding compounds
- * fm.AddCompound("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2" , 4069)
+ * fm.AddCompound("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2" , 2)
+ *    # ... continue adding compounds
  * fm.AddActivity(true, 1)
- *    // ... continue adding activities (true for active, false for inactive)
- * fm.AddActivity(false, 4096)
+ * fm.AddActivity(false, 2)
+ *    # ... continue adding activities (true for active, false for inactive)
  * print fm.GetNoCompounds()  
  * puts " compounds"
+ * # Toy example: special settings for mining all fragments
+ * fm.SetChisqSig(0) # use no significance constraint
+ * fm.SetMinfreq(1) # use minimum frequency 1
+ * fm.SetRefineSingles(true) # refine structures with support 1
+ * # gather results for every root node in vector instead of immediate output
+ * fm.SetConsoleOut(false)
  * (0 .. fm.GetNoRootNodes()-1).each do |j|
  *    result = fm.MineRoot(j)
  *    puts "Results"

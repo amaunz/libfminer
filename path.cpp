@@ -17,7 +17,6 @@ extern int type;
 extern bool console_out;
 extern bool refine_singles;
 extern bool do_output;
-extern bool free_structures;
 
 extern Database* database;
 extern ChisqConstraint* chisq;
@@ -402,7 +401,7 @@ bool Path::is_normal ( EdgeLabel edgelabel ) {
 
 
 
-void Path::expand2 (pair<float,string> max, unsigned int supp) {
+void Path::expand2 (pair<float,string> max) {
 
   statistics->patternsize++;
   if ( (unsigned) statistics->patternsize > statistics->frequenttreenumbers.size () ) {
@@ -489,10 +488,8 @@ void Path::expand2 (pair<float,string> max, unsigned int supp) {
     // immediate output
     if (do_output) {
         if (!do_backbone) {
-            if (!free_structures || (legs[index]->occurrences.frequency != supp)) {
-                if (!console_out) (*result) << graphstate.to_s(legs[index]->occurrences.frequency);
-                else graphstate.print(legs[index]->occurrences.frequency);
-            }
+            if (!console_out) (*result) << graphstate.to_s(legs[index]->occurrences.frequency);
+            else graphstate.print(legs[index]->occurrences.frequency);
         }
     }
 
@@ -513,8 +510,8 @@ void Path::expand2 (pair<float,string> max, unsigned int supp) {
       ){   // UB-PRUNING
 
       Path path ( *this, index );
-      if (max.first<chisq->p) { updated = true; path.expand2 ( pair<float, string>(chisq->p, graphstate.to_s(legs[index]->occurrences.frequency)), legs[index]->occurrences.frequency); }
-      else path.expand2 (max, legs[index]->occurrences.frequency);
+      if (max.first<chisq->p) { updated = true; path.expand2 ( pair<float, string>(chisq->p, graphstate.to_s(legs[index]->occurrences.frequency))); }
+      else path.expand2 (max);
     }
     else {
         if (do_backbone && updated) {  // FREE STRUCTURES: search was pruned
@@ -545,10 +542,8 @@ void Path::expand2 (pair<float,string> max, unsigned int supp) {
     // immediate output
     if (do_output) {
         if (!do_backbone) {
-            if (!free_structures || (legs[index]->occurrences.frequency != supp)) {
-                if (!console_out) (*result) << graphstate.to_s(legs[index]->occurrences.frequency);
-                else graphstate.print(legs[index]->occurrences.frequency);
-            }
+            if (!console_out) (*result) << graphstate.to_s(legs[index]->occurrences.frequency);
+            else graphstate.print(legs[index]->occurrences.frequency);
         }
     }
 
@@ -568,8 +563,8 @@ void Path::expand2 (pair<float,string> max, unsigned int supp) {
      ){   // UB-PRUNING
 
       Path path ( *this, index );
-      if (max.first<chisq->p) { updated = true; path.expand2 ( pair<float, string>(chisq->p, graphstate.to_s(legs[index]->occurrences.frequency)), legs[index]->occurrences.frequency); }
-      else path.expand2 (max, legs[index]->occurrences.frequency);
+      if (max.first<chisq->p) { updated = true; path.expand2 ( pair<float, string>(chisq->p, graphstate.to_s(legs[index]->occurrences.frequency))); }
+      else path.expand2 (max);
     }
     else {
         if (do_backbone && updated) { // FREE STRUCTURES: search was pruned
@@ -611,10 +606,8 @@ void Path::expand2 (pair<float,string> max, unsigned int supp) {
 
           if (do_output) {
               if (!do_backbone) { 
-                 if (!free_structures || (legs[i]->occurrences.frequency != supp)) {
-                    if (!console_out) (*result) << graphstate.to_s(legs[i]->occurrences.frequency);
-                    else graphstate.print(legs[i]->occurrences.frequency);
-                 }
+                if (!console_out) (*result) << graphstate.to_s(legs[i]->occurrences.frequency);
+                else graphstate.print(legs[i]->occurrences.frequency);
               }
           }
 
@@ -634,8 +627,8 @@ void Path::expand2 (pair<float,string> max, unsigned int supp) {
           ){   // UB-PRUNING
 
             PatternTree tree ( *this, i );
-            if (max.first<chisq->p) { updated = true; tree.expand ( pair<float, string>(chisq->p, graphstate.to_s(legs[i]->occurrences.frequency)), legs[i]->occurrences.frequency ); }
-            else tree.expand (max, legs[i]->occurrences.frequency);
+            if (max.first<chisq->p) { updated = true; tree.expand ( pair<float, string>(chisq->p, graphstate.to_s(legs[i]->occurrences.frequency))); }
+            else tree.expand (max);
           }
 
           else {
@@ -693,7 +686,7 @@ void Path::expand () {
       // RECURSE
       Path path (*this, i);
       updated = true;
-      path.expand2 (pair<float, string>(chisq->p, graphstate.to_s(legs[i]->occurrences.frequency)), legs[i]->occurrences.frequency);
+      path.expand2 (pair<float, string>(chisq->p, graphstate.to_s(legs[i]->occurrences.frequency)));
       graphstate.deleteNode ();
 
     }

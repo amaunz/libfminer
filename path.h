@@ -35,7 +35,7 @@ class Path {
   private:
     friend class PatternTree;
     bool is_normal ( EdgeLabel edgelabel ); // ADDED
-    void expand2 (pair<float, string> max, unsigned int supp);
+    void expand2 (pair<float, string> max);
     Path ( Path &parentpath, unsigned int legindex );
     vector<PathLegPtr> legs; // pointers used to avoid copy-constructor during a resize of the vector
     vector<CloseLegPtr> closelegs;
