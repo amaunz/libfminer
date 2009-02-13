@@ -95,6 +95,7 @@ class GraphState {
     void print ( unsigned int frequency );
     void DfsOut(int cur_n, string& oss, int from_n);
     string to_s ( unsigned int frequency );
+    string sep();
 
     void puti(FILE* f, int i);
 };

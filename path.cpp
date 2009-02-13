@@ -17,6 +17,7 @@ extern int type;
 extern bool console_out;
 extern bool refine_singles;
 extern bool do_output;
+extern bool bbrc_sep;
 
 extern Database* database;
 extern ChisqConstraint* chisq;
@@ -461,16 +462,18 @@ void Path::expand2 (pair<float,string> max) {
 
   // we have reached a leaf
   if (do_backbone && (pathlegs.size()==0)) { 
-    if (updated) { 
+     if (updated) { 
         if (do_output) {
-            if (!console_out) (*result) << max.second;
+            if (!console_out) { 
+                (*result) << max.second; 
+            }
             else cout << max.second;
         }
         updated = false;
-    }
+     }
   }
 
-
+  
   
   
   // Grow Path forw
@@ -584,9 +587,11 @@ void Path::expand2 (pair<float,string> max) {
 
   bool uptmp = updated;
 
-  
-//  cerr << "BEGIN" << endl;
-//  cin.get();
+  if (bbrc_sep && !do_backbone && legs.size() > 0) {
+      if (do_output) {
+            if (!console_out && (result->back()!=graphstate.sep())) (*result) << graphstate.sep();
+      }
+  }
 
   for ( unsigned int i = 0; i < legs.size (); i++ ) {
     PathTuple &tuple = legs[i]->tuple;
@@ -646,9 +651,6 @@ void Path::expand2 (pair<float,string> max) {
       }
     }
   }
-
-//  cerr << "END" << endl;
-//  cin.get();
 
 
   updated=uptmp;

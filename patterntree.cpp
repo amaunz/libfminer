@@ -12,6 +12,7 @@ extern bool do_pruning;
 extern bool console_out;
 extern bool refine_singles;
 extern bool do_output;
+extern bool bbrc_sep;
 
 extern Database* database;
 extern ChisqConstraint* chisq;
@@ -816,11 +817,17 @@ void PatternTree::expand (pair<float, string> max) {
   if (do_backbone && (legs.size()==0)) {
     if (updated)
         if (do_output) {
-            if (!console_out) (*result) << max.second;
-            else cout << max.second;
+            if (!console_out) { 
+               (*result) << max.second;
+            }
+            else {
+                cout << max.second;
+            }
         }
         updated = false;
   }
+
+  
  
   for ( int i = legs.size () - 1; i >= 0; i-- ) {
 
@@ -858,8 +865,12 @@ void PatternTree::expand (pair<float, string> max) {
     else {
         if (do_backbone && updated) {
             if (do_output) {
-                if (!console_out) (*result) << max.second;
-                else cout << max.second;
+                if (!console_out) {
+                    (*result) << max.second;
+                }
+                else {
+                    cout << max.second;
+                }
             }
             updated = false;
         }
@@ -869,7 +880,11 @@ void PatternTree::expand (pair<float, string> max) {
 
   }
 
-
+  if (bbrc_sep && !do_backbone && (legs.size()==0)) {
+      if (do_output) {
+          if (!console_out && (result->back()!=graphstate.sep())) (*result) << graphstate.sep();
+      }
+  }
 
   statistics->patternsize--;
 

@@ -11,6 +11,9 @@ extern bool adjust_ub;
 extern bool do_pruning;
 extern bool aromatic;
 extern ChisqConstraint* chisq;
+extern bool do_yaml;
+extern bool gsp_out;
+extern bool bbrc_sep;
 
 class Fminer {
 
@@ -33,6 +36,7 @@ class Fminer {
     vector<string>* MineRoot(unsigned int j); //!< Mine fragments rooted at the j-th root node (element type).
 
     bool GetConsoleOut(); //!< Get output to console
+    bool GetBbrcSep(); //!< Get BBRC separator
     int GetType(); //!< Get type.
     int GetMinfreq(); //!< Get minimum frequency.
     bool GetChisqSig(); //!< Get significance threshold here.
@@ -59,6 +63,7 @@ class Fminer {
     void Reset(); //!< Use this to clear the database before feeding new compounds and activities.
     void Defaults(); //!< Use this to set default parameters as in default constructor.
     void SetConsoleOut(bool val); //!< Set this to true to disable usage of result vector and directly print each fragment to the console (saves memory).
+    void SetBbrcSep(bool val); //!< Set this to true to enable BBRC separators in output.
     
   private:
     void AddChiSqNa(){chisq->na++;chisq->n++;}

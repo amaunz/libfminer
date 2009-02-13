@@ -1,4 +1,5 @@
 // graphstate.cpp
+// 
 // Andreas Maunz, andreas@maunz.de, jul 2008
 // Siegfried Nijssen, snijssen@liacs.nl, jan 2004.
 #include "graphstate.h"
@@ -10,6 +11,8 @@
 GraphState graphstate;
 extern ChisqConstraint* chisq;
 extern bool console_out;
+extern bool gsp_out;
+extern bool do_yaml;
 
 GraphState::GraphState () {
 }
@@ -514,11 +517,6 @@ void GraphState::DfsOut(int cur_n, string& oss, int from_n) {
 
 string GraphState::to_s ( unsigned int frequency ) {
 
-    bool gsp_out = true;
-    bool do_yaml = true;
-    if (getenv("FMINER_LAZAR")) do_yaml = false;
-    if (getenv("FMINER_SMARTS")) gsp_out = false; 
-
     if (!chisq->active || chisq->p >= chisq->sig) {
 
         string oss;
@@ -606,10 +604,11 @@ string GraphState::to_s ( unsigned int frequency ) {
     else return "";
 }
   
-
-
-
-
+string GraphState::sep() {
+    if (gsp_out) return "#";
+    else if (do_yaml) return "---";
+    else return " ";
+}
 
 void GraphState::undoState () {
   int s = nodes.size ();

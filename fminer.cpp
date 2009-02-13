@@ -7,6 +7,8 @@ Fminer::Fminer() : init_mining_done(false) {
       Reset();
       Defaults();
       instance_present=true;
+      if (getenv("FMINER_LAZAR")) do_yaml = false;
+      if (getenv("FMINER_SMARTS")) gsp_out = false; 
   }
   else {
     cerr << "Error! Can't create more than 1 instance." << endl; 
@@ -22,6 +24,8 @@ Fminer::Fminer(int _type, unsigned int _minfreq) : init_mining_done(false) {
       SetType(_type);
       SetMinfreq(_minfreq);
       instance_present=true;
+      if (getenv("FMINER_LAZAR")) do_yaml = false;
+      if (getenv("FMINER_SMARTS")) gsp_out = false; 
   }
   else {
     cerr << "Error! Can't create more than 1 instance." << endl; 
@@ -40,6 +44,9 @@ Fminer::Fminer(int _type, unsigned int _minfreq, float _chisq_val, bool _do_back
       SetChisqSig(_chisq_val);
       SetBackbone(_do_backbone);
       instance_present=true;
+      if (getenv("FMINER_LAZAR")) do_yaml = false;
+      if (getenv("FMINER_SMARTS")) gsp_out = false; 
+
   }
   else {
     cerr << "Error! Can't create more than 1 instance." << endl; 
@@ -81,10 +88,22 @@ void Fminer::Defaults() {
     aromatic = true;
     refine_singles = false;
     do_output=true;
+    do_yaml=true;
+    gsp_out=true;
+    bbrc_sep=false;
 }
 
 void Fminer::SetConsoleOut(bool val) {
-    console_out=val;
+    if (val==true && bbrc_sep) cerr << "Warning: Console output could not be enabled!" << endl;
+    else console_out=val;
+}
+
+void Fminer::SetBbrcSep(bool val) {
+    if (val==true && console_out) {
+        cerr << "Warning: Disabling console output, using result vector!" << endl;
+        console_out=false;
+    }
+    bbrc_sep=val;
 }
 
 vector<string>* Fminer::MineRoot(unsigned int j) {
@@ -207,6 +226,7 @@ void Fminer::SetDoOutput(bool val) {
 
 
 bool Fminer::GetConsoleOut(){return console_out;}
+bool Fminer::GetBbrcSep(){return bbrc_sep;}
 int Fminer::GetType(){return type;}
 int Fminer::GetMinfreq(){return minfreq;}
 bool Fminer::GetChisqSig(){return chisq->sig;}

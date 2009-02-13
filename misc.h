@@ -6,8 +6,8 @@
 #include <vector>
 #include <stdio.h>
 #include <iostream>
-using namespace std;
 
+using namespace std;
 
 typedef unsigned char EdgeLabel; // combined node-edge label of the input file.
 typedef unsigned char NodeLabel;

@@ -12,6 +12,9 @@ bool console_out;
 bool aromatic;
 bool refine_singles;
 bool do_output;
+bool do_yaml;
+bool gsp_out;
+bool bbrc_sep;
 
 Database* database=NULL;
 Statistics* statistics=NULL;
