@@ -412,8 +412,6 @@ void Path::expand2 (pair<float,string> max) {
     fm::statistics->frequentpathnumbers.push_back ( 0 );
     fm::statistics->frequentgraphnumbers.push_back ( 0 );
   }
-  cerr << "fm::statistics->patternsize-1: " << fm::statistics->patternsize-1 << endl;
-  cerr << "fm::statistics->frequentpathnumbers.size(): " << fm::statistics->frequentpathnumbers.size()<< endl;
   ++fm::statistics->frequentpathnumbers[fm::statistics->patternsize-1];
   
   if ( fm::statistics->patternsize == ((1<<(sizeof(NodeId)*8))-1) ) {
