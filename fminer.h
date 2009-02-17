@@ -6,6 +6,9 @@
 #include "misc.h"
 #include "closeleg.h"
 #include "graphstate.h"
+#include "globals.h"
+
+using namespace fm;
 
 extern bool adjust_ub;
 extern bool do_pruning;
@@ -31,8 +34,8 @@ class Fminer {
     void ReadGsp(FILE* gsp); //!< Read in a gSpan file
     bool AddCompound(string smiles, unsigned int comp_id); //!< Add a compound to the database.
     bool AddActivity(bool act, unsigned int comp_id); //!< Add an activity to the database.
-    int GetNoRootNodes() {return database->nodelabels.size();} //!< Get no of root node (element type).
-    int GetNoCompounds() {return database->trees.size();}
+    int GetNoRootNodes() {return fm::database->nodelabels.size();} //!< Get no of root node (element type).
+    int GetNoCompounds() {return fm::database->trees.size();}
     vector<string>* MineRoot(unsigned int j); //!< Mine fragments rooted at the j-th root node (element type).
 
     bool GetConsoleOut(); //!< Get output to console
@@ -66,8 +69,8 @@ class Fminer {
     void SetBbrcSep(bool val); //!< Set this to true to enable BBRC separators in output.
     
   private:
-    void AddChiSqNa(){chisq->na++;chisq->n++;}
-    void AddChiSqNi(){chisq->ni++;chisq->n++;}
+    void AddChiSqNa(){fm::chisq->na++;fm::chisq->n++;}
+    void AddChiSqNi(){fm::chisq->ni++;fm::chisq->n++;}
 
     bool init_mining_done;
     int comp_runner;

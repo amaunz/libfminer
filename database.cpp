@@ -1,4 +1,4 @@
-// database->cpp
+// database.cpp
 // Andreas Maunz, andreas@maunz.de, jul 2008
 // Siegfried Nijssen, snijssen@liacs.nl, jan 2004.
 #include "database.h"
@@ -6,8 +6,10 @@
 #include <algorithm>
 #include <iostream>
 
-extern bool aromatic;
-extern unsigned int minfreq;
+namespace fm {
+    extern bool aromatic;
+    extern unsigned int minfreq;
+}
 
 ostream &operator<< ( ostream &stream, DatabaseTreeEdge &databasetreeedge ) {
   stream << "DatabaseTreeEdge; edgelabel: " << databasetreeedge.edgelabel << "; tonode: " << databasetreeedge.tonode << endl;
@@ -84,7 +86,7 @@ bool Database::readTreeSmi (string smi, Tid tid, Tid orig_tid, int line_nr) {
 
         // set atom type as label
         // code for 'c' is set to -1 (aromatic carbon).
-        if (aromatic) {
+        if (fm::aromatic) {
             ((*atom)->IsAromatic() && ((*atom)->GetAtomicNum()==6)) ? inputnodelabel = 600 : inputnodelabel = (*atom)->GetAtomicNum();
         }
         else inputnodelabel = (*atom)->GetAtomicNum();
@@ -157,7 +159,7 @@ bool Database::readTreeSmi (string smi, Tid tid, Tid orig_tid, int line_nr) {
 
             // set input edge label
             inputedgelabel = bondorder;
-            if (aromatic && (*bond)->IsAromatic()) inputedgelabel = 4;
+            if (fm::aromatic && (*bond)->IsAromatic()) inputedgelabel = 4;
 
 //            cerr << nodeid1 << inputedgelabel << "(" << (*bond)->IsAromatic() << ")" << nodeid2 << " ";
             NodeLabel node1label = tree->nodes[nodeid1].nodelabel;
@@ -478,7 +480,7 @@ void Database::determineCycledNodes ( DatabaseTreePtr tree, vector<int> &nodesta
 
 void Database::edgecount () {
   for (unsigned int i = 0; i < edgelabels.size (); i++ ) {                              // DATABASE                    
-    if ( edgelabels[i].frequency >= minfreq ) {                                         // if edge is frequent...      
+    if ( edgelabels[i].frequency >= fm::minfreq ) {                                         // if edge is frequent...      
       nodelabels[edgelabels[i].tonodelabel].frequentedgelabels.push_back ( i );         // ... store it at the to-node 
       if ( edgelabels[i].fromnodelabel != edgelabels[i].tonodelabel )                   // ... and also (if different) 
         nodelabels[edgelabels[i].fromnodelabel].frequentedgelabels.push_back ( i );     // ... at the from-node        
@@ -509,7 +511,7 @@ void Database::reorder () {
     // gather frequent edgelabels and sort according to frequency
     edgelabelsindexes.reserve ( edgelabels.size () );
     for (unsigned int i = 0; i < edgelabels.size (); i++ ) {
-        if ( edgelabels[i].frequency >= minfreq )
+        if ( edgelabels[i].frequency >= fm::minfreq )
             edgelabelsindexes.push_back ( i );                                                              
     }
 
@@ -555,7 +557,7 @@ void Database::reorder () {
         for ( NodeId j = 0; j < tree.nodes.size (); j++ ) {                         // for every node j...
   //        cerr << endl;
             DatabaseTreeNode &node = tree.nodes[j];
-            if ( nodelabels[node.nodelabel].frequency >= minfreq ) {                  // ...check its frequency...
+            if ( nodelabels[node.nodelabel].frequency >= fm::minfreq ) {                  // ...check its frequency...
                 DatabaseNodeLabel &nodelabel = nodelabels[node.nodelabel];
 
   //            cerr << "Leg Occurence for node " << nodelabel.inputlabel
@@ -568,7 +570,7 @@ void Database::reorder () {
                     
                                         
                     EdgeLabel lab = node.edges[l].edgelabel;                            // ... (with label lab)...
-                    if ( edgelabels[lab].frequency >= minfreq ) {                       // ... check its frequency...
+                    if ( edgelabels[lab].frequency >= fm::minfreq ) {                       // ... check its frequency...
 
   //                    DatabaseTreeEdge& edge = node.edges[l];
   //                    cerr << "  edge " << (int) edge.edgelabel << " moved from " << l << " to " << k << endl;

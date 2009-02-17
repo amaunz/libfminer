@@ -8,22 +8,24 @@
 #include <iomanip>
 #include "misc.h"
 
-extern GraphState graphstate;
-extern unsigned int minfreq;
-extern bool adjust_ub;
-extern bool do_pruning;
-extern bool do_backbone;
-extern int type;
-extern bool console_out;
-extern bool refine_singles;
-extern bool do_output;
-extern bool bbrc_sep;
+namespace fm {
+    extern GraphState graphstate;
+    extern unsigned int minfreq;
+    extern bool adjust_ub;
+    extern bool do_pruning;
+    extern bool do_backbone;
+    extern bool updated;
+    extern int type;
+    extern bool console_out;
+    extern bool refine_singles;
+    extern bool do_output;
+    extern bool bbrc_sep;
 
-extern Database* database;
-extern ChisqConstraint* chisq;
-extern vector<string>* result;
-extern Statistics* statistics;
-
+    extern Database* database;
+    extern ChisqConstraint* chisq;
+    extern vector<string>* result;
+    extern Statistics* statistics;
+}
 
 // for every database node...
 Path::Path ( NodeLabel startnodelabel ) {
@@ -32,22 +34,22 @@ Path::Path ( NodeLabel startnodelabel ) {
     nodelabels.push_back ( startnodelabel );
     frontsymmetry = backsymmetry = totalsymmetry = 0;
 
-    InputNodeLabel inl = database->nodelabels[startnodelabel].inputlabel;
+    InputNodeLabel inl = fm::database->nodelabels[startnodelabel].inputlabel;
     cerr << "Root: ";
     cerr << inl; 
     cerr << endl; 
 
-    DatabaseNodeLabel &databasenodelabel = database->nodelabels[startnodelabel];
+    DatabaseNodeLabel &databasenodelabel = fm::database->nodelabels[startnodelabel];
 
     // ...gather frequent edge labels
     vector<EdgeLabel> frequentedgelabels;
     for ( unsigned int i = 0; i < databasenodelabel.frequentedgelabels.size (); i++ )
-        frequentedgelabels.push_back ( database->edgelabels[databasenodelabel.frequentedgelabels[i]].edgelabel );
+        frequentedgelabels.push_back ( fm::database->edgelabels[databasenodelabel.frequentedgelabels[i]].edgelabel );
                                                                                                 //  ^^^^^^^^^ is frequency rank!
     sort ( frequentedgelabels.begin (), frequentedgelabels.end () );                            // restores the rank order
     
     Tid lastself[frequentedgelabels.size ()];
-    vector<EdgeLabel> edgelabelorder ( database->edgelabelsindexes.size () );
+    vector<EdgeLabel> edgelabelorder ( fm::database->edgelabelsindexes.size () );
     EdgeLabel j = 0;
 
     // FOR ALL EDGES...
@@ -68,7 +70,7 @@ Path::Path ( NodeLabel startnodelabel ) {
         leg->occurrences.maxdegree = 0;
         leg->occurrences.selfjoin = 0;
 
-        DatabaseEdgeLabel &databaseedgelabel = database->edgelabels[database->edgelabelsindexes[frequentedgelabels[i]]];
+        DatabaseEdgeLabel &databaseedgelabel = fm::database->edgelabels[fm::database->edgelabelsindexes[frequentedgelabels[i]]];
         leg->occurrences.frequency = databaseedgelabel.frequency;
 
         if ( databaseedgelabel.fromnodelabel == startnodelabel ) {
@@ -85,7 +87,7 @@ Path::Path ( NodeLabel startnodelabel ) {
     
     // ... OCCURRENCES DESCRIBES LOCATION IN TREE (2)
     for ( unsigned int i = 0; i < databasenodelabel.occurrences.elements.size (); i++ ) {
-        DatabaseTree &tree = * (database->trees[databasenodelabel.occurrences.elements[i].tid]);
+        DatabaseTree &tree = * (fm::database->trees[databasenodelabel.occurrences.elements[i].tid]);
         DatabaseTreeNode &datanode = tree.nodes[databasenodelabel.occurrences.elements[i].tonodeid];
         for ( int j = 0; j < datanode.edges.size (); j++ ) {
             EdgeLabel edgelabel = edgelabelorder[datanode.edges[j].edgelabel];
@@ -179,12 +181,12 @@ Path::Path ( Path &parentpath, unsigned int legindex ) {
     // build OccurrenceLists
     extend ( leg.occurrences );
     for (unsigned int i = 0; i < candidatelegsoccurrences.size (); i++ ) {
-      if ( candidatelegsoccurrences[i].frequency >= minfreq ) {
+      if ( candidatelegsoccurrences[i].frequency >= fm::minfreq ) {
         PathLegPtr leg2 = new PathLeg;
         legs.push_back ( leg2 );
         leg2->tuple.edgelabel = i;
     	leg2->tuple.connectingnode = graphstate.lastNode ();
-        DatabaseEdgeLabel &databaseedgelabel = database->edgelabels[database->edgelabelsindexes[i]];
+        DatabaseEdgeLabel &databaseedgelabel = fm::database->edgelabels[fm::database->edgelabelsindexes[i]];
         if ( databaseedgelabel.fromnodelabel == leg.tuple.nodelabel )
           leg2->tuple.nodelabel = databaseedgelabel.tonodelabel;
         else
@@ -291,12 +293,12 @@ Path::Path ( Path &parentpath, unsigned int legindex ) {
 
   extend ( leg.occurrences );
   for ( unsigned int i = 0; i < candidatelegsoccurrences.size (); i++ ) {
-    if ( candidatelegsoccurrences[i].frequency >= minfreq ) {
+    if ( candidatelegsoccurrences[i].frequency >= fm::minfreq ) {
       PathLegPtr leg2 = new PathLeg;
       legs.push_back ( leg2 );
       leg2->tuple.edgelabel = i;
       leg2->tuple.connectingnode = graphstate.lastNode ();
-      DatabaseEdgeLabel &databaseedgelabel = database->edgelabels[database->edgelabelsindexes[i]];
+      DatabaseEdgeLabel &databaseedgelabel = fm::database->edgelabels[fm::database->edgelabelsindexes[i]];
       if ( databaseedgelabel.fromnodelabel == leg.tuple.nodelabel )
         leg2->tuple.nodelabel = databaseedgelabel.tonodelabel;
       else
@@ -404,16 +406,18 @@ bool Path::is_normal ( EdgeLabel edgelabel ) {
 
 void Path::expand2 (pair<float,string> max) {
 
-  statistics->patternsize++;
-  if ( (unsigned) statistics->patternsize > statistics->frequenttreenumbers.size () ) {
-    statistics->frequenttreenumbers.push_back ( 0 );
-    statistics->frequentpathnumbers.push_back ( 0 );
-    statistics->frequentgraphnumbers.push_back ( 0 );
+  fm::statistics->patternsize++;
+  if ( (unsigned) fm::statistics->patternsize > fm::statistics->frequenttreenumbers.size () ) {
+    fm::statistics->frequenttreenumbers.push_back ( 0 );
+    fm::statistics->frequentpathnumbers.push_back ( 0 );
+    fm::statistics->frequentgraphnumbers.push_back ( 0 );
   }
-  ++statistics->frequentpathnumbers[statistics->patternsize-1];
+  cerr << "fm::statistics->patternsize-1: " << fm::statistics->patternsize-1 << endl;
+  cerr << "fm::statistics->frequentpathnumbers.size(): " << fm::statistics->frequentpathnumbers.size()<< endl;
+  ++fm::statistics->frequentpathnumbers[fm::statistics->patternsize-1];
   
-  if ( statistics->patternsize == ((1<<(sizeof(NodeId)*8))-1) ) {
-    statistics->patternsize--;
+  if ( fm::statistics->patternsize == ((1<<(sizeof(NodeId)*8))-1) ) {
+    fm::statistics->patternsize--;
     return;
   }
 
@@ -461,15 +465,15 @@ void Path::expand2 (pair<float,string> max) {
  
 
   // we have reached a leaf
-  if (do_backbone && (pathlegs.size()==0)) { 
-     if (updated) { 
-        if (do_output) {
-            if (!console_out) { 
-                (*result) << max.second; 
+  if (fm::do_backbone && (pathlegs.size()==0)) { 
+     if (fm::updated) { 
+        if (fm::do_output) {
+            if (!fm::console_out) { 
+                (*fm::result) << max.second; 
             }
             else cout << max.second;
         }
-        updated = false;
+        fm::updated = false;
      }
   }
 
@@ -482,47 +486,47 @@ void Path::expand2 (pair<float,string> max) {
 
 
     // Calculate chisq
-    if (chisq->active) chisq->Calc(legs[index]->occurrences.elements);
+    if (fm::chisq->active) fm::chisq->Calc(legs[index]->occurrences.elements);
           
     // GRAPHSTATE AND OUTPUT
     graphstate.insertNode ( legs[index]->tuple.connectingnode, legs[index]->tuple.edgelabel, legs[index]->occurrences.maxdegree );
 
 
     // immediate output
-    if (do_output) {
-        if (!do_backbone) {
-            if (!console_out) (*result) << graphstate.to_s(legs[index]->occurrences.frequency);
+    if (fm::do_output) {
+        if (!fm::do_backbone) {
+            if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[index]->occurrences.frequency);
             else graphstate.print(legs[index]->occurrences.frequency);
         }
     }
 
 
     // RECURSE
-    float cmax = maxi ( maxi ( chisq->sig, max.first ), chisq->p );
+    float cmax = maxi ( maxi ( fm::chisq->sig, max.first ), fm::chisq->p );
     if ( (
-             !do_pruning || 
+             !fm::do_pruning || 
              (
-               (  !adjust_ub && (chisq->u >= chisq->sig) ) || 
-               (   adjust_ub && (chisq->u >= cmax) )
+               (  !fm::adjust_ub && (fm::chisq->u >= fm::chisq->sig) ) || 
+               (   fm::adjust_ub && (fm::chisq->u >= cmax) )
              )
          ) 
             &&
          (
-            refine_singles || (legs[index]->occurrences.frequency>1)
+            fm::refine_singles || (legs[index]->occurrences.frequency>1)
          )
       ){   // UB-PRUNING
 
       Path path ( *this, index );
-      if (max.first<chisq->p) { updated = true; path.expand2 ( pair<float, string>(chisq->p, graphstate.to_s(legs[index]->occurrences.frequency))); }
+      if (max.first<fm::chisq->p) { fm::updated = true; path.expand2 ( pair<float, string>(fm::chisq->p, graphstate.to_s(legs[index]->occurrences.frequency))); }
       else path.expand2 (max);
     }
     else {
-        if (do_backbone && updated) {  // FREE STRUCTURES: search was pruned
-            if (do_output) {
-                if (!console_out) (*result) << max.second;
+        if (fm::do_backbone && fm::updated) {  // FREE STRUCTURES: search was pruned
+            if (fm::do_output) {
+                if (!fm::console_out) (*fm::result) << max.second;
                 else cout << max.second;
             }
-            updated=false;
+            fm::updated=false;
         }
     }
 
@@ -537,45 +541,45 @@ void Path::expand2 (pair<float,string> max) {
     
 
     // Calculate chisq
-    if (chisq->active) chisq->Calc(legs[index]->occurrences.elements);
+    if (fm::chisq->active) fm::chisq->Calc(legs[index]->occurrences.elements);
 
     // GRAPHSTATE AND OUTPUT
     graphstate.insertNode ( legs[index]->tuple.connectingnode, legs[index]->tuple.edgelabel, legs[index]->occurrences.maxdegree );
 
     // immediate output
-    if (do_output) {
-        if (!do_backbone) {
-            if (!console_out) (*result) << graphstate.to_s(legs[index]->occurrences.frequency);
+    if (fm::do_output) {
+        if (!fm::do_backbone) {
+            if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[index]->occurrences.frequency);
             else graphstate.print(legs[index]->occurrences.frequency);
         }
     }
 
     // RECURSE
-    float cmax = maxi ( maxi ( chisq->sig, max.first ), chisq->p );
+    float cmax = maxi ( maxi ( fm::chisq->sig, max.first ), fm::chisq->p );
     if ( ( 
-             !do_pruning || 
+             !fm::do_pruning || 
              (
-               (  !adjust_ub && (chisq->u >= chisq->sig) ) || 
-               (   adjust_ub && (chisq->u >= cmax) )
+               (  !fm::adjust_ub && (fm::chisq->u >= fm::chisq->sig) ) || 
+               (   fm::adjust_ub && (fm::chisq->u >= cmax) )
              )
          ) 
             &&
          (
-            refine_singles || (legs[index]->occurrences.frequency>1)
+            fm::refine_singles || (legs[index]->occurrences.frequency>1)
          )
      ){   // UB-PRUNING
 
       Path path ( *this, index );
-      if (max.first<chisq->p) { updated = true; path.expand2 ( pair<float, string>(chisq->p, graphstate.to_s(legs[index]->occurrences.frequency))); }
+      if (max.first<fm::chisq->p) { fm::updated = true; path.expand2 ( pair<float, string>(fm::chisq->p, graphstate.to_s(legs[index]->occurrences.frequency))); }
       else path.expand2 (max);
     }
     else {
-        if (do_backbone && updated) { // FREE STRUCTURES: search was pruned
-            if (do_output) {
-                if (!console_out) (*result) << max.second;
-                else if (do_output) cout << max.second;
+        if (fm::do_backbone && fm::updated) { // FREE STRUCTURES: search was pruned
+            if (fm::do_output) {
+                if (!fm::console_out) (*fm::result) << max.second;
+                else if (fm::do_output) cout << max.second;
             }
-            updated=false;
+            fm::updated=false;
         }
     }
 
@@ -585,11 +589,11 @@ void Path::expand2 (pair<float,string> max) {
 
 
 
-  bool uptmp = updated;
+  bool uptmp = fm::updated;
 
-  if (bbrc_sep && !do_backbone && legs.size() > 0) {
-      if (do_output) {
-            if (!console_out && (result->back()!=graphstate.sep())) (*result) << graphstate.sep();
+  if (fm::bbrc_sep && !fm::do_backbone && legs.size() > 0) {
+      if (fm::do_output) {
+            if (!fm::console_out && (fm::result->back()!=graphstate.sep())) (*fm::result) << graphstate.sep();
       }
   }
 
@@ -603,46 +607,46 @@ void Path::expand2 (pair<float,string> max) {
         if ( ( totalsymmetry || legs[i]->tuple.depth <= edgelabels.size () / 2 ) &&
  	      ( legs[i]->tuple.depth != 1 || legs[i]->tuple.edgelabel >= edgelabels[0] ) &&
 	      ( legs[i]->tuple.depth != nodelabels.size () - 2 || legs[i]->tuple.edgelabel >= edgelabels.back () ) &&
-	        type > 1 ) {
+	        fm::type > 1 ) {
           // Calculate chisq
-          if (chisq->active) chisq->Calc(legs[i]->occurrences.elements);
+          if (fm::chisq->active) fm::chisq->Calc(legs[i]->occurrences.elements);
           // GRAPHSTATE
           graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.edgelabel, legs[i]->occurrences.maxdegree );
 
-          if (do_output) {
-              if (!do_backbone) { 
-                if (!console_out) (*result) << graphstate.to_s(legs[i]->occurrences.frequency);
+          if (fm::do_output) {
+              if (!fm::do_backbone) { 
+                if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[i]->occurrences.frequency);
                 else graphstate.print(legs[i]->occurrences.frequency);
               }
           }
 
           // RECURSE
-          float cmax = maxi ( maxi ( chisq->sig, max.first ), chisq->p );
+          float cmax = maxi ( maxi ( fm::chisq->sig, max.first ), fm::chisq->p );
 
-          if ( ( !do_pruning || 
+          if ( ( !fm::do_pruning || 
                (
-                 (  !adjust_ub && (chisq->u >= chisq->sig) ) || 
-                 (   adjust_ub && (chisq->u >= cmax) )
+                 (  !fm::adjust_ub && (fm::chisq->u >= fm::chisq->sig) ) || 
+                 (   fm::adjust_ub && (fm::chisq->u >= cmax) )
                )
              ) &&
              (
-                refine_singles || (legs[i]->occurrences.frequency>1)
+                fm::refine_singles || (legs[i]->occurrences.frequency>1)
              )
     
           ){   // UB-PRUNING
 
             PatternTree tree ( *this, i );
-            if (max.first<chisq->p) { updated = true; tree.expand ( pair<float, string>(chisq->p, graphstate.to_s(legs[i]->occurrences.frequency))); }
+            if (max.first<fm::chisq->p) { fm::updated = true; tree.expand ( pair<float, string>(fm::chisq->p, graphstate.to_s(legs[i]->occurrences.frequency))); }
             else tree.expand (max);
           }
 
           else {
-            if (do_backbone && updated) { 
-              if (do_output) {
-                  if (!console_out) (*result) << max.second;
+            if (fm::do_backbone && fm::updated) { 
+              if (fm::do_output) {
+                  if (!fm::console_out) (*fm::result) << max.second;
                   else  cout << max.second;
               }
-              updated=false;
+              fm::updated=false;
             }
           }
 
@@ -653,9 +657,9 @@ void Path::expand2 (pair<float,string> max) {
   }
 
 
-  updated=uptmp;
+  fm::updated=uptmp;
     
-  statistics->patternsize--;
+  fm::statistics->patternsize--;
 
 
 //  cerr << "backtracking p" << endl;
@@ -674,21 +678,21 @@ void Path::expand () {
     PathTuple &tuple = legs[i]->tuple;
     if ( tuple.nodelabel >= nodelabels[0] ) {
         
-      if (chisq->active) chisq->Calc(legs[i]->occurrences.elements);
+      if (fm::chisq->active) fm::chisq->Calc(legs[i]->occurrences.elements);
 
       // GRAPHSTATE AND OUTPUT
       graphstate.insertNode ( tuple.connectingnode, tuple.edgelabel, legs[i]->occurrences.maxdegree );
-      if (do_output) {
-          if (!do_backbone && legs[i]->occurrences.frequency>=minfreq) { 
-            if (!console_out) (*result) << graphstate.to_s(legs[i]->occurrences.frequency);
+      if (fm::do_output) {
+          if (!fm::do_backbone && legs[i]->occurrences.frequency>=fm::minfreq) { 
+            if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[i]->occurrences.frequency);
             else graphstate.print(legs[i]->occurrences.frequency);
           }
       }
 
       // RECURSE
       Path path (*this, i);
-      updated = true;
-      path.expand2 (pair<float, string>(chisq->p, graphstate.to_s(legs[i]->occurrences.frequency)));
+      fm::updated = true;
+      path.expand2 (pair<float, string>(fm::chisq->p, graphstate.to_s(legs[i]->occurrences.frequency)));
       graphstate.deleteNode ();
 
     }

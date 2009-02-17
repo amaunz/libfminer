@@ -10,7 +10,9 @@
 #include "legoccurrence.h"
 #include "database.h"
 
-extern Database* database;
+namespace fm {
+    extern Database* database;
+}
 
 class Constraint {};
 
@@ -60,11 +62,11 @@ class ChisqConstraint : public Constraint {
 
       each (legocc) { 
 
-        if (database->trees[legocc[i].tid]->activity == 1) {
+        if (fm::database->trees[legocc[i].tid]->activity == 1) {
             fa_set.insert(legocc[i].tid); 
         }
 
-        else if (database->trees[legocc[i].tid]->activity == 0) {
+        else if (fm::database->trees[legocc[i].tid]->activity == 0) {
             fi_set.insert(legocc[i].tid); 
         }
 
