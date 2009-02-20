@@ -15,6 +15,7 @@ namespace fm {
     extern bool refine_singles;
     extern bool do_output;
     extern bool bbrc_sep;
+    extern bool most_specific_trees_only;
 
     extern Database* database;
     extern ChisqConstraint* chisq;
@@ -839,11 +840,11 @@ void PatternTree::expand (pair<float, string> max) {
 
     // GRAPHSTATE
     graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.label, legs[i]->occurrences.maxdegree );
-    if (fm::do_output) {
-        if (!fm::do_backbone) { 
-           if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[i]->occurrences.frequency);
-           else graphstate.print(legs[i]->occurrences.frequency);
-        }
+
+    // immediate output for all patterns
+    if (fm::do_output && !fm::most_specific_trees_only && !fm::do_backbone) {
+       if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[i]->occurrences.frequency);
+       else graphstate.print(legs[i]->occurrences.frequency);
     }
 
     // RECURSE
@@ -862,7 +863,14 @@ void PatternTree::expand (pair<float, string> max) {
     ) {   // UB-PRUNING
 
         PatternTree p ( *this, i );
-        if (fm::chisq->p>max.first) { fm::updated = true; p.expand (pair<float, string>(fm::chisq->p,graphstate.to_s(legs[i]->occurrences.frequency))); }
+
+        // output most specialized pattern
+        if (fm::most_specific_trees_only && fm::do_output && !fm::do_backbone && p.legs.size() == 0) {
+            if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[i]->occurrences.frequency);
+            else graphstate.print(legs[i]->occurrences.frequency);
+        }
+
+        if (fm::chisq->p > max.first) { fm::updated = true; p.expand (pair<float, string>(fm::chisq->p,graphstate.to_s(legs[i]->occurrences.frequency))); }
         else p.expand (max);
     }
     else {
@@ -885,7 +893,7 @@ void PatternTree::expand (pair<float, string> max) {
 
   if (fm::bbrc_sep && !fm::do_backbone && (legs.size()==0)) {
       if (fm::do_output) {
-          if (!fm::console_out && (fm::result->back()!=graphstate.sep())) (*fm::result) << graphstate.sep();
+          if (!fm::console_out && fm::result->size() && (fm::result->back()!=graphstate.sep())) (*fm::result) << graphstate.sep();
       }
   }
 

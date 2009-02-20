@@ -510,7 +510,7 @@ void GraphState::DfsOut(int cur_n, string& oss, int from_n) {
                 oss.append(":");
                 break;
             default:
-                cerr << "ERROR! Bond order of " << iel << " is not supported!" << endl;
+                cerr << "Error! Bond order of " << iel << " is not supported. Aborting." << endl;
                 exit(1);
             }
             DfsOut(edge.tonode, oss, cur_n);
@@ -527,7 +527,8 @@ string GraphState::to_s ( unsigned int frequency ) {
         string oss;
 
         if (fm::gsp_out) { 
-            to_s(oss); return oss;
+            to_s(oss); 
+            return oss;
         }
 
         else {
@@ -541,21 +542,20 @@ string GraphState::to_s ( unsigned int frequency ) {
           }
           DfsOut(i, oss, i);
           if (fm::do_yaml) oss.append ("\", ");
+          else oss.append("\t");
 
           // output chisq
           if (fm::chisq->active) {
             if (fm::do_yaml) { char x[20]; sprintf(x,"%.4f", fm::chisq->p); (oss.append(x)).append(", "); }
-            else oss.append("\t");
           }
 
           // output freq
           if (fm::chisq->active) {
-              if (frequency != (fm::chisq->fa+fm::chisq->fi)) { cerr << "Error: wrong counts " << frequency << "!=" << fm::chisq->fa << "+" << fm::chisq->fi << endl; }
+              if (frequency != (fm::chisq->fa+fm::chisq->fi)) { cerr << "Notice: Wrong counts for frequency " << frequency << " [!=" << fm::chisq->fa << "(fa)+" << fm::chisq->fi << "(fi)]." << endl; }
           }
           else { 
               char x[20]; sprintf(x,"%i", frequency); 
-              if (fm::do_yaml) { (oss.append (", ")).append(x); }
-              else oss.append ("\t ").append(x);
+              oss.append(x);
           }
 
           // output occurrences

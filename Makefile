@@ -28,15 +28,15 @@ $(LIB1_REALNAME): $(OBJ)
 .o: .cpp.h
 	$(CC) $(CXXFLAGS) $(LIBS) $@
 $(LIB2): $(NAME)_wrap.o $(OBJ)
-	g++ -shared -fPIC *.o /usr/local/lib/libopenbabel.so /usr/lib/libgsl.so -o $@
+	$(CC) -shared $(CXXFLAGS) *.o /usr/local/lib/libopenbabel.so /usr/lib/libgsl.so -o $@
 
 # HELPER TARGETS
 $(NAME)_wrap.cxx: $(NAME).i
 	$(SWIG) $(SWIGFLAGS) $^
 $(NAME)_wrap.o: $(NAME)_wrap.cxx
-	g++ -c -g -Wall -I$(INCLUDE) -I/usr/local/lib/ruby/1.8/i686-linux/ $^
+	$(CC) -c $(CXXFLAGS) -I/usr/local/lib/ruby/1.8/i686-linux/ $^
 .PHONY:
-doc: Doxyfile Mainpage.h
+doc: Doxyfile Mainpage.h *.h
 	-doxygen $<
 .PHONY:
 clean:

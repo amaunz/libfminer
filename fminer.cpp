@@ -1,6 +1,10 @@
 #include "fminer.h"
+#include "globals.h"
 
 using namespace fm;
+
+
+// 1. Constructors and Initializers
 
 Fminer::Fminer() : init_mining_done(false) {
   if (!instance_present) {
@@ -12,7 +16,7 @@ Fminer::Fminer() : init_mining_done(false) {
       if (getenv("FMINER_SMARTS")) fm::gsp_out = false; 
   }
   else {
-    cerr << "Error! Can't create more than 1 instance." << endl; 
+    cerr << "Error! Cannot create more than 1 instance." << endl; 
     exit(1);
   }
 }
@@ -29,7 +33,7 @@ Fminer::Fminer(int _type, unsigned int _minfreq) : init_mining_done(false) {
       if (getenv("FMINER_SMARTS")) fm::gsp_out = false; 
   }
   else {
-    cerr << "Error! Can't create more than 1 instance." << endl; 
+    cerr << "Error! Cannot create more than 1 instance." << endl; 
     exit(1);
   }
 
@@ -50,7 +54,7 @@ Fminer::Fminer(int _type, unsigned int _minfreq, float _chisq_val, bool _do_back
 
   }
   else {
-    cerr << "Error! Can't create more than 1 instance." << endl; 
+    cerr << "Error! Cannot create more than 1 instance." << endl; 
     exit(1);
   }
 
@@ -69,10 +73,8 @@ void Fminer::Reset() {
     delete fm::database; fm::database = new Database();
     delete fm::statistics; fm::statistics = new Statistics();
     delete fm::chisq; fm::chisq = new ChisqConstraint(0.95);
-    fm::chisq->active = true; 
-
+    SetChisqActive(true); 
     fm::result = &r;
-
     comp_runner=1; 
     comp_no=0; 
     init_mining_done = false;
@@ -82,32 +84,156 @@ void Fminer::Defaults() {
     fm::minfreq = 2;
     fm::type = 2;
     fm::do_backbone = true;
-    fm::updated = true;
     fm::adjust_ub = true;
     fm::do_pruning = true;
     fm::console_out = false;
     fm::aromatic = true;
     fm::refine_singles = false;
     fm::do_output=true;
+    fm::bbrc_sep=false;
+    fm::most_specific_trees_only=false;
+
+    fm::updated = true;
     fm::do_yaml=true;
     fm::gsp_out=true;
-    fm::bbrc_sep=false;
+}
+
+
+// 2. Getter methods
+
+int Fminer::GetMinfreq(){return fm::minfreq;}
+int Fminer::GetType(){return fm::type;}
+bool Fminer::GetBackbone(){return fm::do_backbone;}
+bool Fminer::GetDynamicUpperBound(){return fm::adjust_ub;}
+bool Fminer::GetPruning() {return fm::do_pruning;}
+bool Fminer::GetConsoleOut(){return fm::console_out;}
+bool Fminer::GetAromatic() {return fm::aromatic;}
+bool Fminer::GetRefineSingles() {return fm::refine_singles;}
+bool Fminer::GetDoOutput() {return fm::do_output;}
+bool Fminer::GetBbrcSep(){return fm::bbrc_sep;}
+bool Fminer::GetMostSpecTreesOnly(){return fm::most_specific_trees_only;}
+bool Fminer::GetChisqActive(){return fm::chisq->active;}
+float Fminer::GetChisqSig(){return fm::chisq->sig;}
+
+
+
+// 3. Setter methods
+
+void Fminer::SetMinfreq(int val) {
+    if (val < 1) { cerr << "Error! Invalid value '" << val << "' for parameter minfreq." << endl; exit(1); }
+    if (val > 1 && GetRefineSingles()) { cerr << "Warning! Minimum frequency of '" << val << "' could not be set due to activated single refinement." << endl;}
+    fm::minfreq = val;
+}
+
+void Fminer::SetType(int val) {
+    if ((val != 1) && (val != 2)) { cerr << "Error! Invalid value '" << val << "' for parameter type." << endl; exit(1); }
+    fm::type = val;
+}
+
+void Fminer::SetBackbone(bool val) {
+    if (val && !GetChisqActive()) {
+        cerr << "Warning! BBRC mining could not be enabled due to deactivated significance criterium." << endl;
+    }
+    else {  
+        if (!val && GetDynamicUpperBound()) {
+            cerr << "Notice: Disabling dynamic upper bound pruning due to switched-off BBRC mining." << endl;
+            SetDynamicUpperBound(false);
+        }
+        fm::do_backbone = val;
+    }
+}
+
+void Fminer::SetDynamicUpperBound(bool val) {
+    if (val && !GetBackbone()) {
+        cerr << "Warning! Dynamic upper bound pruning could not be enabled due to disabled BBRC mining." << endl;
+    }
+    else if (val && !GetChisqActive()) {
+        cerr << "Warning! Dynamic upper bound pruning could not be enabled due to deactivated significance criterium." << endl;
+    }
+    else if (val && !GetPruning()) {
+        cerr << "Warning! Dynamic upper bound pruning could not be enabled due to deactivated statistical metric pruning." << endl;
+    }
+    else {
+        fm::adjust_ub=val; 
+    }
+}
+
+void Fminer::SetPruning(bool val) {
+    if (val && !GetChisqActive()) {
+        cerr << "Warning! Statistical metric pruning could not be enabled due to deactivated significance criterium." << endl;
+    }
+    else {
+        if (!val && GetDynamicUpperBound()) {
+            cerr << "Notice: Disabling dynamic upper bound pruning." << endl;
+            SetDynamicUpperBound(false); 
+        }
+        fm::do_pruning=val;
+    }
 }
 
 void Fminer::SetConsoleOut(bool val) {
-    if (val==true && fm::bbrc_sep) cerr << "Warning: Console output could not be enabled!" << endl;
-    else fm::console_out=val;
+    if (val) {
+        if (GetBbrcSep()) cerr << "Warning! Console output could not be enabled due to enabled BBRC separator." << endl;
+        else fm::console_out=val;
+    }
+}
+
+void Fminer::SetAromatic(bool val) {
+    fm::aromatic = val;
+}
+
+void Fminer::SetRefineSingles(bool val) {
+    fm::refine_singles = val;
+    if (GetRefineSingles() && GetMinfreq() > 1) {
+        cerr << "Notice: Using minimum frequency of 1 to refine singles." << endl;
+        SetMinfreq(1);
+    }
+}
+
+void Fminer::SetDoOutput(bool val) {
+    fm::do_output = val;
 }
 
 void Fminer::SetBbrcSep(bool val) {
-    if (val==true && fm::console_out) {
-        cerr << "Warning: Disabling console output, using result vector!" << endl;
-        fm::console_out=false;
-    }
     fm::bbrc_sep=val;
+    if (GetBbrcSep()) {
+        if (GetConsoleOut()) {
+             cerr << "Notice: Disabling console output, using result vector." << endl;
+             SetConsoleOut(false);
+        }
+    }
 }
 
+void Fminer::SetMostSpecTreesOnly(bool val) {
+    fm::most_specific_trees_only=val;
+    if (GetMostSpecTreesOnly() && GetBackbone()) {
+        cerr << "Notice: Disabling BBRC mining, getting most specific tree patterns instead." << endl;
+        SetBackbone(false);
+    }
+}
+
+void Fminer::SetChisqActive(bool val) {
+    fm::chisq->active = val;
+    if (!GetChisqActive()) {
+        cerr << "Notice: Disabling dynamic upper bound pruning due to deactivated significance criterium." << endl;
+        SetDynamicUpperBound(false); //order important
+        cerr << "Notice: Disabling BBRC mining due to deactivated significance criterium." << endl;
+        SetBackbone(false);
+        cerr << "Notice: Disabling statistical metric pruning due to deactivated significance criterium." << endl;
+        SetPruning(false);
+    }
+}
+
+void Fminer::SetChisqSig(float _chisq_val) {
+    if (_chisq_val < 0.0 || _chisq_val > 1.0) { cerr << "Error! Invalid value '" << _chisq_val << "' for parameter chisq." << endl; exit(1); }
+    fm::chisq->sig = gsl_cdf_chisq_Pinv(_chisq_val, 1);
+}
+
+
+// 4. Other methods
+
 vector<string>* Fminer::MineRoot(unsigned int j) {
+    fm::result->clear();
     if (!init_mining_done) {
         if (fm::chisq->active) {
             each (fm::database->trees) {
@@ -117,17 +243,25 @@ vector<string>* Fminer::MineRoot(unsigned int j) {
                 }
             }
         }
-        fm::database->edgecount (); cerr << "Edgecount" << endl; fm::database->reorder (); cerr << "Reorder" << endl; initLegStatics (); graphstate.init (); 
+        fm::database->edgecount (); fm::database->reorder (); initLegStatics (); graphstate.init (); 
+        if (fm::bbrc_sep && !fm::do_backbone && fm::do_output && !fm::console_out) (*fm::result) << graphstate.sep();
         init_mining_done=true; 
+        cerr << "Settings:" << endl \
+             << "---" << endl \
+             << "Chi-square active (p-value): " << GetChisqActive() << " (" << GetChisqSig()<< ")" << endl \
+             << "BBRC mining: " << GetBackbone() << endl \
+             << "statistical metric (dynamic upper bound pruning): " << GetPruning() << " (" << GetDynamicUpperBound() << ")" << endl \
+             << "---" << endl \
+             << "Minimum frequency: " << GetMinfreq() << endl \
+             << "Refine patterns with single support: " << GetRefineSingles() << endl \
+             << "Most specific BBRC members: " << GetMostSpecTreesOnly() << endl \
+             << "---" << endl;
     }
-
-    fm::result->clear();
     if (j >= fm::database->nodelabels.size()) { cerr << "Error! Root node does not exist." << endl;  exit(1); }
     if ( fm::database->nodelabels[j].frequency >= fm::minfreq && fm::database->nodelabels[j].frequentedgelabels.size () ) {
         Path path(j);
         path.expand(); // mining step
     }
-
     return fm::result;
 }
 
@@ -150,7 +284,6 @@ bool Fminer::AddCompound(string smiles, unsigned int comp_id) {
 }
 
 bool Fminer::AddActivity(bool act, unsigned int comp_id) {
-
     if (fm::database->trees_map[comp_id] == NULL) { 
         cerr << "No structure for ID " << comp_id << ". Ignoring entry!" << endl; return false; 
     }
@@ -160,84 +293,4 @@ bool Fminer::AddActivity(bool act, unsigned int comp_id) {
         return true;
     }
 }
-
-void Fminer::SetType(int _type) {
-    if ((_type != 1) && (_type != 2)) { cerr << "Error! Invalid value '" << _type << "' for parameter type." << endl; exit(1); }
-    fm::type = _type;
-}
-
-void Fminer::SetMinfreq(int _minfreq) {
-    if (_minfreq < 1) { cerr << "Error! Invalid value '" << _minfreq << "' for parameter minfreq." << endl; exit(1); }
-    fm::minfreq = _minfreq;
-}
-
-void Fminer::SetChisqSig(float _chisq_val) {
-    if (_chisq_val < 0.0 || _chisq_val > 1.0) { cerr << "Error! Invalid value '" << _chisq_val << "' for parameter chisq->" << endl; exit(1); }
-    fm::chisq->sig = gsl_cdf_chisq_Pinv(_chisq_val, 1);
-}
-
-void Fminer::SetChisqActive(bool _val) {
-    fm::chisq->active = _val;
-    if (_val == false) {
-        SetDynamicUpperBound(false); //order important
-        SetBackbone(false);
-        SetPruning(false);
-    }
-}
-
-void Fminer::SetPruning(bool val) {
-    fm::do_pruning=val;
-    if (!fm::do_pruning) {
-        if (GetDynamicUpperBound()) cerr << "Notice: Disabling dynamic upper bound pruning." << endl;
-        SetDynamicUpperBound(false); 
-    }
-}
-
-void Fminer::SetBackbone(bool val) {
-    fm::do_backbone = val;
-    if (!fm::do_backbone) {
-        if (GetDynamicUpperBound()) cerr << "Notice: Disabling dynamic upper bound pruning." << endl;
-        SetDynamicUpperBound(false);
-    }
-}
-
-void Fminer::SetDynamicUpperBound(bool val) {
-    fm::adjust_ub=val; 
-    if (fm::adjust_ub) {
-        if (!GetPruning()) cerr << "Notice: Enabling statistical metrical pruning." << endl;
-        SetPruning(true);
-        if (!GetBackbone()) cerr << "Notice: Enabling mining for backbone refinement class representatives." << endl;
-        SetBackbone(true);
-    }
-}
-
-
-
-void Fminer::SetAromatic(bool val) {
-    fm::aromatic = val;
-}
-
-void Fminer::SetRefineSingles(bool val) {
-    fm::refine_singles = val;
-}
-
-void Fminer::SetDoOutput(bool val) {
-    fm::do_output = val;
-}
-
-
-bool Fminer::GetConsoleOut(){return fm::console_out;}
-bool Fminer::GetBbrcSep(){return fm::bbrc_sep;}
-int Fminer::GetType(){return fm::type;}
-int Fminer::GetMinfreq(){return fm::minfreq;}
-bool Fminer::GetChisqSig(){return fm::chisq->sig;}
-bool Fminer::GetBackbone(){return fm::do_backbone;}
-
-bool Fminer::GetDynamicUpperBound(){return fm::adjust_ub;}
-bool Fminer::GetPruning() {return fm::do_pruning;}
-bool Fminer::GetAromatic() {return fm::aromatic;}
-bool Fminer::GetRefineSingles() {return fm::refine_singles;}
-bool Fminer::GetDoOutput() {return fm::do_output;}
-
-
 

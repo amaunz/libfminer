@@ -45,6 +45,7 @@ class PatternTree {
     PatternTree ( Path &path, unsigned int legindex );
     ~PatternTree ();
     void expand (pair<float, string> max);
+    vector<LegPtr> legs; // pointers used to avoid copy-constructor during a resize of the vector
   private:
     void checkIfIndeedNormal ();
     /* inline */ void addExtensionLegs ( Tuple &tuple, LegOccurrences &legoccurrences );
@@ -63,7 +64,6 @@ class PatternTree {
     unsigned int maxdepth;
     int symmetric; // 0 == not symmetric, 1 == symmetric, even length path, 2 == symmetric, odd length path
     int secondpathleg;
-    vector<LegPtr> legs; // pointers used to avoid copy-constructor during a resize of the vector
     vector<CloseLegPtr> closelegs;
     friend ostream &operator<< ( ostream &stream, PatternTree &patterntree );
 #ifdef GRAPH_OUTPUT

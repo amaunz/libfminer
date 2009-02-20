@@ -4,14 +4,14 @@
  *
  * This is the Fminer library, available from  http://github.com/amaunz/libfminer/tree/master.
  * The official Fminer application that uses this library is available from http://github.com/amaunz/fminer/tree/master.
- * Latest scientific documentation is available from http://www.maunz.de/ls_graph_mining_using_bbrcs.pdf.
+ * Scientific documentation is available from http://www.maunz.de/ls_graph_mining_using_bbrcs.pdf.
  * To create documentation with doxygen, do 'make doc'. The documentation explains API, constructor usage and options.
  * 
  *  @section sec1 Abstract
  *
  *  We present a new approach to large-scale graph mining
  *  based on so-called backbone refinement classes. The method
- *  efficiently mines tree-shaped subgraph descriptors underminimum
+ *  efficiently mines tree-shaped subgraph descriptors under minimum
  *  frequency and significance constraints, using classes
  *  of fragments to reduce feature set size and running times.
  *  The classes are defined in terms of fragments sharing a common
@@ -44,22 +44,26 @@
  * - OpenBabel: The Open Babel Package, version 2.1.1 (http://openbabel.sourceforge.net/)
  * - GSL: GNU Scientific Library, version 0.1 (http://www.gnu.org/software/gsl/)
  *
- *   These licensing conditions mean, that you may only use LibFminer, in whatever form, under the condition, that your source code is also freely available.
+ *   These licensing conditions mean, that you may only use LibFminer, in whatever form, under the condition that your source code is also freely available.
  *
  *  @section sec2 Portability
  *  LibFminer is a library, written in C++. It dynamically links to <code>libopenbabel</code> and <code>libgsl</code> libraries.
- *  \subsection Dependencies
  *  The dependency libraries are available for Linux, Mac and Windows, so porting to the latter two platforms should be easy.
  *  The API can be made available to other languages. A config file for Swig to automagically create languages bindings exists (<code>fminer.i</code>). The Makefile features a target that creates ruby bindings using this file (<code>make fminer.so</code>).
  *
  *  @section sec3 Example program using the LibFminer API
  *  LibFminer uses the 'singleton' design pattern known from software engineering, i.e. class instantiation is restricted to one object.
- *  The following code retrieves a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output is in YAML format and takes the form
+ *  The following code retrieves a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output consists of gSpan graphs.
+ *
+ * Define the FMINER_SMARTS environment variable to produce output in SMARTS format. In this case, each line is a YAML sequence, containing SMARTS fragment, <i>p</i>-value, and two sequences denoting positive and negative class occurrences (line numbers in Smiles file): 
+ *
  *  \code
  *  - [ smarts,    p_chisq,    occ_list_active,    occ_list_inactive ]
  *  \endcode
  *
- * Documentation for YAML can be found at: http://yaml.org/spec/cvs/current.html
+ * Documentation for YAML can be found at: http://yaml.org/spec/cvs/current.html#
+ *
+ * Additionally define the FMINER_LAZAR environment variable to produce output in linfrag format which can be used as input to <code>Lazar</code>.
  *
  * \subsection CPP C++
  *
@@ -112,8 +116,10 @@
  * print fm.GetNoCompounds()  
  * puts " compounds"
  * # Toy example: special settings for mining all fragments
- * fm.SetChisqSig(0) # use no significance constraint
- * fm.SetRefineSingles(true) # refine structures with support 1
+ * # use no significance constraint
+ * fm.SetChisqSig(0) 
+ * # refine structures with support 1
+ * fm.SetRefineSingles(true) 
  * # gather results for every root node in vector instead of immediate output
  * fm.SetConsoleOut(false)
  * (0 .. fm.GetNoRootNodes()-1).each do |j|
@@ -145,7 +151,7 @@
 *
  * \subsection Options Options Description
  *
- * The following parameters and switches are normally configure via the constructor. At a later point, you may change those settings via public setter methods and get their values via public getter methods, see the <code>Fminer</code> API.
+ * The following parameters and switches are normally configured via the constructor. At a later point, you may change those settings via public setter methods and get their values via public getter methods, see the <code>Fminer</code> API.
  *
  * Constraint parameters:
  *  - Subgraph type, choices are paths and trees. <code>type</code> may be  1 (paths) and 2 (trees). Default is 2.
@@ -161,12 +167,6 @@
  * void SetPruning(bool val) {do_pruning=val;} //!< Pass 'false' here to disable statistical pruning completely.
  * \endcode
  *
- * Output consists of blocks of gSpan graphs.
- * When using SMARTS output (FMINER_SMARTS defined), each line is a YAML sequence, containing SMARTS fragment, p-value, and two sequences denoting positive and negative class occurrences (line numbers in Smiles file). When FMINER_LAZAR is set, the linfrag output format is used.
-
- * Define the FMINER_SMARTS environment variable to produce output in SMARTS format (e.g. <code>export FMINER_SMARTS=1</code>).
- * Additionally define the FMINER_LAZAR environment variable to produce output in linfrag format which can be used as input to Lazar (e.g. <code>export FMINER_LAZAR=1</code>).
-
  * Andreas Maunz, 2008
  *
  *  \author Andreas Maunz, 2008

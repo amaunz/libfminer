@@ -9,7 +9,7 @@
 #include "misc.h"
 
 namespace fm {
-    extern GraphState graphstate;
+    //extern GraphState graphstate;
     extern unsigned int minfreq;
     extern bool adjust_ub;
     extern bool do_pruning;
@@ -20,6 +20,7 @@ namespace fm {
     extern bool refine_singles;
     extern bool do_output;
     extern bool bbrc_sep;
+    extern bool most_specific_trees_only;
 
     extern Database* database;
     extern ChisqConstraint* chisq;
@@ -491,11 +492,9 @@ void Path::expand2 (pair<float,string> max) {
 
 
     // immediate output
-    if (fm::do_output) {
-        if (!fm::do_backbone) {
-            if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[index]->occurrences.frequency);
-            else graphstate.print(legs[index]->occurrences.frequency);
-        }
+    if (fm::do_output && !fm::most_specific_trees_only && !fm::do_backbone) {
+        if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[index]->occurrences.frequency);
+        else graphstate.print(legs[index]->occurrences.frequency);
     }
 
 
@@ -545,11 +544,9 @@ void Path::expand2 (pair<float,string> max) {
     graphstate.insertNode ( legs[index]->tuple.connectingnode, legs[index]->tuple.edgelabel, legs[index]->occurrences.maxdegree );
 
     // immediate output
-    if (fm::do_output) {
-        if (!fm::do_backbone) {
-            if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[index]->occurrences.frequency);
-            else graphstate.print(legs[index]->occurrences.frequency);
-        }
+    if (fm::do_output && !fm::most_specific_trees_only && !fm::do_backbone) {
+        if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[index]->occurrences.frequency);
+        else graphstate.print(legs[index]->occurrences.frequency);
     }
 
     // RECURSE
@@ -590,9 +587,7 @@ void Path::expand2 (pair<float,string> max) {
   bool uptmp = fm::updated;
 
   if (fm::bbrc_sep && !fm::do_backbone && legs.size() > 0) {
-      if (fm::do_output) {
-            if (!fm::console_out && (fm::result->back()!=graphstate.sep())) (*fm::result) << graphstate.sep();
-      }
+      if (fm::do_output && !fm::console_out && fm::result->size() && (fm::result->back()!=graphstate.sep())) (*fm::result) << graphstate.sep();
   }
 
   for ( unsigned int i = 0; i < legs.size (); i++ ) {
@@ -611,11 +606,10 @@ void Path::expand2 (pair<float,string> max) {
           // GRAPHSTATE
           graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.edgelabel, legs[i]->occurrences.maxdegree );
 
-          if (fm::do_output) {
-              if (!fm::do_backbone) { 
-                if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[i]->occurrences.frequency);
-                else graphstate.print(legs[i]->occurrences.frequency);
-              }
+          // immediate output
+          if (fm::do_output && !fm::most_specific_trees_only && !fm::do_backbone) {
+             if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[i]->occurrences.frequency);
+             else graphstate.print(legs[i]->occurrences.frequency);
           }
 
           // RECURSE
@@ -634,6 +628,13 @@ void Path::expand2 (pair<float,string> max) {
           ){   // UB-PRUNING
 
             PatternTree tree ( *this, i );
+
+            // output most specialized pattern
+            if (fm::most_specific_trees_only && fm::do_output && !fm::do_backbone && tree.legs.size() == 0) {
+                if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[i]->occurrences.frequency);
+                else graphstate.print(legs[i]->occurrences.frequency);
+            }
+
             if (max.first<fm::chisq->p) { fm::updated = true; tree.expand ( pair<float, string>(fm::chisq->p, graphstate.to_s(legs[i]->occurrences.frequency))); }
             else tree.expand (max);
           }
@@ -680,11 +681,10 @@ void Path::expand () {
 
       // GRAPHSTATE AND OUTPUT
       graphstate.insertNode ( tuple.connectingnode, tuple.edgelabel, legs[i]->occurrences.maxdegree );
-      if (fm::do_output) {
-          if (!fm::do_backbone && legs[i]->occurrences.frequency>=fm::minfreq) { 
-            if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[i]->occurrences.frequency);
-            else graphstate.print(legs[i]->occurrences.frequency);
-          }
+      //cerr << "MST: " << fm::most_specific_trees_only << " , DO_OUT: " << fm::do_output << " , DO_BBRC: " << fm::do_backbone << " , f: " << legs[i]->occurrences.frequency << "(" << fm::minfreq << ")" << endl;
+      if (!fm::most_specific_trees_only && fm::do_output && !fm::do_backbone && legs[i]->occurrences.frequency>=fm::minfreq) { 
+          if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[i]->occurrences.frequency);
+          else graphstate.print(legs[i]->occurrences.frequency);
       }
 
       // RECURSE
