@@ -250,7 +250,7 @@ vector<string>* Fminer::MineRoot(unsigned int j) {
              << "---" << endl \
              << "Chi-square active (p-value): " << GetChisqActive() << " (" << GetChisqSig()<< ")" << endl \
              << "BBRC mining: " << GetBackbone() << endl \
-             << "statistical metric (dynamic upper bound pruning): " << GetPruning() << " (" << GetDynamicUpperBound() << ")" << endl \
+             << "statistical metric (dynamic upper bound) pruning: " << GetPruning() << " (" << GetDynamicUpperBound() << ")" << endl \
              << "---" << endl \
              << "Minimum frequency: " << GetMinfreq() << endl \
              << "Refine patterns with single support: " << GetRefineSingles() << endl \

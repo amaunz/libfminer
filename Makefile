@@ -32,7 +32,7 @@ $(LIB2): $(NAME)_wrap.o $(OBJ)
 
 # HELPER TARGETS
 $(NAME)_wrap.o: $(NAME)_wrap.cxx
-	$(CC) -c -g -O3 -I$(INCLUDE) -fPIC -I/usr/local/lib/ruby/1.8/i686-linux/ $^
+	$(CC) -c -g -O3 -I$(INCLUDE) -fPIC -I/usr/local/lib/ruby/1.8/i686-linux/ $^ -o $@
 %.cxx: %.i
 	$(SWIG) $(SWIGFLAGS) -o $@ $^
 
