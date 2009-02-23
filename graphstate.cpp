@@ -563,24 +563,30 @@ string GraphState::to_s ( unsigned int frequency ) {
               oss.append ("[");
 
               set<Tid>::iterator iter;
-
               char x[20];
+
               if (fm::do_yaml) {
-                  for (iter = fm::chisq->fa_set.begin(); iter != fm::chisq->fa_set.end(); iter++) {
-                      if (iter != fm::chisq->fa_set.begin()) oss.append (",");
-                      sprintf(x,"%i", (*iter)); 
+                  set<Tid>::iterator begin = fm::chisq->fa_set.begin();
+                  set<Tid>::iterator end = fm::chisq->fa_set.end();
+                  set<Tid>::iterator last = end; if (fm::chisq->fa_set.size()) last = --(fm::chisq->fa_set.end());
+
+                  for (iter = begin; iter != end; iter++) {
+                      if (iter != begin) oss.append (",");
                       oss.append (" ");
-                      oss.append (x);
+                      sprintf(x,"%i", (*iter)); oss.append (x);
+                      if ((last != end) && (iter == last)) oss.append (" ");
                   }
                   oss.append ("], [");
-              }
 
-              if (fm::do_yaml) {
-                  for (iter = fm::chisq->fi_set.begin(); iter != fm::chisq->fi_set.end(); iter++) {
-                      if (iter != fm::chisq->fi_set.begin()) oss.append (",");
-                      sprintf(x,"%i", (*iter)); 
+                  begin = fm::chisq->fi_set.begin();
+                  end = fm::chisq->fi_set.end();
+                  last = end; if (fm::chisq->fi_set.size()) last = --(fm::chisq->fi_set.end());
+
+                  for (iter = begin; iter != end; iter++) {
+                      if (iter != begin) oss.append (",");
                       oss.append (" ");
-                      oss.append (x);
+                      sprintf(x,"%i", (*iter)); oss.append (x);
+                      if ((last != end) && (iter == last)) oss.append (" ");
                   }
               }
 
@@ -594,7 +600,7 @@ string GraphState::to_s ( unsigned int frequency ) {
                   }
               }
               if (!fm::do_yaml) oss.append (" ]");
-              else oss.append (" ]");
+              else oss.append ("]");
           }
 
           if (fm::do_yaml) oss.append (" ]");
