@@ -9,7 +9,7 @@ LIB2          = $(NAME).so
 INCLUDE       = /usr/local/include/openbabel-2.0/
 OBJ           = closeleg.o constraints.o database.o graphstate.o legoccurrence.o path.o patterntree.o fminer.o
 CC            = g++
-CXXFLAGS      = -g -Wall -O3 -I$(INCLUDE) -fPIC
+CXXFLAGS      = -g -O3 -I$(INCLUDE) -fPIC
 SWIG          = swig
 SWIGFLAGS     = -c++ -ruby
 LIBS	      = -lm -ldl -lopenbabel -lgsl -lgslcblas
@@ -26,13 +26,13 @@ $(LIB1_REALNAME): $(OBJ)
 	-ln -sf $@ $(LIB1_SONAME)
 	-ln -sf $@ $(LIB1)
 .o: .cpp.h
-	$(CC) $(CXXFLAGS) $(LIBS) $@
+	$(CC) -Wall $(CXXFLAGS) $(LIBS) $@
 $(LIB2): $(NAME)_wrap.o $(OBJ)
 	$(CC) -shared $(CXXFLAGS) *.o /usr/local/lib/libopenbabel.so /usr/lib/libgsl.so -o $@
 
 # HELPER TARGETS
 $(NAME)_wrap.o: $(NAME)_wrap.cxx
-	$(CC) -c -g -O3 -I$(INCLUDE) -fPIC -I/usr/local/lib/ruby/1.8/i686-linux/ $^ -o $@
+	$(CC) -c $(CXXFLAGS) -I/usr/local/lib/ruby/1.8/i686-linux/ $^ -o $@
 %.cxx: %.i
 	$(SWIG) $(SWIGFLAGS) -o $@ $^
 
