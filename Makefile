@@ -31,13 +31,14 @@ $(LIB2): $(NAME)_wrap.o $(OBJ)
 	$(CC) -shared $(CXXFLAGS) *.o /usr/local/lib/libopenbabel.so /usr/lib/libgsl.so -o $@
 
 # HELPER TARGETS
-$(NAME)_wrap.cxx: $(NAME).i
-	$(SWIG) $(SWIGFLAGS) $^
 $(NAME)_wrap.o: $(NAME)_wrap.cxx
 	$(CC) -c $(CXXFLAGS) -I/usr/local/lib/ruby/1.8/i686-linux/ $^
+%.cxx: %.i
+	$(SWIG) $(SWIGFLAGS) -o $@ $^
+
 .PHONY:
 doc: Doxyfile Mainpage.h *.h
 	-doxygen $<
 .PHONY:
 clean:
-	-rm -rf *.o *.so* *wrap*
+	-rm -rf *.o *.so* *.cxx

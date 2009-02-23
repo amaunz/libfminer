@@ -49,7 +49,7 @@
  *  @section sec2 Portability
  *  LibFminer is a library, written in C++. It dynamically links to <code>libopenbabel</code> and <code>libgsl</code> libraries.
  *  The dependency libraries are available for Linux, Mac and Windows, so porting to the latter two platforms should be easy.
- *  The API can be made available to other languages. A config file for Swig to automagically create languages bindings exists (<code>fminer.i</code>). The Makefile features a target that creates ruby bindings using this file (<code>make fminer.so</code>).
+ *  The API can be made available to other languages. A config file for Swig to automagically create languages bindings exists (<code>fminer_wrap.i</code>). The Makefile features a target that creates ruby bindings using this file (<code>make fminer.so</code>).
  *
  *  @section sec3 Example program using the LibFminer API
  *  LibFminer uses the 'singleton' design pattern known from software engineering, i.e. class instantiation is restricted to one object.
