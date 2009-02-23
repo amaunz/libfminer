@@ -11,7 +11,7 @@ OBJ           = closeleg.o constraints.o database.o graphstate.o legoccurrence.o
 CC            = g++
 CXXFLAGS      = -g -Wall -O3 -I$(INCLUDE) -fPIC
 SWIG          = swig
-SWIGFLAGS     = -Wall -c++ -ruby
+SWIGFLAGS     = -c++ -ruby
 LIBS	      = -lm -ldl -lopenbabel -lgsl -lgslcblas
 
 # PHONY TOP LEVEL TARGETS
@@ -32,7 +32,7 @@ $(LIB2): $(NAME)_wrap.o $(OBJ)
 
 # HELPER TARGETS
 $(NAME)_wrap.o: $(NAME)_wrap.cxx
-	$(CC) -c $(CXXFLAGS) -I/usr/local/lib/ruby/1.8/i686-linux/ $^
+	$(CC) -c -g -O3 -I$(INCLUDE) -fPIC -I/usr/local/lib/ruby/1.8/i686-linux/ $^
 %.cxx: %.i
 	$(SWIG) $(SWIGFLAGS) -o $@ $^
 
