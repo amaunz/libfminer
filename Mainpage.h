@@ -2,10 +2,10 @@
  *
  * LibFminer
  *
- * This is the Fminer library, available from  http://github.com/amaunz/libfminer/tree/master.
- * The official Fminer application that uses this library is available from http://github.com/amaunz/fminer/tree/master.
- * Scientific documentation is available from http://www.maunz.de/ls_graph_mining_using_bbrcs.pdf.
- * To create documentation with doxygen, do 'make doc'. The documentation explains API, constructor usage and options.
+ * This is the Fminer library, available at http://github.com/amaunz/libfminer/tree/master.
+ * An Fminer frontend application can be obtained from http://github.com/amaunz/fminer/tree/master.
+ * You may download the scientific documentation from http://www.maunz.de/ls_graph_mining_using_bbrcs.pdf.
+ * To create documentation with doxygen, type 'make doc'. The documentation explains API, constructor usage and options.
  * 
  *  @section sec1 Abstract
  *
@@ -37,10 +37,10 @@
  *
  *  \subsection ssec1 Licence
  *
- *   LibFminer is licensed under the terms of the GNU General Public License (GPL, see LICENSE). LibFminer is derived from (i.e. includes code from) the following project, licensed under GPL:
+ *   LibFminer is licensed under the terms of the GNU General Public License (GPL, see LICENSE). LibFminer is derived from (i.e., includes code from) the following project, licensed under GPL:
  * - Gaston: Siegfried Nijssen and Joost Kok. A Quickstart in Frequent Structure Mining Can Make a Difference. Proceedings of the SIGKDD, 2004 (http://www.liacs.nl/home/snijssen/gaston/)
  *
- *   LibFminer uses (i.e. is linked to) the following projects, also licensed under GPL:
+ *   LibFminer uses (i.e., is linked to) the following projects, also licensed under GPL:
  * - OpenBabel: The Open Babel Package, version 2.1.1 (http://openbabel.sourceforge.net/)
  * - GSL: GNU Scientific Library, version 0.1 (http://www.gnu.org/software/gsl/)
  *
@@ -52,7 +52,7 @@
  *  The API can be made available to other languages. A config file for Swig to automagically create languages bindings exists (<code>fminer_wrap.i</code>). The Makefile features a target that creates ruby bindings using this file (<code>make fminer.so</code>).
  *
  *  @section sec3 Example program using the LibFminer API
- *  LibFminer uses the 'singleton' design pattern known from software engineering, i.e. class instantiation is restricted to one object.
+ *  LibFminer uses the 'singleton' design pattern known from software engineering, i.e., class instantiation is restricted to one object.
  *  The following code retrieves a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output consists of gSpan graphs.
  *
  * Define the FMINER_SMARTS environment variable to produce output in SMARTS format. In this case, each line is a YAML sequence, containing SMARTS fragment, <i>p</i>-value, and two sequences denoting positive and negative class occurrences (line numbers in Smiles file): 
