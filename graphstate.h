@@ -16,7 +16,7 @@ using namespace std;
 typedef unsigned int Mark;
 
 class GraphState;
-extern GraphState graphstate;
+//extern GraphState graphstate;
 
 class GraphState {
   public:
@@ -34,6 +34,7 @@ class GraphState {
     vector<Tuple> *treetuples;
     vector<CloseTuple> *closetuples;
     vector<NodeId> nodesinpreorder;
+
     int backbonelength; // the length of the backbone, in number of nodes
     int startsecondpath; // the position of the second part of the backbone in
                          // the treetuples.

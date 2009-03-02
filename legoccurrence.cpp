@@ -8,16 +8,17 @@
 
 namespace fm {
     extern Database* database;
+    extern GraphState* graphstate;
+    extern LegOccurrences* legoccurrences;
     extern unsigned int minfreq;
 }
 
-vector<LegOccurrences> candidatelegsoccurrences; // for each frequent possible edge, the occurrences found, used by extend
-LegOccurrences legoccurrences;
+//LegOccurrences legoccurrences;
+vector<LegOccurrences> candidatelegsoccurrences; // AM: global!
+vector<vector< CloseLegOccurrences> > candidatecloselegsoccs; // AM: global!
+vector<bool> candidatecloselegsoccsused; // AM: global!
 
 bool closelegsoccsused;
-vector<vector< CloseLegOccurrences> > candidatecloselegsoccs;
-vector<bool> candidatecloselegsoccsused;
-
 
 void initLegStatics () {
   candidatecloselegsoccs.reserve ( 200 ); // should be larger than the largest structure that contains a cycle
@@ -50,16 +51,16 @@ ostream &operator<< ( ostream &stream, vector<LegOccurrence> &occs ) {
 
 // This function is on the critical path. Its efficiency is MOST important.
 LegOccurrencesPtr join ( LegOccurrences &legoccsdata1, NodeId connectingnode, LegOccurrences &legoccsdata2 ) {
-  if ( graphstate.getNodeDegree ( connectingnode ) == graphstate.getNodeMaxDegree ( connectingnode ) ) 
+  if ( fm::graphstate->getNodeDegree ( connectingnode ) == fm::graphstate->getNodeMaxDegree ( connectingnode ) ) 
     return NULL;
 
   Frequency frequency = 0;
   Tid lasttid = NOTID;
   vector<LegOccurrence> &legoccs1 = legoccsdata1.elements, &legoccs2 = legoccsdata2.elements;
-  legoccurrences.elements.resize ( 0 );
-  legoccurrences.maxdegree = 0;
-  legoccurrences.selfjoin = 0;
-  //legoccurrences.elements.reserve ( legoccs1.size () * 2 ); // increased memory usage, and speed!
+  fm::legoccurrences->elements.resize ( 0 );
+  fm::legoccurrences->maxdegree = 0;
+  fm::legoccurrences->selfjoin = 0;
+  //fm::legoccurrences->elements.reserve ( legoccs1.size () * 2 ); // increased memory usage, and speed!
   OccurrenceId j = 0, k = 0, l, m;
   unsigned int legoccs1size = legoccs1.size (), legoccs2size = legoccs2.size (); // this increases speed CONSIDERABLY!
   Tid lastself = NOTID;
@@ -91,15 +92,15 @@ LegOccurrencesPtr join ( LegOccurrences &legoccsdata1, NodeId connectingnode, Le
             for ( OccurrenceId l2 = l; l2 < k; l2++ ) {
 	      NodeId tonodeid = legoccs2[l2].tonodeid;
               if ( legoccs1[m2].tonodeid !=  tonodeid ) {
-                legoccurrences.elements.push_back ( LegOccurrence ( jlegocc.tid, m2, tonodeid, legoccs2[l2].fromnodeid ) );
-                setmax ( legoccurrences.maxdegree, fm::database->trees[jlegocc.tid]->nodes[tonodeid].edges.size () );
+                fm::legoccurrences->elements.push_back ( LegOccurrence ( jlegocc.tid, m2, tonodeid, legoccs2[l2].fromnodeid ) );
+                setmax ( fm::legoccurrences->maxdegree, fm::database->trees[jlegocc.tid]->nodes[tonodeid].edges.size () );
         		add = true;
         		d++;
               }
             }
 	    if ( d > 1 && jlegocc.tid != lastself ) {
 	      lastself = jlegocc.tid;
-	      legoccurrences.selfjoin++;
+	      fm::legoccurrences->selfjoin++;
 	    }
 	  }
 	  	  
@@ -121,10 +122,10 @@ LegOccurrencesPtr join ( LegOccurrences &legoccsdata1, NodeId connectingnode, Le
   while ( true );
 
   if ( frequency >= fm::minfreq ) {
-    legoccurrences.parent = &legoccsdata1;
-    legoccurrences.number = legoccsdata1.number + 1;
-    legoccurrences.frequency = frequency;
-    return &legoccurrences;
+    fm::legoccurrences->parent = &legoccsdata1;
+    fm::legoccurrences->number = legoccsdata1.number + 1;
+    fm::legoccurrences->frequency = frequency;
+    return fm::legoccurrences;
   }
   else
     return NULL;
@@ -133,10 +134,10 @@ LegOccurrencesPtr join ( LegOccurrences &legoccsdata1, NodeId connectingnode, Le
 LegOccurrencesPtr join ( LegOccurrences &legoccsdata ) {
   if ( legoccsdata.selfjoin < fm::minfreq ) 
     return NULL;
-  legoccurrences.elements.resize ( 0 );
+  fm::legoccurrences->elements.resize ( 0 );
   vector<LegOccurrence> &legoccs = legoccsdata.elements;
-  legoccurrences.maxdegree = 0;
-  legoccurrences.selfjoin = 0;
+  fm::legoccurrences->maxdegree = 0;
+  fm::legoccurrences->selfjoin = 0;
   Tid lastself = NOTID;
 
   OccurrenceId j = 0, k, l, m;
@@ -151,23 +152,23 @@ LegOccurrencesPtr join ( LegOccurrences &legoccsdata ) {
     for ( l = k; l < j; l++ )
       for ( m = k; m < j; m++ )
         if ( l != m ) {
-          legoccurrences.elements.push_back ( LegOccurrence ( legocc.tid, l, legoccs[m].tonodeid, legoccs[m].fromnodeid ) );
-          setmax ( legoccurrences.maxdegree, fm::database->trees[legocc.tid]->nodes[legoccs[m].tonodeid].edges.size () );
+          fm::legoccurrences->elements.push_back ( LegOccurrence ( legocc.tid, l, legoccs[m].tonodeid, legoccs[m].fromnodeid ) );
+          setmax ( fm::legoccurrences->maxdegree, fm::database->trees[legocc.tid]->nodes[legoccs[m].tonodeid].edges.size () );
         }
     if ( ( j - k > 2 ) && legocc.tid != lastself ) {
       lastself = legocc.tid;
-      legoccurrences.selfjoin++;
+      fm::legoccurrences->selfjoin++;
     }
   }
   while ( j < legoccs.size () );
 
     // no need to check that we are frequent, we must be frequent
-  legoccurrences.parent = &legoccsdata;
-  legoccurrences.number = legoccsdata.number + 1;
-  legoccurrences.frequency = legoccsdata.selfjoin; 
+  fm::legoccurrences->parent = &legoccsdata;
+  fm::legoccurrences->number = legoccsdata.number + 1;
+  fm::legoccurrences->frequency = legoccsdata.selfjoin; 
     // we compute the self-join frequency exactly while building the
     // previous list. It is therefore not necessary to recompute it.
-  return &legoccurrences;
+  return fm::legoccurrences;
 }
 
 inline int nocycle ( DatabaseTreePtr tree, DatabaseTreeNode &node, NodeId tonode, OccurrenceId occurrenceid, LegOccurrencesPtr legoccurrencesdataptr ) {
@@ -214,7 +215,7 @@ void extend ( LegOccurrences &legoccurrencesdata ) {
 
   for ( int i = 0; i < (int) candidatelegsoccurrences.size (); i++ ) {
     candidatelegsoccurrences[i].elements.resize ( 0 );
-    //candidatelegsoccurrences[i].elements.reserve ( legoccurrences.size () ); // increases memory usage, but also speed!
+    //candidatelegsoccurrences[i].elements.reserve ( fm::legoccurrences->size () ); // increases memory usage, but also speed!
     candidatelegsoccurrences[i].parent = &legoccurrencesdata;
     candidatelegsoccurrences[i].number = legoccurrencesdata.number + 1;
     candidatelegsoccurrences[i].maxdegree = 0;
@@ -255,7 +256,7 @@ void extend ( LegOccurrences &legoccurrencesdata ) {
           setmax ( candidatelegsoccurrences[edgelabel].maxdegree, fm::database->trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
         }
 
-        else if ( number - 1 != graphstate.nodes.back().edges[0].tonode ) {
+        else if ( number - 1 != fm::graphstate->nodes.back().edges[0].tonode ) {
             candidateCloseLegsAllocate ( number, legoccurrencesdata.number + 1 );
             vector<CloseLegOccurrence> &candidatelegsoccs = candidatecloselegsoccs[number][edgelabel].elements;
             if ( !candidatelegsoccs.size () || candidatelegsoccs.back ().tid != legocc.tid )
@@ -315,7 +316,7 @@ void extend ( LegOccurrences &legoccurrencesdata, EdgeLabel minlabel, EdgeLabel 
 	    setmax ( candidatelegsoccurrences[edgelabel].maxdegree, fm::database->trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
 	  }
         }
-        else if ( number - 1 != graphstate.nodes.back().edges[0].tonode ) {
+        else if ( number - 1 != fm::graphstate->nodes.back().edges[0].tonode ) {
           candidateCloseLegsAllocate ( number, legoccurrencesdata.number + 1 );
 
           vector<CloseLegOccurrence> &candidatelegsoccs = candidatecloselegsoccs[number][edgelabel].elements;

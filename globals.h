@@ -25,6 +25,9 @@ namespace fm {
     Database* database=NULL;
     Statistics* statistics=NULL;
     ChisqConstraint* chisq=NULL;
+    GraphState* graphstate=NULL;
+    CloseLegOccurrences* closelegoccurrences=NULL; 
+    LegOccurrences* legoccurrences=NULL;
     vector<string>* result=NULL;
 
 }

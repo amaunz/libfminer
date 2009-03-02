@@ -21,6 +21,8 @@ namespace fm {
     extern ChisqConstraint* chisq;
     extern vector<string>* result;
     extern Statistics* statistics;
+    extern GraphState* graphstate;
+    extern LegOccurrences* legoccurrences;
 }
 
 int maxsize = ( 1 << ( sizeof(NodeId)*8 ) ) - 1; // safe default for the largest allowed pattern
@@ -37,11 +39,11 @@ inline void PatternTree::addLeg ( NodeId connectingnode, const int depth, const 
 // this function assumes that the extension tuple is already added at the back of the queue,
 // and the equivalency information has been filled in.
 void PatternTree::addExtensionLegs ( Tuple &tuple, LegOccurrences &legoccurrences ) {
-  if ( legoccurrences.maxdegree == 1 )
+  if ( fm::legoccurrences->maxdegree == 1 )
     return;
   if ( tuple.depth == maxdepth ) {
     extend ( legoccurrences, MAXEDGELABEL, (unsigned char) NONODE );
-    addCloseExtensions ( closelegs, legoccurrences.number );
+    addCloseExtensions ( closelegs, fm::legoccurrences->number );
     return;
   }
   EdgeLabel minlabel = NOEDGELABEL, neglect = '\0', pathlowestlabel = treetuples[tuple.depth + 1 + rootpathstart].label;
@@ -50,7 +52,7 @@ void PatternTree::addExtensionLegs ( Tuple &tuple, LegOccurrences &legoccurrence
     if ( treetuples[nextprefixindex].depth <= tuple.depth ) {
       // heuristic saving
       extend ( legoccurrences, MAXEDGELABEL, (unsigned char) NONODE );
-      addCloseExtensions ( closelegs, legoccurrences.number );
+      addCloseExtensions ( closelegs, fm::legoccurrences->number );
       return;
     }
     minlabel = treetuples[nextprefixindex].label;
@@ -63,13 +65,13 @@ void PatternTree::addExtensionLegs ( Tuple &tuple, LegOccurrences &legoccurrence
     if ( rootpathrelations.back () > 0 ) {
       // heuristic saving
       extend ( legoccurrences, MAXEDGELABEL, (unsigned char) NONODE );
-      addCloseExtensions ( closelegs, legoccurrences.number );
+      addCloseExtensions ( closelegs, fm::legoccurrences->number );
       return;
     }
     if ( rootpathrelations.back () == 0 )
       if ( minlabel != NOEDGELABEL ) {
         neglect = NOEDGELABEL;
-	if ( pathlowestlabel > minlabel )
+    	if ( pathlowestlabel > minlabel )
           minlabel = pathlowestlabel;
       }
       else {
@@ -87,14 +89,14 @@ void PatternTree::addExtensionLegs ( Tuple &tuple, LegOccurrences &legoccurrence
 
   if ( candidatelegsoccurrences[pathlowestlabel].frequency >= fm::minfreq )
     // this is the first possible extension, as we force this label to be the lowest!
-    addLeg ( graphstate.lastNode (), tuple.depth + 1, pathlowestlabel, candidatelegsoccurrences[pathlowestlabel] );
+    addLeg ( fm::graphstate->lastNode (), tuple.depth + 1, pathlowestlabel, candidatelegsoccurrences[pathlowestlabel] );
 
   for ( int i = 0; (unsigned) i < candidatelegsoccurrences.size (); i++ ) {
     if ( candidatelegsoccurrences[i].frequency >= fm::minfreq && i != pathlowestlabel )
-      addLeg ( graphstate.lastNode (), tuple.depth + 1, i, candidatelegsoccurrences[i] );
+      addLeg ( fm::graphstate->lastNode (), tuple.depth + 1, i, candidatelegsoccurrences[i] );
   }
 
-  addCloseExtensions ( closelegs, legoccurrences.number );
+  addCloseExtensions ( closelegs, fm::legoccurrences->number );
 }
 
 void PatternTree::addLeftLegs ( Path &path, PathLeg &leg, int &i, Depth olddepth, EdgeLabel lowestlabel, int leftend, int edgesize2 ) {
@@ -264,7 +266,7 @@ PatternTree::PatternTree ( Path &path, unsigned int legindex ) {
       // In this case, we assume that the left part is the first path,
       // furthermore the position of the extension determines to which path
       // it is added
-    graphstate.nasty = ( leftwalk == -1 );
+    fm::graphstate->nasty = ( leftwalk == -1 );
     if ( leftwalk == -1 || path.edgelabels[leftwalk] < path.edgelabels[rightwalk] ) {
       // left part of the path should be the first path in the tree
 
@@ -648,15 +650,15 @@ PatternTree::PatternTree ( Path &path, unsigned int legindex ) {
   }
   
   // ADDED
-  graphstate.backbonelength = path.nodelabels.size ();
-  if ( graphstate.backbonelength % 2 == 0 )
-    graphstate.bicenterlabel = path.edgelabels [ graphstate.backbonelength / 2 - 1 ];
+  fm::graphstate->backbonelength = path.nodelabels.size ();
+  if ( fm::graphstate->backbonelength % 2 == 0 )
+    fm::graphstate->bicenterlabel = path.edgelabels [ fm::graphstate->backbonelength / 2 - 1 ];
   else
-    graphstate.centerlabel = path.nodelabels [ ( graphstate.backbonelength - 1 ) / 2 ];
-  graphstate.nasty = false;
-  graphstate.treetuples = &treetuples;
-  graphstate.closetuples = NULL;
-  graphstate.startsecondpath = nextpathstart;
+    fm::graphstate->centerlabel = path.nodelabels [ ( fm::graphstate->backbonelength - 1 ) / 2 ];
+  fm::graphstate->nasty = false;
+  fm::graphstate->treetuples = &treetuples;
+  fm::graphstate->closetuples = NULL;
+  fm::graphstate->startsecondpath = nextpathstart;
 }
 
 PatternTree::PatternTree ( PatternTree &parenttree, unsigned int legindex ) {
@@ -739,9 +741,9 @@ PatternTree::PatternTree ( PatternTree &parenttree, unsigned int legindex ) {
   }
 
   // ADDED
-  graphstate.treetuples = &treetuples;
-  graphstate.closetuples = NULL;
-  graphstate.startsecondpath = nextpathstart;
+  fm::graphstate->treetuples = &treetuples;
+  fm::graphstate->closetuples = NULL;
+  fm::graphstate->startsecondpath = nextpathstart;
     
   if ( nextprefixindex == nextpathstart && symmetric == 1 ) {
     secondpathleg = 0; // THE BUG
@@ -839,12 +841,12 @@ void PatternTree::expand (pair<float, string> max) {
     if (fm::chisq->active) fm::chisq->Calc(legs[i]->occurrences.elements);
 
     // GRAPHSTATE
-    graphstate.insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.label, legs[i]->occurrences.maxdegree );
+    fm::graphstate->insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.label, legs[i]->occurrences.maxdegree );
 
     // immediate output for all patterns
     if (fm::do_output && !fm::most_specific_trees_only && !fm::do_backbone) {
-       if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[i]->occurrences.frequency);
-       else graphstate.print(legs[i]->occurrences.frequency);
+       if (!fm::console_out) (*fm::result) << fm::graphstate->to_s(legs[i]->occurrences.frequency);
+       else fm::graphstate->print(legs[i]->occurrences.frequency);
     }
 
     // RECURSE
@@ -866,11 +868,11 @@ void PatternTree::expand (pair<float, string> max) {
 
         // output most specialized pattern
         if (fm::most_specific_trees_only && fm::do_output && !fm::do_backbone && p.legs.size() == 0) {
-            if (!fm::console_out) (*fm::result) << graphstate.to_s(legs[i]->occurrences.frequency);
-            else graphstate.print(legs[i]->occurrences.frequency);
+            if (!fm::console_out) (*fm::result) << fm::graphstate->to_s(legs[i]->occurrences.frequency);
+            else fm::graphstate->print(legs[i]->occurrences.frequency);
         }
 
-        if (fm::chisq->p > max.first) { fm::updated = true; p.expand (pair<float, string>(fm::chisq->p,graphstate.to_s(legs[i]->occurrences.frequency))); }
+        if (fm::chisq->p > max.first) { fm::updated = true; p.expand (pair<float, string>(fm::chisq->p,fm::graphstate->to_s(legs[i]->occurrences.frequency))); }
         else p.expand (max);
     }
     else {
@@ -887,13 +889,13 @@ void PatternTree::expand (pair<float, string> max) {
         }
     }
 
-    graphstate.deleteNode ();
+    fm::graphstate->deleteNode ();
 
   }
 
   if (fm::bbrc_sep && !fm::do_backbone && (legs.size()==0)) {
       if (fm::do_output) {
-          if (!fm::console_out && fm::result->size() && (fm::result->back()!=graphstate.sep())) (*fm::result) << graphstate.sep();
+          if (!fm::console_out && fm::result->size() && (fm::result->back()!=fm::graphstate->sep())) (*fm::result) << fm::graphstate->sep();
       }
   }
 

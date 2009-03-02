@@ -1,17 +1,15 @@
 #include "fminer.h"
 #include "globals.h"
 
-using namespace fm;
-
 
 // 1. Constructors and Initializers
 
 Fminer::Fminer() : init_mining_done(false) {
-  if (!instance_present) {
+  if (!fm::instance_present) {
       fm::database = NULL; fm::statistics = NULL; fm::chisq = NULL; fm::result = NULL;
       Reset();
       Defaults();
-      instance_present=true;
+      fm::instance_present=true;
       if (getenv("FMINER_LAZAR")) fm::do_yaml = false;
       if (getenv("FMINER_SMARTS")) fm::gsp_out = false; 
   }
@@ -22,13 +20,13 @@ Fminer::Fminer() : init_mining_done(false) {
 }
 
 Fminer::Fminer(int _type, unsigned int _minfreq) : init_mining_done(false) {
-  if (!instance_present) {
+  if (!fm::instance_present) {
       fm::database = NULL; fm::statistics = NULL; fm::chisq = NULL; fm::result = NULL;
       Reset();
       Defaults();
       SetType(_type);
       SetMinfreq(_minfreq);
-      instance_present=true;
+      fm::instance_present=true;
       if (getenv("FMINER_LAZAR")) fm::do_yaml = false;
       if (getenv("FMINER_SMARTS")) fm::gsp_out = false; 
   }
@@ -40,7 +38,7 @@ Fminer::Fminer(int _type, unsigned int _minfreq) : init_mining_done(false) {
 }
 
 Fminer::Fminer(int _type, unsigned int _minfreq, float _chisq_val, bool _do_backbone) : init_mining_done(false) {
-  if (!instance_present) {
+  if (!fm::instance_present) {
       fm::database = NULL; fm::statistics = NULL; fm::chisq = NULL; fm::result = NULL;
       Reset();
       Defaults();
@@ -48,7 +46,7 @@ Fminer::Fminer(int _type, unsigned int _minfreq, float _chisq_val, bool _do_back
       SetMinfreq(_minfreq);
       SetChisqSig(_chisq_val);
       SetBackbone(_do_backbone);
-      instance_present=true;
+      fm::instance_present=true;
       if (getenv("FMINER_LAZAR")) fm::do_yaml = false;
       if (getenv("FMINER_SMARTS")) fm::gsp_out = false; 
 
@@ -61,11 +59,17 @@ Fminer::Fminer(int _type, unsigned int _minfreq, float _chisq_val, bool _do_back
 }
 
 Fminer::~Fminer() {
-    if (instance_present) {
+    if (fm::instance_present) {
         delete fm::database;
         delete fm::statistics; 
         delete fm::chisq; 
-        instance_present=false;
+        delete fm::graphstate;
+        delete fm::closelegoccurrences;
+        delete fm::legoccurrences;
+        candidatelegsoccurrences.clear();
+        candidatecloselegsoccs.clear();
+        candidatecloselegsoccsused.clear();
+        fm::instance_present=false;
     }
 }
 
@@ -73,6 +77,9 @@ void Fminer::Reset() {
     delete fm::database; fm::database = new Database();
     delete fm::statistics; fm::statistics = new Statistics();
     delete fm::chisq; fm::chisq = new ChisqConstraint(0.95);
+    delete fm::graphstate; fm::graphstate = new GraphState();
+    delete fm::closelegoccurrences; fm::closelegoccurrences = new CloseLegOccurrences();
+    delete fm::legoccurrences; fm::legoccurrences = new LegOccurrences();
     SetChisqActive(true); 
     fm::result = &r;
     comp_runner=1; 
@@ -243,8 +250,11 @@ vector<string>* Fminer::MineRoot(unsigned int j) {
                 }
             }
         }
-        fm::database->edgecount (); fm::database->reorder (); initLegStatics (); graphstate.init (); 
-        if (fm::bbrc_sep && !fm::do_backbone && fm::do_output && !fm::console_out) (*fm::result) << graphstate.sep();
+        fm::database->edgecount (); 
+        fm::database->reorder (); 
+        initLegStatics (); 
+        fm::graphstate->init (); 
+        if (fm::bbrc_sep && !fm::do_backbone && fm::do_output && !fm::console_out) (*fm::result) << fm::graphstate->sep();
         init_mining_done=true; 
         cerr << "Settings:" << endl \
              << "---" << endl \

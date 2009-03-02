@@ -38,7 +38,7 @@ struct LegOccurrences {
 
 ostream &operator<< ( ostream &stream, vector<LegOccurrence> &occs );
 
-extern LegOccurrences legoccurrences;
+//extern LegOccurrences legoccurrences;
 
 // returns the join if this join is frequent. The returned array may be swapped.
 LegOccurrencesPtr join ( LegOccurrences &legoccsdata1, NodeId connectingnode, LegOccurrences &legoccsdata2 );

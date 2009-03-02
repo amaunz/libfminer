@@ -10,13 +10,13 @@
 #include "misc.h"
 
 
-GraphState graphstate;
 namespace fm {
     extern ChisqConstraint* chisq;
     extern bool console_out;
     extern bool gsp_out;
     extern bool do_yaml;
     extern Database* database;
+    extern GraphState* graphstate;
 }
 
 GraphState::GraphState () {
@@ -25,6 +25,12 @@ GraphState::GraphState () {
 void GraphState::init () {
   edgessize = 0;
   closecount = 0;
+
+  deletededges.clear();
+  if (treetuples != NULL)  treetuples->clear();
+  if (closetuples != NULL) closetuples->clear();
+  nodesinpreorder.clear();
+
   // 1 extra element on this stack in order to always be able to check the previous element
   vector_push_back ( GSDeletedEdge, deletededges, deletededge );
   deletededge.tonode = deletededge.fromnode = NONODE;
