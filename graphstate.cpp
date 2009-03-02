@@ -26,10 +26,12 @@ void GraphState::init () {
   edgessize = 0;
   closecount = 0;
 
+  /*
   deletededges.clear();
   if (treetuples != NULL)  treetuples->clear();
   if (closetuples != NULL) closetuples->clear();
   nodesinpreorder.clear();
+  */ 
 
   // 1 extra element on this stack in order to always be able to check the previous element
   vector_push_back ( GSDeletedEdge, deletededges, deletededge );

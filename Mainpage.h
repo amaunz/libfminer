@@ -74,28 +74,28 @@
  * #include <string.h>
  * using namespace std;
  *
- * Fminer* fm;
+ * Fminer* MyFminer;
  * int main(int argc, char *argv[], char *envp) {
- *   fm= new Fminer();
- *   fm->AddCompound ("COC1=CC=C(C=C1)C2=NC(=C([NH]2)C3=CC=CC=C3)C4=CC=CC=C4" , 1);
- *   fm->AddCompound ("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2" , 2);
+ *   MyFminer= new Fminer();
+ *   MyFminer->AddCompound ("COC1=CC=C(C=C1)C2=NC(=C([NH]2)C3=CC=CC=C3)C4=CC=CC=C4" , 1);
+ *   MyFminer->AddCompound ("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2" , 2);
  *      // ... continue adding compounds
- *   fm->AddActivity((bool) true, 1);
- *   fm->AddActivity((bool) false, 2);
+ *   MyFminer->AddActivity((bool) true, 1);
+ *   MyFminer->AddActivity((bool) false, 2);
  *      // ... continue adding activities (true for active, false for inactive)
- *   cerr << fm->GetNoCompounds() << " compounds" << endl;
+ *   cerr << MyFminer->GetNoCompounds() << " compounds" << endl;
  *   // Toy example: special settings for mining all fragments
- *   fm->SetChisqSig(0); // use no significance constraint
- *   fm->SetRefineSingles(true); // refine structures with support 1
+ *   MyFminer->SetChisqSig(0); // use no significance constraint
+ *   MyFminer->SetRefineSingles(true); // refine structures with support 1
  *   // gather results for every root node in vector instead of immediate output
- *   fm->SetConsoleOut(false);
- *   for ( int j = 0; j < (int) fm->GetNoRootNodes(); j++ ) {
- *      vector<string>* result = fm->MineRoot(j);
+ *   MyFminer->SetConsoleOut(false);
+ *   for ( int j = 0; j < (int) MyFminer->GetNoRootNodes(); j++ ) {
+ *      vector<string>* result = MyFminer->MineRoot(j);
  *      for( int i = 0; i < result->size(); i++) {
  *        cout << (*result)[i] << endl;
  *      }
  *   }
- *   delete fm;
+ *   delete MyFminer;
  * }
  *
  *  \endcode
@@ -106,24 +106,24 @@
  * \code
  *
  * require 'fminer'
- * fm = Fminer::Fminer.new()
- * fm.AddCompound("COC1=CC=C(C=C1)C2=NC(=C([NH]2)C3=CC=CC=C3)C4=CC=CC=C4" , 1)
- * fm.AddCompound("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2" , 2)
+ * MyFminer = Fminer::Fminer.new()
+ * MyFminer.AddCompound("COC1=CC=C(C=C1)C2=NC(=C([NH]2)C3=CC=CC=C3)C4=CC=CC=C4" , 1)
+ * MyFminer.AddCompound("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2" , 2)
  *    # ... continue adding compounds
- * fm.AddActivity(true, 1)
- * fm.AddActivity(false, 2)
+ * MyFminer.AddActivity(true, 1)
+ * MyFminer.AddActivity(false, 2)
  *    # ... continue adding activities (true for active, false for inactive)
- * print fm.GetNoCompounds()  
+ * print MyFminer.GetNoCompounds()  
  * puts " compounds"
  * # Toy example: special settings for mining all fragments
  * # use no significance constraint
- * fm.SetChisqSig(0) 
+ * MyFminer.SetChisqSig(0) 
  * # refine structures with support 1
- * fm.SetRefineSingles(true) 
+ * MyFminer.SetRefineSingles(true) 
  * # gather results for every root node in vector instead of immediate output
- * fm.SetConsoleOut(false)
- * (0 .. fm.GetNoRootNodes()-1).each do |j|
- *    result = fm.MineRoot(j)
+ * MyFminer.SetConsoleOut(false)
+ * (0 .. MyFminer.GetNoRootNodes()-1).each do |j|
+ *    result = MyFminer.MineRoot(j)
  *    puts "Results"
  *    (0 .. result.size-1).each do |i|
  *        puts result[i]

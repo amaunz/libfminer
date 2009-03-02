@@ -80,6 +80,9 @@ void Fminer::Reset() {
     delete fm::graphstate; fm::graphstate = new GraphState();
     delete fm::closelegoccurrences; fm::closelegoccurrences = new CloseLegOccurrences();
     delete fm::legoccurrences; fm::legoccurrences = new LegOccurrences();
+    candidatelegsoccurrences.clear();
+    candidatecloselegsoccs.clear();
+    candidatecloselegsoccsused.clear();
     SetChisqActive(true); 
     fm::result = &r;
     comp_runner=1; 
