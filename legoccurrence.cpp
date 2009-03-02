@@ -207,15 +207,26 @@ void candidateCloseLegsAllocate ( int number, int maxnumber ) {
   }
 }
 
+
+
+
+
+
 void extend ( LegOccurrences &legoccurrencesdata ) {
   // we're trying hard to avoid repeated destructor/constructor calls for complex types like vectors.
   // better reuse previously allocated memory, if possible!
-  vector<LegOccurrence> &legoccurrences = legoccurrencesdata.elements;
+  
+  
+
+  vector<LegOccurrence> &legoccurrences = legoccurrencesdata.elements;   ///////////////////////////////////////AM : BUG!!!
+
+
+
   Tid lastself[candidatelegsoccurrences.size ()];
 
   for ( int i = 0; i < (int) candidatelegsoccurrences.size (); i++ ) {
     candidatelegsoccurrences[i].elements.resize ( 0 );
-    //candidatelegsoccurrences[i].elements.reserve ( fm::legoccurrences->size () ); // increases memory usage, but also speed!
+    //candidatelegsoccurrences[i].elements.reserve ( legoccurrences.size () ); // increases memory usage, but also speed!
     candidatelegsoccurrences[i].parent = &legoccurrencesdata;
     candidatelegsoccurrences[i].number = legoccurrencesdata.number + 1;
     candidatelegsoccurrences[i].maxdegree = 0;
@@ -270,12 +281,26 @@ void extend ( LegOccurrences &legoccurrencesdata ) {
   }
 }
 
+
+
+
+
+
+
 void extend ( LegOccurrences &legoccurrencesdata, EdgeLabel minlabel, EdgeLabel neglect ) {
 
 
   // we're trying hard to avoid repeated destructor/constructor calls for complex types like vectors.
   // better reuse previously allocated memory, if possible!
-  vector<LegOccurrence> &legoccurrences = legoccurrencesdata.elements;
+
+
+
+
+  vector<LegOccurrence> &legoccurrences = legoccurrencesdata.elements;  ///////////////////////////////////////AM : BUG!!!
+
+
+
+
   int lastself[candidatelegsoccurrences.size ()];
   
   for ( int i = 0; i < (int) candidatelegsoccurrences.size (); i++ ) {

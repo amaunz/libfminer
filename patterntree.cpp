@@ -39,11 +39,11 @@ inline void PatternTree::addLeg ( NodeId connectingnode, const int depth, const 
 // this function assumes that the extension tuple is already added at the back of the queue,
 // and the equivalency information has been filled in.
 void PatternTree::addExtensionLegs ( Tuple &tuple, LegOccurrences &legoccurrences ) {
-  if ( fm::legoccurrences->maxdegree == 1 )
+  if ( legoccurrences.maxdegree == 1 )
     return;
   if ( tuple.depth == maxdepth ) {
     extend ( legoccurrences, MAXEDGELABEL, (unsigned char) NONODE );
-    addCloseExtensions ( closelegs, fm::legoccurrences->number );
+    addCloseExtensions ( closelegs, legoccurrences.number );
     return;
   }
   EdgeLabel minlabel = NOEDGELABEL, neglect = '\0', pathlowestlabel = treetuples[tuple.depth + 1 + rootpathstart].label;
@@ -52,7 +52,7 @@ void PatternTree::addExtensionLegs ( Tuple &tuple, LegOccurrences &legoccurrence
     if ( treetuples[nextprefixindex].depth <= tuple.depth ) {
       // heuristic saving
       extend ( legoccurrences, MAXEDGELABEL, (unsigned char) NONODE );
-      addCloseExtensions ( closelegs, fm::legoccurrences->number );
+      addCloseExtensions ( closelegs, legoccurrences.number );
       return;
     }
     minlabel = treetuples[nextprefixindex].label;
@@ -65,7 +65,7 @@ void PatternTree::addExtensionLegs ( Tuple &tuple, LegOccurrences &legoccurrence
     if ( rootpathrelations.back () > 0 ) {
       // heuristic saving
       extend ( legoccurrences, MAXEDGELABEL, (unsigned char) NONODE );
-      addCloseExtensions ( closelegs, fm::legoccurrences->number );
+      addCloseExtensions ( closelegs, legoccurrences.number );
       return;
     }
     if ( rootpathrelations.back () == 0 )
@@ -96,7 +96,7 @@ void PatternTree::addExtensionLegs ( Tuple &tuple, LegOccurrences &legoccurrence
       addLeg ( fm::graphstate->lastNode (), tuple.depth + 1, i, candidatelegsoccurrences[i] );
   }
 
-  addCloseExtensions ( closelegs, fm::legoccurrences->number );
+  addCloseExtensions ( closelegs, legoccurrences.number );
 }
 
 void PatternTree::addLeftLegs ( Path &path, PathLeg &leg, int &i, Depth olddepth, EdgeLabel lowestlabel, int leftend, int edgesize2 ) {
