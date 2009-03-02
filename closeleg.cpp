@@ -9,13 +9,16 @@ namespace fm {
     extern unsigned int minfreq;
     extern CloseLegOccurrences* closelegoccurrences;
     extern LegOccurrences* legoccurrences;
+    extern vector<vector< CloseLegOccurrences> > candidatecloselegsoccs;
+    extern vector<bool> candidatecloselegsoccsused;
+    extern bool closelegsoccsused;
 }
 
 void addCloseExtensions ( vector<CloseLegPtr> &targetcloselegs, int number ) {
-  if ( closelegsoccsused ) {
-    for ( int i = 1; i < (int) candidatecloselegsoccs.size (); i++ )
-      if ( candidatecloselegsoccsused[i] ) {
-        vector<CloseLegOccurrences> &edgelabeloccs = candidatecloselegsoccs[i];
+  if ( fm::closelegsoccsused ) {
+    for ( int i = 1; i < (int) fm::candidatecloselegsoccs.size (); i++ )
+      if ( fm::candidatecloselegsoccsused[i] ) {
+        vector<CloseLegOccurrences> &edgelabeloccs = fm::candidatecloselegsoccs[i];
         for ( EdgeLabel j = 0; j < edgelabeloccs.size (); j++ ) {
           if ( edgelabeloccs[j].frequency >= fm::minfreq ) {
             CloseLegPtr closelegptr = new CloseLeg;

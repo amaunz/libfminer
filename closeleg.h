@@ -46,8 +46,6 @@ struct CloseLeg {
 typedef CloseLeg *CloseLegPtr;
 
 extern bool closelegsoccsused;
-extern vector<vector< CloseLegOccurrences> > candidatecloselegsoccs;
-extern vector<bool> candidatecloselegsoccsused;
 
 class Leg;
 typedef Leg *LegPtr;

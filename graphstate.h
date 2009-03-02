@@ -15,9 +15,6 @@ using namespace std;
 
 typedef unsigned int Mark;
 
-class GraphState;
-//extern GraphState graphstate;
-
 class GraphState {
   public:
 

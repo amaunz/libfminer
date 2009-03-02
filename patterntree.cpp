@@ -5,7 +5,6 @@
 #include "graphstate.h"
 
 namespace fm {
-    //extern GraphState graphstate;
     extern unsigned int minfreq;
     extern bool do_backbone;
     extern bool updated;
@@ -23,6 +22,8 @@ namespace fm {
     extern Statistics* statistics;
     extern GraphState* graphstate;
     extern LegOccurrences* legoccurrences;
+
+    extern vector<LegOccurrences> candidatelegsoccurrences; 
 }
 
 int maxsize = ( 1 << ( sizeof(NodeId)*8 ) ) - 1; // safe default for the largest allowed pattern
@@ -87,13 +88,13 @@ void PatternTree::addExtensionLegs ( Tuple &tuple, LegOccurrences &legoccurrence
   else
     extend ( legoccurrences );
 
-  if ( candidatelegsoccurrences[pathlowestlabel].frequency >= fm::minfreq )
+  if ( fm::candidatelegsoccurrences[pathlowestlabel].frequency >= fm::minfreq )
     // this is the first possible extension, as we force this label to be the lowest!
-    addLeg ( fm::graphstate->lastNode (), tuple.depth + 1, pathlowestlabel, candidatelegsoccurrences[pathlowestlabel] );
+    addLeg ( fm::graphstate->lastNode (), tuple.depth + 1, pathlowestlabel, fm::candidatelegsoccurrences[pathlowestlabel] );
 
-  for ( int i = 0; (unsigned) i < candidatelegsoccurrences.size (); i++ ) {
-    if ( candidatelegsoccurrences[i].frequency >= fm::minfreq && i != pathlowestlabel )
-      addLeg ( fm::graphstate->lastNode (), tuple.depth + 1, i, candidatelegsoccurrences[i] );
+  for ( int i = 0; (unsigned) i < fm::candidatelegsoccurrences.size (); i++ ) {
+    if ( fm::candidatelegsoccurrences[i].frequency >= fm::minfreq && i != pathlowestlabel )
+      addLeg ( fm::graphstate->lastNode (), tuple.depth + 1, i, fm::candidatelegsoccurrences[i] );
   }
 
   addCloseExtensions ( closelegs, legoccurrences.number );

@@ -28,7 +28,13 @@ namespace fm {
     GraphState* graphstate=NULL;
     CloseLegOccurrences* closelegoccurrences=NULL; 
     LegOccurrences* legoccurrences=NULL;
+
     vector<string>* result=NULL;
+    vector<LegOccurrences> candidatelegsoccurrences;
+    vector<vector< CloseLegOccurrences> > candidatecloselegsoccs;
+    vector<bool> candidatecloselegsoccsused;
+
+    bool closelegsoccsused;
 
 }
 

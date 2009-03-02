@@ -9,7 +9,6 @@
 #include "misc.h"
 
 namespace fm {
-    //extern GraphState graphstate;
     extern unsigned int minfreq;
     extern bool adjust_ub;
     extern bool do_pruning;
@@ -27,6 +26,8 @@ namespace fm {
     extern vector<string>* result;
     extern Statistics* statistics;
     extern GraphState* graphstate;
+
+    extern vector<LegOccurrences> candidatelegsoccurrences; 
 }
 
 // for every database node...
@@ -182,8 +183,8 @@ Path::Path ( Path &parentpath, unsigned int legindex ) {
 
     // build OccurrenceLists
     extend ( leg.occurrences );
-    for (unsigned int i = 0; i < candidatelegsoccurrences.size (); i++ ) {
-      if ( candidatelegsoccurrences[i].frequency >= fm::minfreq ) {
+    for (unsigned int i = 0; i < fm::candidatelegsoccurrences.size (); i++ ) {
+      if ( fm::candidatelegsoccurrences[i].frequency >= fm::minfreq ) {
         PathLegPtr leg2 = new PathLeg;
         legs.push_back ( leg2 );
         leg2->tuple.edgelabel = i;
@@ -194,7 +195,7 @@ Path::Path ( Path &parentpath, unsigned int legindex ) {
         else
           leg2->tuple.nodelabel = databaseedgelabel.fromnodelabel;
         leg2->tuple.depth = 0;
-        store ( leg2->occurrences, candidatelegsoccurrences[i] ); // avoid copying
+        store ( leg2->occurrences, fm::candidatelegsoccurrences[i] ); // avoid copying
       }
     }
 
@@ -294,8 +295,8 @@ Path::Path ( Path &parentpath, unsigned int legindex ) {
   }
 
   extend ( leg.occurrences );
-  for ( unsigned int i = 0; i < candidatelegsoccurrences.size (); i++ ) {
-    if ( candidatelegsoccurrences[i].frequency >= fm::minfreq ) {
+  for ( unsigned int i = 0; i < fm::candidatelegsoccurrences.size (); i++ ) {
+    if ( fm::candidatelegsoccurrences[i].frequency >= fm::minfreq ) {
       PathLegPtr leg2 = new PathLeg;
       legs.push_back ( leg2 );
       leg2->tuple.edgelabel = i;
@@ -306,7 +307,7 @@ Path::Path ( Path &parentpath, unsigned int legindex ) {
       else
         leg2->tuple.nodelabel = databaseedgelabel.fromnodelabel;
       leg2->tuple.depth = leg.tuple.depth + 1;
-      store ( leg2->occurrences, candidatelegsoccurrences[i] ); // avoid copying
+      store ( leg2->occurrences, fm::candidatelegsoccurrences[i] ); // avoid copying
     }
   }
 

@@ -66,23 +66,35 @@ Fminer::~Fminer() {
         delete fm::graphstate;
         delete fm::closelegoccurrences;
         delete fm::legoccurrences;
-        candidatelegsoccurrences.clear();
-        candidatecloselegsoccs.clear();
-        candidatecloselegsoccsused.clear();
+
+        fm::candidatelegsoccurrences.clear();
+        fm::candidatecloselegsoccs.clear();
+        fm::candidatecloselegsoccsused.clear();
+
         fm::instance_present=false;
     }
 }
 
 void Fminer::Reset() { 
-    delete fm::database; fm::database = new Database();
-    delete fm::statistics; fm::statistics = new Statistics();
-    delete fm::chisq; fm::chisq = new ChisqConstraint(0.95);
-    delete fm::graphstate; fm::graphstate = new GraphState();
-    delete fm::closelegoccurrences; fm::closelegoccurrences = new CloseLegOccurrences();
-    delete fm::legoccurrences; fm::legoccurrences = new LegOccurrences();
-    candidatelegsoccurrences.clear();
-    candidatecloselegsoccs.clear();
-    candidatecloselegsoccsused.clear();
+    if (fm::instance_present) {
+        delete fm::database;
+        delete fm::statistics;
+        delete fm::chisq;
+        delete fm::graphstate;
+        delete fm::closelegoccurrences;
+        delete fm::legoccurrences;
+    }
+    fm::database = new Database();
+    fm::statistics = new Statistics();
+    fm::chisq = new ChisqConstraint(0.95);
+    fm::graphstate = new GraphState();
+    fm::closelegoccurrences = new CloseLegOccurrences();
+    fm::legoccurrences = new LegOccurrences();
+
+    fm::candidatelegsoccurrences.clear();
+    fm::candidatecloselegsoccs.clear();
+    fm::candidatecloselegsoccsused.clear();
+
     SetChisqActive(true); 
     fm::result = &r;
     comp_runner=1; 

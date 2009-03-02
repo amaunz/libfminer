@@ -11,18 +11,15 @@ namespace fm {
     extern GraphState* graphstate;
     extern LegOccurrences* legoccurrences;
     extern unsigned int minfreq;
+    extern vector<LegOccurrences> candidatelegsoccurrences; 
+    extern vector<vector< CloseLegOccurrences> > candidatecloselegsoccs;
+    extern vector<bool> candidatecloselegsoccsused;
+    extern bool closelegsoccsused;
 }
 
-//LegOccurrences legoccurrences;
-vector<LegOccurrences> candidatelegsoccurrences; // AM: global!
-vector<vector< CloseLegOccurrences> > candidatecloselegsoccs; // AM: global!
-vector<bool> candidatecloselegsoccsused; // AM: global!
-
-bool closelegsoccsused;
-
 void initLegStatics () {
-  candidatecloselegsoccs.reserve ( 200 ); // should be larger than the largest structure that contains a cycle
-  candidatelegsoccurrences.resize ( fm::database->frequentEdgeLabelSize () );
+  fm::candidatecloselegsoccs.reserve ( 200 ); // should be larger than the largest structure that contains a cycle
+  fm::candidatelegsoccurrences.resize ( fm::database->frequentEdgeLabelSize () );
 }
 
 
@@ -187,19 +184,19 @@ inline int nocycle ( DatabaseTreePtr tree, DatabaseTreeNode &node, NodeId tonode
 }
 
 void candidateCloseLegsAllocate ( int number, int maxnumber ) {
-  if ( !closelegsoccsused ) {
-    int oldsize = candidatecloselegsoccs.size ();
-    candidatecloselegsoccs.resize ( maxnumber );
-    for ( int k = oldsize; k < (int) candidatecloselegsoccs.size (); k++ ) {
-      candidatecloselegsoccs[k].resize ( fm::database->frequentEdgeLabelSize () );
+  if ( !fm::closelegsoccsused ) {
+    int oldsize = fm::candidatecloselegsoccs.size ();
+    fm::candidatecloselegsoccs.resize ( maxnumber );
+    for ( int k = oldsize; k < (int) fm::candidatecloselegsoccs.size (); k++ ) {
+      fm::candidatecloselegsoccs[k].resize ( fm::database->frequentEdgeLabelSize () );
     }
-    candidatecloselegsoccsused.resize ( 0 );
-    candidatecloselegsoccsused.resize ( maxnumber, false );
-    closelegsoccsused = true;
+    fm::candidatecloselegsoccsused.resize ( 0 );
+    fm::candidatecloselegsoccsused.resize ( maxnumber, false );
+    fm::closelegsoccsused = true;
   }
-  if ( !candidatecloselegsoccsused[number] ) {
-    candidatecloselegsoccsused[number] = true;
-    vector<CloseLegOccurrences> &candidateedgelabeloccs = candidatecloselegsoccs[number];
+  if ( !fm::candidatecloselegsoccsused[number] ) {
+    fm::candidatecloselegsoccsused[number] = true;
+    vector<CloseLegOccurrences> &candidateedgelabeloccs = fm::candidatecloselegsoccs[number];
     for ( int k = 0; k < (int) candidateedgelabeloccs.size (); k++ ) {
       candidateedgelabeloccs[k].elements.resize ( 0 );
       candidateedgelabeloccs[k].frequency = 0;
@@ -222,20 +219,20 @@ void extend ( LegOccurrences &legoccurrencesdata ) {
 
 
 
-  Tid lastself[candidatelegsoccurrences.size ()];
+  Tid lastself[fm::candidatelegsoccurrences.size ()];
 
-  for ( int i = 0; i < (int) candidatelegsoccurrences.size (); i++ ) {
-    candidatelegsoccurrences[i].elements.resize ( 0 );
-    //candidatelegsoccurrences[i].elements.reserve ( legoccurrences.size () ); // increases memory usage, but also speed!
-    candidatelegsoccurrences[i].parent = &legoccurrencesdata;
-    candidatelegsoccurrences[i].number = legoccurrencesdata.number + 1;
-    candidatelegsoccurrences[i].maxdegree = 0;
-    candidatelegsoccurrences[i].frequency = 0;
-    candidatelegsoccurrences[i].selfjoin = 0;
+  for ( int i = 0; i < (int) fm::candidatelegsoccurrences.size (); i++ ) {
+    fm::candidatelegsoccurrences[i].elements.resize ( 0 );
+    //fm::candidatelegsoccurrences[i].elements.reserve ( legoccurrences.size () ); // increases memory usage, but also speed!
+    fm::candidatelegsoccurrences[i].parent = &legoccurrencesdata;
+    fm::candidatelegsoccurrences[i].number = legoccurrencesdata.number + 1;
+    fm::candidatelegsoccurrences[i].maxdegree = 0;
+    fm::candidatelegsoccurrences[i].frequency = 0;
+    fm::candidatelegsoccurrences[i].selfjoin = 0;
     lastself[i] = NOTID;
   }
 
-  closelegsoccsused = false; // we are lazy with the initialization of close leg arrays, as we may not need them at all in
+  fm::closelegsoccsused = false; // we are lazy with the initialization of close leg arrays, as we may not need them at all in
                              // many cases
 
   for ( OccurrenceId i = 0; i < legoccurrences.size (); i++ ) {
@@ -249,31 +246,31 @@ void extend ( LegOccurrences &legoccurrencesdata ) {
         int number = nocycle ( tree, node, node.edges[j].tonode, i, &legoccurrencesdata );
 
         if ( number == 0 ) {
-          vector<LegOccurrence> &candidatelegsoccs = candidatelegsoccurrences[edgelabel].elements;
-          if ( candidatelegsoccs.empty () )  candidatelegsoccurrences[edgelabel].frequency++;
+          vector<LegOccurrence> &candidatelegsoccs = fm::candidatelegsoccurrences[edgelabel].elements;
+          if ( candidatelegsoccs.empty () )  fm::candidatelegsoccurrences[edgelabel].frequency++;
           else {
 
 	            if ( candidatelegsoccs.back ().tid != legocc.tid )
-        	        candidatelegsoccurrences[edgelabel].frequency++;
+        	        fm::candidatelegsoccurrences[edgelabel].frequency++;
 
 	            if ( candidatelegsoccs.back ().occurrenceid == i &&
 	                lastself[edgelabel] != legocc.tid ) {
                     lastself[edgelabel] = legocc.tid;
-	                candidatelegsoccurrences[edgelabel].selfjoin++;
+	                fm::candidatelegsoccurrences[edgelabel].selfjoin++;
 	            }
 
           }
           candidatelegsoccs.push_back ( LegOccurrence ( legocc.tid, i, node.edges[j].tonode, legocc.tonodeid ) );
-          setmax ( candidatelegsoccurrences[edgelabel].maxdegree, fm::database->trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
+          setmax ( fm::candidatelegsoccurrences[edgelabel].maxdegree, fm::database->trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
         }
 
         else if ( number - 1 != fm::graphstate->nodes.back().edges[0].tonode ) {
             candidateCloseLegsAllocate ( number, legoccurrencesdata.number + 1 );
-            vector<CloseLegOccurrence> &candidatelegsoccs = candidatecloselegsoccs[number][edgelabel].elements;
+            vector<CloseLegOccurrence> &candidatelegsoccs = fm::candidatecloselegsoccs[number][edgelabel].elements;
             if ( !candidatelegsoccs.size () || candidatelegsoccs.back ().tid != legocc.tid )
-	            candidatecloselegsoccs[number][edgelabel].frequency++;
+	            fm::candidatecloselegsoccs[number][edgelabel].frequency++;
             candidatelegsoccs.push_back ( CloseLegOccurrence ( legocc.tid, i ) );
-            setmax ( candidatelegsoccurrences[edgelabel].maxdegree, fm::database->trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
+            setmax ( fm::candidatelegsoccurrences[edgelabel].maxdegree, fm::database->trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
         }
 
       }
@@ -301,19 +298,19 @@ void extend ( LegOccurrences &legoccurrencesdata, EdgeLabel minlabel, EdgeLabel 
 
 
 
-  int lastself[candidatelegsoccurrences.size ()];
+  int lastself[fm::candidatelegsoccurrences.size ()];
   
-  for ( int i = 0; i < (int) candidatelegsoccurrences.size (); i++ ) {
-    candidatelegsoccurrences[i].elements.resize ( 0 );
-    candidatelegsoccurrences[i].parent = &legoccurrencesdata;
-    candidatelegsoccurrences[i].number = legoccurrencesdata.number + 1;
-    candidatelegsoccurrences[i].maxdegree = 0;
-    candidatelegsoccurrences[i].selfjoin = 0;
+  for ( int i = 0; i < (int) fm::candidatelegsoccurrences.size (); i++ ) {
+    fm::candidatelegsoccurrences[i].elements.resize ( 0 );
+    fm::candidatelegsoccurrences[i].parent = &legoccurrencesdata;
+    fm::candidatelegsoccurrences[i].number = legoccurrencesdata.number + 1;
+    fm::candidatelegsoccurrences[i].maxdegree = 0;
+    fm::candidatelegsoccurrences[i].selfjoin = 0;
     lastself[i] = NOTID;
-    candidatelegsoccurrences[i].frequency = 0;
+    fm::candidatelegsoccurrences[i].frequency = 0;
   }
 
-  closelegsoccsused = false; // we are lazy with the initialization of close leg arrays, as we may not need them at all in
+  fm::closelegsoccsused = false; // we are lazy with the initialization of close leg arrays, as we may not need them at all in
                              // many cases
   for ( OccurrenceId i = 0; i < legoccurrences.size (); i++ ) {
     LegOccurrence &legocc = legoccurrences[i];
@@ -325,30 +322,30 @@ void extend ( LegOccurrences &legoccurrencesdata, EdgeLabel minlabel, EdgeLabel 
         int number = nocycle ( tree, node, node.edges[j].tonode, i, &legoccurrencesdata );
         if ( number == 0 ) {
 	  if ( edgelabel >= minlabel && edgelabel != neglect ) {
-            vector<LegOccurrence> &candidatelegsoccs = candidatelegsoccurrences[edgelabel].elements;
+            vector<LegOccurrence> &candidatelegsoccs = fm::candidatelegsoccurrences[edgelabel].elements;
             if ( candidatelegsoccs.empty () )
-  	      candidatelegsoccurrences[edgelabel].frequency++;
+  	      fm::candidatelegsoccurrences[edgelabel].frequency++;
 	    else {
 	      if ( candidatelegsoccs.back ().tid != legocc.tid )
-  	        candidatelegsoccurrences[edgelabel].frequency++;
+  	        fm::candidatelegsoccurrences[edgelabel].frequency++;
 	      if ( candidatelegsoccs.back ().occurrenceid == i &&
                 lastself[edgelabel] != (int) legocc.tid ) {
                 lastself[edgelabel] = legocc.tid;
-                candidatelegsoccurrences[edgelabel].selfjoin++;
+                fm::candidatelegsoccurrences[edgelabel].selfjoin++;
               }
             }
             candidatelegsoccs.push_back ( LegOccurrence ( legocc.tid, i, node.edges[j].tonode, legocc.tonodeid ) );
-	    setmax ( candidatelegsoccurrences[edgelabel].maxdegree, fm::database->trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
+	    setmax ( fm::candidatelegsoccurrences[edgelabel].maxdegree, fm::database->trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
 	  }
         }
         else if ( number - 1 != fm::graphstate->nodes.back().edges[0].tonode ) {
           candidateCloseLegsAllocate ( number, legoccurrencesdata.number + 1 );
 
-          vector<CloseLegOccurrence> &candidatelegsoccs = candidatecloselegsoccs[number][edgelabel].elements;
+          vector<CloseLegOccurrence> &candidatelegsoccs = fm::candidatecloselegsoccs[number][edgelabel].elements;
           if ( !candidatelegsoccs.size () || candidatelegsoccs.back ().tid != legocc.tid )
-	    candidatecloselegsoccs[number][edgelabel].frequency++;
+	    fm::candidatecloselegsoccs[number][edgelabel].frequency++;
           candidatelegsoccs.push_back ( CloseLegOccurrence ( legocc.tid, i ) );
-          setmax ( candidatelegsoccurrences[edgelabel].maxdegree, fm::database->trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
+          setmax ( fm::candidatelegsoccurrences[edgelabel].maxdegree, fm::database->trees[legocc.tid]->nodes[node.edges[j].tonode].edges.size () );
         }
       }
     }
