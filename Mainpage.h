@@ -167,7 +167,7 @@
  * void SetPruning(bool val) {do_pruning=val;} //!< Pass 'false' here to disable statistical pruning completely.
  * \endcode
  *
- * Andreas Maunz, 2008
+ * © 2008 by Andreas Maunz, 2008
  *
- *  \author Andreas Maunz, 2008
+ *  \author © 2008 by Andreas Maunz, 2008
  **/
