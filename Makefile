@@ -1,3 +1,21 @@
+# Makefile
+# © 2008 by Andreas Maunz, andreas@maunz.de, jun 2008
+
+# This file is part of LibFminer (libfminer).
+#
+# LibFminer is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# LibFminer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with LibFminer.  If not, see <http://www.gnu.org/licenses/>.
+
 # WHAT
 NAME          = fminer
 LIB1          = lib$(NAME).so
@@ -6,7 +24,7 @@ LIB1_REALNAME = $(LIB1_SONAME).0.1
 LIB2          = $(NAME).so
 
 # OPTIONS
-INCLUDE       = /usr/include/openbabel-2.0/
+INCLUDE       = /usr/local/include/openbabel-2.0/
 OBJ           = closeleg.o constraints.o database.o graphstate.o legoccurrence.o path.o patterntree.o fminer.o
 CC            = g++
 CXXFLAGS      = -O3 -Wall -g -I$(INCLUDE) -fPIC
