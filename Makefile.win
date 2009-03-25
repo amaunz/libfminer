@@ -1,0 +1,52 @@
+# Makefile for Win32
+# © 2008 by Andreas Maunz, andreas@maunz.de, jun 2008
+
+# This file is part of LibFminer (libfminer).
+#
+# LibFminer is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# LibFminer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with LibFminer.  If not, see <http://www.gnu.org/licenses/>.
+
+# WHAT
+NAME          = fminer
+LIB1          = lib$(NAME).dll
+MINGW         = /mingw
+MINGW_VER     = 3.4.5
+
+# OPTIONS
+CC            = g++
+OBJ           = closeleg.o constraints.o database.o graphstate.o legoccurrence.o path.o patterntree.o fminer.o
+
+INCLUDE       = -I/openbabel/openbabel-2.2.1/include -I/gsl/include/
+CXXINCS       = -I"$(MINGW)/lib/gcc/mingw32/$(MINGW_VER)/include" -I"$(MINGW)/include/c++/$(MINGW_VER)/backward" -I"$(MINGW)/include/c++/$(MINGW_VER)/mingw32" -I"$(MINGW)/include/c++/$(MINGW_VER)" -I"$(MINGW)/include"
+CXXFLAGS      = -O2 -g $(INCLUDE) $(CXXINCS) -DBUILDING_DLL=1
+
+LDFLAGS       = -L"C:/Dev-Cpp/lib" -L/local/bin -L/gsl/bin --no-export-all-symbols --add-stdcall-alias
+LIBS	      = -lm -llibopenbabel-3 -llibgsl -llibgslcblas
+
+DLLWRAP       = dllwrap
+DEFFILE       = lib$(NAME).def
+STATICLIB     = lib$(NAME).lib
+
+# PHONY TOP LEVEL TARGETS
+.PHONY:
+all: $(LIB1) 
+
+# REAL FILE TARGETS
+$(LIB1): $(OBJ)
+	$(DLLWRAP) --output-def $(DEFFILE) --driver-name c++ --implib $(STATICLIB) $(LDFLAGS) $(LIBS) -o $@ $^
+.o: .cpp.h
+	$(CC) $(CXXFLAGS) $@
+
+.PHONY:
+clean:
+	-rm -rf $(OBJ) $(LIB1) lib$(NAME).def lib$(NAME).lib
