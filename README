@@ -1,4 +1,4 @@
-LibFminer
+-LibFminer-
 This is the Fminer library, available from http://github.com/amaunz/libfminer/tree/master.
 The official Fminer application that uses this library is available from http://github.com/amaunz/fminer/tree/master.
 Latest scientific documentation is available from http://www.maunz.de/ls_graph_mining_using_bbrcs.pdf.
