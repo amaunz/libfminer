@@ -18,8 +18,8 @@
 
 # OPTIONS
 CC            = g++
-INCLUDE       = -I/openbabel/openbabel-2.2.1/include -I/gsl/include # set -I as appropriate
-LDFLAGS       = -L/local/bin -L/gsl/bin # set -L as appropriate
+INCLUDE       = -I/usr/local/openbabel-2.2.0/include -I/openbabel/openbabel-2.2.1/include -I/gsl/include # set -I as appropriate
+LDFLAGS       = -L/local/bin -L/gsl/bin -L/usr/local/lib # set -L as appropriate
 CXXFLAGS      = -O3 -g $(INCLUDE)
 OBJ           = closeleg.o constraints.o database.o graphstate.o legoccurrence.o path.o patterntree.o fminer.o
 SWIG          = swig
@@ -37,7 +37,7 @@ $(LIB1): $(OBJ)
 	$(CC) $(LDFLAGS) $(LIBS) -shared -o $@ $^
 
 else                     # assume Linux
-CXXFLAGS      = $(CXXFLAGS) -fPIC
+#LCXXFLAGS      = $(CXXFLAGS) -fPIC
 LIBS	      = -ldl -lm -lopenbabel -lgsl -lgslcblas
 LIB1          = lib$(NAME).so
 LIB1_SONAME   = $(LIB1).1
@@ -52,14 +52,12 @@ $(LIB1_REALNAME): $(OBJ)
 	-ln -sf $@ $(LIB1_SONAME)
 	-ln -sf $@ $(LIB1)
 $(LIB2): $(NAME)_wrap.o $(OBJ)
-	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) *.o /usr/lib/libopenbabel.so /usr/lib/libgsl.so -o $@
+	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) *.o -lopenbabel -lgsl -o $@
 $(NAME)_wrap.o: $(NAME)_wrap.cxx
 	$(CC) -c $(CXXFLAGS) -I/usr/lib/ruby/1.8/i486-linux/ $^ -o $@
 %.cxx: %.i
 	$(SWIG) $(SWIGFLAGS) -o $@ $^
-
 endif
-
 
 # FILE TARGETS
 .o: .cpp.h
@@ -71,4 +69,4 @@ doc: Doxyfile Mainpage.h *.h
 	-doxygen $<
 .PHONY:
 clean:
-	-rm -rf *.o *.so* *.cxx
+	-rm -rf $(OBJ) $(LIB1) $(LIB2) $(LIB1_SONAME) $(LIB1_REALNAME) $(NAME)_wrap.o $(NAME)_wrap.cxx
