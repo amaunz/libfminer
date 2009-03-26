@@ -16,44 +16,56 @@
 # You should have received a copy of the GNU General Public License
 # along with LibFminer.  If not, see <http://www.gnu.org/licenses/>.
 
+# OPTIONS
+CC            = g++
+INCLUDE       = -I/openbabel/openbabel-2.2.1/include -I/gsl/include # set -I as appropriate
+LDFLAGS       = -L/local/bin -L/gsl/bin # set -L as appropriate
+CXXFLAGS      = -O3 -g $(INCLUDE)
+OBJ           = closeleg.o constraints.o database.o graphstate.o legoccurrence.o path.o patterntree.o fminer.o
+SWIG          = swig
+SWIGFLAGS     = -c++ -ruby
+
 # WHAT
 NAME          = fminer
+
+ifeq ($(OS), Windows_NT) # assume MinGW
+LIBS	      = -lm -llibopenbabel-3 -llibgsl -llibgslcblas
+LIB1          = lib$(NAME).dll
+.PHONY:
+all: $(LIB1)
+$(LIB1): $(OBJ)
+	$(CC) $(LDFLAGS) $(LIBS) -shared -o $@ $^
+
+else                     # assume Linux
+CXXFLAGS      = $(CXXFLAGS) -fPIC
+LIBS	      = -ldl -lm -lopenbabel -lgsl -lgslcblas
 LIB1          = lib$(NAME).so
 LIB1_SONAME   = $(LIB1).1
 LIB1_REALNAME = $(LIB1_SONAME).0.1
 LIB2          = $(NAME).so
-
-# OPTIONS
-INCLUDE       = /usr/local/include/openbabel-2.0/
-OBJ           = closeleg.o constraints.o database.o graphstate.o legoccurrence.o path.o patterntree.o fminer.o
-CC            = g++
-CXXFLAGS      = -O3 -Wall -g -I$(INCLUDE) -fPIC
-SWIG          = swig
-SWIGFLAGS     = -c++ -ruby
-LIBS	      = -lm -ldl -lopenbabel -lgsl -lgslcblas
-
-# PHONY TOP LEVEL TARGETS
 .PHONY:
 all: $(LIB1_REALNAME) 
 .PHONY:
 ruby: $(LIB2)
-
-# REAL FILE TARGETS
 $(LIB1_REALNAME): $(OBJ)
-	$(CC) -shared -Wl,-soname,$@ -o $@ $^
+	$(CC) $(LDFLAGS) $(LIBS) -shared -Wl,-soname,$@ -o $@ $^
 	-ln -sf $@ $(LIB1_SONAME)
 	-ln -sf $@ $(LIB1)
-.o: .cpp.h
-	$(CC) -Wall $(CXXFLAGS) $(LIBS) $@
 $(LIB2): $(NAME)_wrap.o $(OBJ)
-	$(CC) -shared $(CXXFLAGS) *.o /usr/lib/libopenbabel.so /usr/lib/libgsl.so -o $@
-
-# HELPER TARGETS
+	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) *.o /usr/lib/libopenbabel.so /usr/lib/libgsl.so -o $@
 $(NAME)_wrap.o: $(NAME)_wrap.cxx
 	$(CC) -c $(CXXFLAGS) -I/usr/lib/ruby/1.8/i486-linux/ $^ -o $@
 %.cxx: %.i
 	$(SWIG) $(SWIGFLAGS) -o $@ $^
 
+endif
+
+
+# FILE TARGETS
+.o: .cpp.h
+	$(CC) -Wall $(CXXFLAGS) $(LIBS) $@
+
+# HELPER TARGETS
 .PHONY:
 doc: Doxyfile Mainpage.h *.h
 	-doxygen $<

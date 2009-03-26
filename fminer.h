@@ -21,6 +21,12 @@
 #ifndef FMINER_H
 #define FMINER_H
 
+#ifdef EXPAND_DLLEXPORT
+  #define DLLEXPORT(x) __declspec(dllexport)x
+#else
+  #define DLLEXPORT(x) x
+#endif
+
 #include "misc.h"
 #include "closeleg.h"
 #include "graphstate.h"
@@ -36,8 +42,7 @@ namespace fm {
     extern bool bbrc_sep;
 
 }
-
-class Fminer {
+class DLLEXPORT(Fminer) {
 
   public:
 
