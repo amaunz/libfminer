@@ -2,10 +2,10 @@
  *
  * LibFminer
  *
- * This is the Fminer library, available at http://github.com/amaunz/libfminer/tree/master.
- * An Fminer frontend application can be obtained from http://github.com/amaunz/fminer/tree/master.
- * You may download the scientific documentation from http://www.maunz.de/ls_graph_mining_using_bbrcs.pdf.
- * To create documentation with doxygen, type 'make doc'. The documentation explains API, constructor usage and options.
+ * This is the Fminer library, available at http://github.com/amaunz/libfminer/tree/master.<br>
+ * An Fminer frontend application is available from http://github.com/amaunz/fminer/tree/master.<br>
+ * You may download the scientific documentation from http://www.maunz.de/ls_graph_mining_using_bbrcs.pdf.<br>
+ * Contact details are located at the end of this page.
  * 
  *  @section sec1 Abstract
  *
@@ -40,30 +40,48 @@
  *   LibFminer is licensed under the terms of the GNU General Public License (GPL, see LICENSE). LibFminer is derived from (i.e., includes code from) the following project, licensed under GPL:
  * - Gaston: Siegfried Nijssen and Joost Kok. A Quickstart in Frequent Structure Mining Can Make a Difference. Proceedings of the SIGKDD, 2004 (http://www.liacs.nl/home/snijssen/gaston/)
  *
- *   LibFminer uses (i.e., is linked to) the following projects, also licensed under GPL:
+ *   LibFminer uses (i.e., links to) the following projects, also licensed under GPL:
  * - OpenBabel: The Open Babel Package, version 2.1.1 (http://openbabel.sourceforge.net/)
  * - GSL: GNU Scientific Library, version 0.1 (http://www.gnu.org/software/gsl/)
  *
  *   These licensing conditions mean, that you may only use LibFminer, in whatever form, under the condition that your source code is also freely available.
  *
- *  @section sec2 Portability
- *  LibFminer is a library, written in C++. It dynamically links to openbabel and gsl libraries. LibFminer is also built as dynamically loadable library. 
- *  @subsection ssec21 Operating Systems
- *  - Windows DLL: install Msys and MinGW (http://www.mingw.org/, then update gcc-core and gcc-g++ packages manually to the latest version). 
- *    - OpenBabel: follow the installation instrucations at http://openbabel.org/wiki/Install_(MinGW).
- *    - GSL: Get the binary at http://gnuwin32.sourceforge.net/packages/gsl.htm
- *    The <code>Makefile</code> supplied with LibFminer source automagically detects Windows. However, you have to adjust the include (-I) and linker (-L, -l) flags. Run <code>make</code>.
- *  - Linux SO: install development tools (gcc, g++, GNU make) and GSL development package. Then get the openbabel source  Example: on Ubuntu, you can do
- *    \code
- *    apt-get install build-essential libgsl0-dev # development tools
- *    apt-get build-dep libopenbabel-dev          # build dependencies for OB
- *    apt-get source libopenbabel-dev             # extracts OB source to /usr/local/src
- *    \endcode
- *    Build and install OB, see also http://openbabel.org/wiki/Install_(source_code).
- *    In the LibFminer <code>Makefile</code>, adjust the include (-I) and linker (-L, -l) flags. Run <code>make</code>.
- *  @subsection ssec22 Language Platforms
- *  The API can be made available to other languages. A config file for Swig to automagically create languages bindings exists (<code>fminer_wrap.i</code>). The Makefile features a target that creates ruby bindings using this file (<code>make fminer.so</code>).
+ *  @section sec2 Installation
+ *  LibFminer is a library, written in C++. It dynamically links to OpenBabel and GSL libraries. LibFminer is normally also built as dynamically loadable library. 
+ *  Currently, there is no automated install procedure, you have to build libfminer from source. 
  *
+ *  @subsection ssec21 OS Portability
+ *  Windows DLL: 
+ *  - Install Msys and MinGW (http://www.mingw.org/, then update gcc-core and gcc-g++ packages manually to the latest version). 
+ *  - OpenBabel: follow the installation instrucations at http://openbabel.org/wiki/Install_(MinGW) to build yourself or download the binary DLLs at http://github.com/amaunz/openbabel-dll/tree (with git: <code>git clone git clone git://github.com/amaunz/openbabel-dll.git</code>).
+ *  - GSL: Get the binary at http://gnuwin32.sourceforge.net/packages/gsl.htm
+ *  - Get the source code at http://github.com/amaunz/libfminer/tree (with git: <code>git clone git clone git://github.com/amaunz/libfminer.git</code>). The <code>Makefile</code> automagically detects Windows. However, you have to adjust the include (-I) and linker (-L, -l) flags. Run <code>make</code>.
+ *  - To create this documentation with doxygen, type 'make doc'. The documentation explains API, constructor usage and options.
+ *
+ *  Linux SO: install development tools (gcc, g++, GNU make) and GSL as well as OpenBabel development package, then compile LibFminer. On Ubuntu, you can e.g. do it like this:
+ *  - Install build tools and GSL:
+ *    \code
+ *    apt-get install build-essential             # development tools
+ *    apt-get install libgsl0-dev                 # GSL binary lib and headers
+ *    \endcode
+ *  - OpenBabel: follow the installation instrucations at http://openbabel.org/wiki/Install_(source_code) to build yourself after doing:
+ *    \code
+ *    apt-get build-dep libopenbabel-dev          # build dependencies for OB
+ *    apt-get source libopenbabel-dev             # extracts OB source to the current dir
+ *    \endcode
+ *    or try the repository version:
+ *    \code
+ *    apt-get install libopenbabel-dev            # OB binary lib and headers
+ *    \endcode
+ *  - Get the source code at http://github.com/amaunz/libfminer/tree (with git: <code>git clone git clone git://github.com/amaunz/libfminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L, -l) flags. Run <code>make</code>.
+ *  - To create this documentation with doxygen, type 'make doc'. The documentation explains API, constructor usage and options.
+ *  @subsection ssec22 Language Portability
+ *  The API can be made available to other languages (currently only on Linux). Follow the installation instructions above. A config file for Swig to automagically create languages bindings exists (<code>fminer_wrap.i</code>). The Makefile also features a target that creates ruby bindings using this file. On Ubuntu, you can e.g. do this:
+ *  - Swig: 
+ *    \code
+ *    apt-get install swig1.3 swig1.3-doc swig1.3-examples
+ *    \endcode
+ *  - Run <code>make ruby</code>.
  *  @section sec3 Example program using the LibFminer API
  *  LibFminer uses the 'singleton' design pattern known from software engineering, i.e., class instantiation is restricted to one object.
  *  The following code retrieves a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output consists of gSpan graphs.
@@ -180,7 +198,14 @@
  * void SetPruning(bool val) {do_pruning=val;} //!< Pass 'false' here to disable statistical pruning completely.
  * \endcode
  *
- * © 2008 by Andreas Maunz, 2008
+ * @section Contact Contact
+ * Dipl.-Inf. Andreas Maunz<br>
+ * Freiburg Center for Data Analysis and Modelling<br>
+ * Hermann-Herder-Str. 3a<br>
+ * 79104 Freiburg, Germany<br>
+ * Phone: +49761/203-8442, Fax: +49761/203-7700<br>
+ * Email: maunza@fdm.uni-freiburg.de<br>
+ * Web: http://cs.maunz.de
  *
  *  \author © 2008 by Andreas Maunz, 2008
  **/
