@@ -47,8 +47,21 @@
  *   These licensing conditions mean, that you may only use LibFminer, in whatever form, under the condition that your source code is also freely available.
  *
  *  @section sec2 Portability
- *  LibFminer is a library, written in C++. It dynamically links to <code>libopenbabel</code> and <code>libgsl</code> libraries.
- *  The dependency libraries are available for Linux, Mac and Windows, so porting to the latter two platforms should be easy.
+ *  LibFminer is a library, written in C++. It dynamically links to openbabel and gsl libraries. LibFminer is also built as dynamically loadable library. 
+ *  @subsection ssec21 Operating Systems
+ *  - Windows DLL: install Msys and MinGW (http://www.mingw.org/, then update gcc-core and gcc-g++ packages manually to the latest version). 
+ *    - OpenBabel: follow the installation instrucations at http://openbabel.org/wiki/Install_(MinGW).
+ *    - GSL: Get the binary at http://gnuwin32.sourceforge.net/packages/gsl.htm
+ *    The <code>Makefile</code> supplied with LibFminer source automagically detects Windows. However, you have to adjust the include (-I) and linker (-L, -l) flags. Run <code>make</code>.
+ *  - Linux SO: install development tools (gcc, g++, GNU make) and GSL development package. Then get the openbabel source  Example: on Ubuntu, you can do
+ *    \code
+ *    apt-get install build-essential libgsl0-dev # development tools
+ *    apt-get build-dep libopenbabel-dev          # build dependencies for OB
+ *    apt-get source libopenbabel-dev             # extracts OB source to /usr/local/src
+ *    \endcode
+ *    Build and install OB, see also http://openbabel.org/wiki/Install_(source_code).
+ *    In the LibFminer <code>Makefile</code>, adjust the include (-I) and linker (-L, -l) flags. Run <code>make</code>.
+ *  @subsection ssec22 Language Platforms
  *  The API can be made available to other languages. A config file for Swig to automagically create languages bindings exists (<code>fminer_wrap.i</code>). The Makefile features a target that creates ruby bindings using this file (<code>make fminer.so</code>).
  *
  *  @section sec3 Example program using the LibFminer API

@@ -18,8 +18,8 @@
 
 # OPTIONS
 CC            = g++
-INCLUDE       = -I/usr/local/openbabel-2.2.0/include -I/openbabel/openbabel-2.2.1/include -I/gsl/include # set -I as appropriate
-LDFLAGS       = -L/local/bin -L/gsl/bin -L/usr/local/lib # set -L as appropriate
+INCLUDE       = -I/local/include/openbabel-2.0 -I/gnuwin/include # set -I as appropriate
+LDFLAGS       = -L/local/bin -L/gnuwin/bin # set -L as appropriate
 CXXFLAGS      = -O3 -g $(INCLUDE)
 OBJ           = closeleg.o constraints.o database.o graphstate.o legoccurrence.o path.o patterntree.o fminer.o
 SWIG          = swig
@@ -28,7 +28,7 @@ SWIGFLAGS     = -c++ -ruby
 # WHAT
 NAME          = fminer
 
-ifeq ($(OS), Windows_NT) # assume MinGW
+ifeq ($(OS), Windows_NT) # assume MinGW/Windows
 LIBS	      = -lm -llibopenbabel-3 -llibgsl -llibgslcblas
 LIB1          = lib$(NAME).dll
 .PHONY:
@@ -36,8 +36,8 @@ all: $(LIB1)
 $(LIB1): $(OBJ)
 	$(CC) $(LDFLAGS) $(LIBS) -shared -o $@ $^
 
-else                     # assume Linux
-#LCXXFLAGS      = $(CXXFLAGS) -fPIC
+else                     # assume GNU/Linux
+CXXFLAGS      = $(CXXFLAGS) -fPIC
 LIBS	      = -ldl -lm -lopenbabel -lgsl -lgslcblas
 LIB1          = lib$(NAME).so
 LIB1_SONAME   = $(LIB1).1
@@ -52,12 +52,14 @@ $(LIB1_REALNAME): $(OBJ)
 	-ln -sf $@ $(LIB1_SONAME)
 	-ln -sf $@ $(LIB1)
 $(LIB2): $(NAME)_wrap.o $(OBJ)
-	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) *.o -lopenbabel -lgsl -o $@
+	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) *.o /usr/lib/libopenbabel.so /usr/lib/libgsl.so -o $@
 $(NAME)_wrap.o: $(NAME)_wrap.cxx
 	$(CC) -c $(CXXFLAGS) -I/usr/lib/ruby/1.8/i486-linux/ $^ -o $@
 %.cxx: %.i
 	$(SWIG) $(SWIGFLAGS) -o $@ $^
+
 endif
+
 
 # FILE TARGETS
 .o: .cpp.h
@@ -69,4 +71,4 @@ doc: Doxyfile Mainpage.h *.h
 	-doxygen $<
 .PHONY:
 clean:
-	-rm -rf $(OBJ) $(LIB1) $(LIB2) $(LIB1_SONAME) $(LIB1_REALNAME) $(NAME)_wrap.o $(NAME)_wrap.cxx
+	-rm -rf *.o *.so* *.cxx
