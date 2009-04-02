@@ -18,9 +18,8 @@
 
 # OPTIONS
 CC            = g++
-INCLUDE       = -I/local/include/openbabel-2.0 -I/gnuwin/include # set -I as appropriate
+INCLUDE       = -I/usr/local/include/openbabel-2.0 -I/local/include/openbabel-2.0 -I/gnuwin/include # set -I as appropriate
 LDFLAGS       = -L/local/bin -L/gnuwin/bin # set -L as appropriate
-CXXFLAGS      = -O3 -g $(INCLUDE)
 OBJ           = closeleg.o constraints.o database.o graphstate.o legoccurrence.o path.o patterntree.o fminer.o
 SWIG          = swig
 SWIGFLAGS     = -c++ -ruby
@@ -29,6 +28,7 @@ SWIGFLAGS     = -c++ -ruby
 NAME          = fminer
 
 ifeq ($(OS), Windows_NT) # assume MinGW/Windows
+CXXFLAGS      = -O3 -g $(INCLUDE)
 LIBS	      = -lm -llibopenbabel-3 -llibgsl -llibgslcblas
 LIB1          = lib$(NAME).dll
 .PHONY:
@@ -37,7 +37,7 @@ $(LIB1): $(OBJ)
 	$(CC) $(LDFLAGS) $(LIBS) -shared -o $@ $^
 
 else                     # assume GNU/Linux
-CXXFLAGS      = $(CXXFLAGS) -fPIC
+CXXFLAGS      = -O3 -g $(INCLUDE) -fPIC
 LIBS	      = -ldl -lm -lopenbabel -lgsl -lgslcblas
 LIB1          = lib$(NAME).so
 LIB1_SONAME   = $(LIB1).1
@@ -52,7 +52,7 @@ $(LIB1_REALNAME): $(OBJ)
 	-ln -sf $@ $(LIB1_SONAME)
 	-ln -sf $@ $(LIB1)
 $(LIB2): $(NAME)_wrap.o $(OBJ)
-	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) *.o /usr/lib/libopenbabel.so /usr/lib/libgsl.so -o $@
+	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) *.o /usr/local/lib/libopenbabel.so /usr/lib/libgsl.so -o $@
 $(NAME)_wrap.o: $(NAME)_wrap.cxx
 	$(CC) -c $(CXXFLAGS) -I/usr/lib/ruby/1.8/i486-linux/ $^ -o $@
 %.cxx: %.i
