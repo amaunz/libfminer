@@ -1,0 +1,2 @@
+Please refer to http://www.maunz.de/libfminer-doc/ for installation instructions on various OS and language platforms. 
+You can also build the documentation yourself with doxygen: type 'make doc'.
