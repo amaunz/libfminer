@@ -53,7 +53,7 @@
  *  @subsection ssec21 OS Portability
  *  Windows DLL: 
  *  - Install Msys and MinGW (http://www.mingw.org/, then update gcc-core and gcc-g++ packages manually to the latest version). 
- *  - OpenBabel: follow the installation instrucations at http://openbabel.org/wiki/Install_(MinGW) to build OpenBabel yourself or download the binary DLLs at http://github.com/amaunz/openbabel-dll/tree (with git: <code>git clone git clone git://github.com/amaunz/openbabel-dll.git</code>).
+ *  - OpenBabel: follow the installation instrucations at http://openbabel.org/wiki/Install_(MinGW) to build OpenBabel yourself or download the binary DLLs at http://github.com/amaunz/openbabel-dll/tree (with git: <code>git clone git://github.com/amaunz/openbabel-dll.git</code>).
  *  - GSL: Get the binary at http://gnuwin32.sourceforge.net/packages/gsl.htm
  *  - Get the source code at http://github.com/amaunz/libfminer/tree (with git: <code>git clone git://github.com/amaunz/libfminer.git</code>). The <code>Makefile</code> automagically detects Windows. However, you have to adjust the include (-I) and linker (-L, -l) flags. Run <code>make</code>.
  *  - To create this documentation with doxygen, type 'make doc'. The documentation explains API, constructor usage and options.
