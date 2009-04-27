@@ -1,5 +1,5 @@
 # Makefile
-# Â© 2008 by Andreas Maunz, andreas@maunz.de, jun 2008
+# © 2008 by Andreas Maunz, andreas@maunz.de, jun 2008
 
 # This file is part of LibFminer (libfminer).
 #
@@ -18,8 +18,8 @@
 
 # OPTIONS
 CC            = g++
-INCLUDE       = -I/usr/local/include/openbabel-2.0 -I/local/include/openbabel-2.0 -I/gnuwin/include # set -I as appropriate
-LDFLAGS       = -L/local/bin -L/gnuwin/bin # set -L as appropriate
+INCLUDE       = -I/usr/local/include/openbabel-2.0 -I/local/include/openbabel-2.0 -I/home/openbabel-2.2.1/include -I /c/Program\ Files/GnuWin32/include/ # set -I as appropriate
+LDFLAGS       = -L. -L /c/Program\ Files/GnuWin32/bin # set -L as appropriate
 OBJ           = closeleg.o constraints.o database.o graphstate.o legoccurrence.o path.o patterntree.o fminer.o
 SWIG          = swig
 SWIGFLAGS     = -c++ -ruby
