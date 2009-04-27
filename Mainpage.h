@@ -46,11 +46,15 @@
  *
  *   These licensing conditions mean, that you may only use LibFminer, in whatever form, under the condition that your source code is also freely available.
  *
- *  @section sec2 Installation
- *  LibFminer is a library, written in C++. It dynamically links to OpenBabel and GSL libraries. LibFminer is normally also built as dynamically loadable library. 
- *  Currently, there is no automated install procedure. To use LibFminer, please download the binary DLL/SO file from http://github.com/amaunz/libfminer/downloads and put it in a directory contained in your PATH/LD_LIBRARY_PATH environment variable. The rest of this section describes how to build LibFminer from source.
+ *  @section sec2 Using LibFminer
+ *  LibFminer is a library, written in C++. It dynamically links to OpenBabel and GSL libraries.
+ *  @subsection ssec20 Binary Quick Installation
+ *  - Download the binary DLL/SO file from http://github.com/amaunz/libfminer/downloads and put it in a directory contained in your PATH/LD_LIBRARY_PATH environment variable.
+ *  - Download the binary host application from http://github.com/amaunz/fminer/downloads .
+ *  - Windows: download the binary DLLs at http://github.com/amaunz/openbabel-dll/tree and put them in a directory contained in your PATH environment variable. Linux: install the packages libopenbabel-dev and libgsl0-dev.
  *
- *  @subsection ssec21 OS Portability
+ *  @subsection ssec21 Compiling from source
+ *  LibFminer is built as a dynamically loadable library.<br>
  *  Windows DLL: 
  *  - Install Msys and MinGW (http://www.mingw.org/, then update gcc-core and gcc-g++ packages manually to the latest version). 
  *  - OpenBabel: follow the installation instrucations at http://openbabel.org/wiki/Install_(MinGW) to build OpenBabel yourself or download the binary DLLs at http://github.com/amaunz/openbabel-dll/tree (with git: <code>git clone git://github.com/amaunz/openbabel-dll.git</code>).
@@ -82,7 +86,7 @@
  *    apt-get install swig1.3 swig1.3-doc swig1.3-examples
  *    \endcode
  *  - Run <code>make ruby</code>.
- *  @section sec3 Example program using the LibFminer API
+ *  @section sec3 Pocket example using the LibFminer API
  *  LibFminer uses the 'singleton' design pattern known from software engineering, i.e., class instantiation is restricted to one object.
  *  The following code retrieves a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output consists of gSpan graphs.
  *

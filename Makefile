@@ -71,4 +71,4 @@ doc: Doxyfile Mainpage.h *.h
 	-doxygen $<
 .PHONY:
 clean:
-	-rm -rf *.o *.so* *.cxx
+	-rm -rf *.o *.cxx $(LIB1) $(LIB1_SONAME) $(LIB1_REALNAME) $(LIB2)
