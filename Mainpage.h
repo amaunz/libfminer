@@ -48,7 +48,7 @@
  *
  *  @section sec2 Installation
  *  LibFminer is a library, written in C++. It dynamically links to OpenBabel and GSL libraries. LibFminer is normally also built as dynamically loadable library. 
- *  Currently, there is no automated install procedure, you have to build libfminer from source. 
+ *  Currently, there is no automated install procedure. To use LibFminer, please download the binary DLL/SO file from http://github.com/amaunz/libfminer/downloads and put it in a directory contained in your PATH/LD_LIBRARY_PATH environment variable. The rest of this section describes how to build LibFminer from source.
  *
  *  @subsection ssec21 OS Portability
  *  Windows DLL: 
