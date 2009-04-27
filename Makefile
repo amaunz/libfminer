@@ -16,17 +16,33 @@
 # You should have received a copy of the GNU General Public License
 # along with LibFminer.  If not, see <http://www.gnu.org/licenses/>.
 
+
+
+# ADJUST COMPILER PATH TO OPENBABEL INCLUDE FILES (1st line Linux, 2nd line Windows):
+INCLUDE_OB    = -I/usr/local/include/openbabel-2.0
+INCLUDE_OB   += -I/home/openbabel-2.2.1/include
+# ADJUST COMPILER PATH TO GSL INCLUDE FILES (1st line Linux, 2nd line Windows):
+INCLUDE_GSL   = -I/usr/include
+INCLUDE_GSL  += -I/c/Program\ Files/GnuWin32/include/
+
+# ADJUST LINKER PATH TO OPENBABEL LIBRARY FILES (1st line Linux, 2nd line Windows):
+LDFLAGS_OB    = -L/usr/local/lib
+LDFLAGS_OB   += -L.
+# ADJUST LINKER PATH TO GSL LIBRARY FILES (1st line Linux, 2nd line Windows):
+LDFLAGS_GSL   =
+LDFLAGS_GSL  += -L/c/Program\ Files/GnuWin32/bin/
+
+
+# NORMALLY NO ADJUSTMENT NECESSARY BELOW THIS LINE. Exit and try 'make' now.
+# WHAT
+NAME          = fminer
 # OPTIONS
 CC            = g++
-INCLUDE       = -I/usr/local/include/openbabel-2.0 -I/local/include/openbabel-2.0 -I/home/openbabel-2.2.1/include -I /c/Program\ Files/GnuWin32/include/ # set -I as appropriate
-LDFLAGS       = -L. -L /c/Program\ Files/GnuWin32/bin # set -L as appropriate
+INCLUDE       = $(INCLUDE_OB) $(INCLUDE_GSL) 
+LDFLAGS       = $(LDFLAGS_OB) $(LDFLAGS_GSL)
 OBJ           = closeleg.o constraints.o database.o graphstate.o legoccurrence.o path.o patterntree.o fminer.o
 SWIG          = swig
 SWIGFLAGS     = -c++ -ruby
-
-# WHAT
-NAME          = fminer
-
 ifeq ($(OS), Windows_NT) # assume MinGW/Windows
 CXXFLAGS      = -O3 -g $(INCLUDE)
 LIBS	      = -lm -llibopenbabel-3 -llibgsl -llibgslcblas
@@ -35,7 +51,6 @@ LIB1          = lib$(NAME).dll
 all: $(LIB1)
 $(LIB1): $(OBJ)
 	$(CC) $(LDFLAGS) $(LIBS) -shared -o $@ $^
-
 else                     # assume GNU/Linux
 CXXFLAGS      = -O3 -g $(INCLUDE) -fPIC
 LIBS	      = -ldl -lm -lopenbabel -lgsl -lgslcblas
@@ -57,14 +72,12 @@ $(NAME)_wrap.o: $(NAME)_wrap.cxx
 	$(CC) -c $(CXXFLAGS) -I/usr/lib/ruby/1.8/i486-linux/ $^ -o $@
 %.cxx: %.i
 	$(SWIG) $(SWIGFLAGS) -o $@ $^
-
 endif
 
 
 # FILE TARGETS
 .o: .cpp.h
 	$(CC) -Wall $(CXXFLAGS) $(LIBS) $@
-
 # HELPER TARGETS
 .PHONY:
 doc: Doxyfile Mainpage.h *.h

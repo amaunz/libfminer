@@ -44,14 +44,15 @@
  * - OpenBabel: The Open Babel Package, version 2.1.1 (http://openbabel.sourceforge.net/)
  * - GSL: GNU Scientific Library, version 0.1 (http://www.gnu.org/software/gsl/)
  *
- *   These licensing conditions mean, that you may only use LibFminer, in whatever form, under the condition that your source code is also freely available.
+ *   These licensing conditions mean essentially, that you may only use LibFminer, in whatever form, under the condition that your source code is also freely available.
  *
  *  @section sec2 Using LibFminer
  *  LibFminer is a library, written in C++. It dynamically links to OpenBabel and GSL libraries.
  *  @subsection ssec20 Binary Quick Installation
  *  - Download the binary DLL/SO file from http://github.com/amaunz/libfminer/downloads and put it in a directory contained in your PATH/LD_LIBRARY_PATH environment variable.
  *  - Download the binary host application from http://github.com/amaunz/fminer/downloads .
- *  - Windows: download the binary DLLs at http://github.com/amaunz/openbabel-dll/tree and put them in a directory contained in your PATH environment variable. Linux: install the packages libopenbabel-dev and libgsl0-dev.
+ *  - <b>Windows</b>: download the binary OpenBabel from http://github.com/amaunz/openbabel-dll/tree . Click on the 'Download' button and chose 'ZIP'. After downloading, unpack and check file integrity (see README.txt). Then, put the DLL files in a directory contained in your PATH environment variable. <b>Linux</b>: install the package libopenbabel-dev.
+ *  - <b>Windows</b>: download the binary GSL from http://github.com/amaunz/gsl-dll/tree . Click on the 'Download' button and chose 'ZIP'. After downloading, unpack and check file integrity (see README.txt). Then, put the DLL files in a directory contained in your PATH environment variable. <b>Linux</b>: install the package libgsl0-dev.
  *
  *  @subsection ssec21 Compiling from source
  *  LibFminer is built as a dynamically loadable library.<br>
