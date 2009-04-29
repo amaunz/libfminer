@@ -1,5 +1,4 @@
 # Makefile
-# Makefile
 # © 2008 by Andreas Maunz, andreas@maunz.de, jun 2008
 
 # This file is part of LibFminer (libfminer).
