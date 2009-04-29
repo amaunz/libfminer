@@ -68,7 +68,7 @@ $(LIB1_REALNAME): $(OBJ)
 	-ln -sf $@ $(LIB1_SONAME)
 	-ln -sf $@ $(LIB1)
 $(LIB2): $(NAME)_wrap.o $(OBJ)
-	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) *.o $(LIBS_LIB2) -o $@
+	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) $^ $(LIBS_LIB2) -o $@
 $(NAME)_wrap.o: $(NAME)_wrap.cxx
 	$(CC) -c $(CXXFLAGS) -I/usr/lib/ruby/1.8/i486-linux/ $^ -o $@
 %.cxx: %.i
