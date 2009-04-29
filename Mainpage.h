@@ -9,7 +9,7 @@
  *
  *  @section sec0 News
  *
- * The Backbone Refinement Class paper (co-authored by Christoph Helma and Stefan Kramer) has been accepted for the <b>KDD 2009</b> conference on Data Mining and Knowledge Discovery (Jun 28 - Jul 1 2009 in Paris) for a presentation at the conference and inclusion in the conference proceedings (see http://www.sigkdd.org/kdd/2009/).
+ * <i>Apr 29 2009</i>: The Backbone Refinement Class paper (co-authored by Christoph Helma and Stefan Kramer) has been accepted for the <b>KDD 2009</b> conference on Data Mining and Knowledge Discovery (Jun 28 - Jul 1 2009 in Paris) for a presentation at the conference and inclusion in the conference proceedings (see http://www.sigkdd.org/kdd/2009/papers.html).
  * 
  *  @section sec1 Abstract
  *
