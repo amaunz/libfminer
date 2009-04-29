@@ -1,4 +1,5 @@
 # Makefile
+# Makefile
 # © 2008 by Andreas Maunz, andreas@maunz.de, jun 2008
 
 # This file is part of LibFminer (libfminer).
@@ -53,7 +54,8 @@ $(LIB1): $(OBJ)
 	$(CC) $(LDFLAGS) $(LIBS) -shared -o $@ $^
 else                     # assume GNU/Linux
 CXXFLAGS      = -O3 -g $(INCLUDE) -fPIC
-LIBS	      = -ldl -lm -lopenbabel -lgsl -lgslcblas
+LIBS_LIB2     = -lopenbabel -lgsl
+LIBS          = $(LIBS_RUBY) -ldl -lm -lgslcblas
 LIB1          = lib$(NAME).so
 LIB1_SONAME   = $(LIB1).1
 LIB1_REALNAME = $(LIB1_SONAME).0.1
@@ -67,7 +69,7 @@ $(LIB1_REALNAME): $(OBJ)
 	-ln -sf $@ $(LIB1_SONAME)
 	-ln -sf $@ $(LIB1)
 $(LIB2): $(NAME)_wrap.o $(OBJ)
-	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) *.o /usr/local/lib/libopenbabel.so /usr/lib/libgsl.so -o $@
+	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) *.o $(LIBS_LIB2) -o $@
 $(NAME)_wrap.o: $(NAME)_wrap.cxx
 	$(CC) -c $(CXXFLAGS) -I/usr/lib/ruby/1.8/i486-linux/ $^ -o $@
 %.cxx: %.i
