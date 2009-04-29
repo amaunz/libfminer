@@ -44,7 +44,7 @@
  * - OpenBabel: The Open Babel Package, version 2.1.1 (http://openbabel.sourceforge.net/)
  * - GSL: GNU Scientific Library, version 0.1 (http://www.gnu.org/software/gsl/)
  *
- *   These licensing conditions mean essentially, that your published program may only use and/or derive code from LibFminer under the condition that your source code is also freely available. Your personal usage of LibFminer, however, is not restricted in any way.
+ *   These licensing conditions mean essentially, that your published program may only use (i.e., link to) and/or derive code from LibFminer under the condition that your source code is also freely available. Your personal usage of LibFminer, however, is not restricted in any way.
  *
  *  @section sec2 Using LibFminer
  *  LibFminer is a library, written in C++. It dynamically links to OpenBabel and GSL libraries.
