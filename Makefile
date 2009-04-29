@@ -32,6 +32,9 @@ LDFLAGS_OB   += -L.
 LDFLAGS_GSL   =
 LDFLAGS_GSL  += -L/c/Program\ Files/GnuWin32/bin/
 
+# FOR RUBY TARGET: ADJUST COMPILER PATH TO RUBY HEADERS (LINUX)
+INCLUDE_RB    = -I/usr/lib/ruby/1.8/i486-linux/ 
+
 
 # NORMALLY NO ADJUSTMENT NECESSARY BELOW THIS LINE. Exit and try 'make' now.
 # WHAT
@@ -70,7 +73,7 @@ $(LIB1_REALNAME): $(OBJ)
 $(LIB2): $(NAME)_wrap.o $(OBJ)
 	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) $^ $(LIBS_LIB2) -o $@
 $(NAME)_wrap.o: $(NAME)_wrap.cxx
-	$(CC) -c $(CXXFLAGS) -I/usr/lib/ruby/1.8/i486-linux/ $^ -o $@
+	$(CC) -c $(CXXFLAGS) $(INCLUDE_RB) $^ -o $@
 %.cxx: %.i
 	$(SWIG) $(SWIGFLAGS) -o $@ $^
 endif
