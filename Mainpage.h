@@ -6,6 +6,10 @@
  * An Fminer frontend application is available from http://github.com/amaunz/fminer/tree/master .<br>
  * You may download the scientific documentation from http://cs.maunz.de . The paper is entitled "Large Scale Graph Mining using Backbone Refinement Classes".<br>
  * Contact details are located at the end of this page.
+ *
+ *  @section sec0 News
+ *
+ * The Backbone Refinement Class paper (co-authored by Christoph Helma and Stefan Kramer) has been accepted for the <b>KDD 2009</b> conference on Data Mining and Knowledge Discovery (Jun 28 - Jul 1 2009 in Paris) for a presentation at the conference and inclusion in the conference proceedings (see http://www.sigkdd.org/kdd/2009/).
  * 
  *  @section sec1 Abstract
  *
