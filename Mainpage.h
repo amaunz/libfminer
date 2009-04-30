@@ -3,7 +3,7 @@
  * LibFminer
  *
  * This is the Fminer library, available at http://github.com/amaunz/libfminer/tree/master .<br>
- * An Fminer frontend application is available from http://github.com/amaunz/fminer/tree/master .<br>
+ * The Fminer frontend application is available from http://github.com/amaunz/fminer/tree/master .<br>
  * You may download the scientific documentation from http://cs.maunz.de . The paper is entitled "Large Scale Graph Mining using Backbone Refinement Classes".<br>
  * Contact details are located at the end of this page.
  *
@@ -52,10 +52,11 @@
  *
  *  @section sec2 Using LibFminer
  *  LibFminer is a library, written in C++. It dynamically links to OpenBabel and GSL libraries.
+ *  This section describes the installation of both the library and the frontend application for Linux and and 32 bit versions of Windows (NT and later).
  *  @subsection ssec20 Binary Quick Installation
- *  For Windows (32 bit), you may use the installer available at http://github.com/amaunz/fminer/downloads . This installs the binary as well as libraries and C++ development headers. Otherwise install manually:
+ *  For Windows, you may use the installer available at http://github.com/amaunz/fminer/downloads . This installs the binary as well as libraries and C++ development headers. Otherwise install manually:
  *  - Download the binary DLL/SO file from http://github.com/amaunz/libfminer/downloads and put it in a directory contained in your PATH/LD_LIBRARY_PATH environment variable.
- *  - Download the binary host application from http://github.com/amaunz/fminer/downloads .
+ *  - Download the binary frontend application from http://github.com/amaunz/fminer/downloads .
  *  - <b>Windows</b>: download the binary OpenBabel from http://github.com/amaunz/openbabel-dll/tree . Click on the 'Download' button and chose 'ZIP'. After downloading, unpack and check file integrity (see README.txt). Then, put the DLL files in a directory contained in your PATH environment variable. <b>Linux</b>: install the package libopenbabel-dev.
  *  - <b>Windows</b>: download the binary GSL from http://github.com/amaunz/gsl-dll/tree . Click on the 'Download' button and chose 'ZIP'. After downloading, unpack and check file integrity (see README.txt). Then, put the DLL files in a directory contained in your PATH environment variable. <b>Linux</b>: install the package libgsl0-dev.
  *
