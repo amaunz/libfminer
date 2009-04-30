@@ -65,8 +65,9 @@
  *  Windows DLL: 
  *  - Install Msys and MinGW (http://www.mingw.org/, then update gcc-core and gcc-g++ packages manually to the latest version). 
  *  - OpenBabel: follow the installation instrucations at http://openbabel.org/wiki/Install_(MinGW) to build OpenBabel yourself or download the binary DLLs at http://github.com/amaunz/openbabel-dll/tree (with git: <code>git clone git://github.com/amaunz/openbabel-dll.git</code>).
- *  - GSL: Get the binary at http://gnuwin32.sourceforge.net/packages/gsl.htm
- *  - Get the source code at http://github.com/amaunz/libfminer/tree (with git: <code>git clone git://github.com/amaunz/libfminer.git</code>). The <code>Makefile</code> automagically detects Windows. However, you have to adjust the include (-I) and linker (-L, -l) flags. Run <code>make</code>.
+ *  - GSL: download the binary DLLs at http://github.com/amaunz/gsl-dll/tree (with git: <code>git clone git://github.com/amaunz/gsl-dll.git</code>).
+ *  - Get the library source code at http://github.com/amaunz/libfminer/tree (with git: <code>git clone git://github.com/amaunz/libfminer.git</code>). The <code>Makefile</code> automagically detects Windows. However, you have to adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
+ *  - Get the frontend source code at http://github.com/amaunz/fminer/tree (with git: <code>git clone git://github.com/amaunz/fminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
  *  - To create this documentation with doxygen, type 'make doc'. The documentation explains API, constructor usage and options.
  *
  *  Linux SO: install development tools (gcc, g++, GNU make) and GSL as well as OpenBabel development package, then compile LibFminer. On Ubuntu, you can e.g. do it like this:
@@ -84,7 +85,8 @@
  *    \code
  *    apt-get install libopenbabel-dev            # OB binary lib and headers
  *    \endcode
- *  - Get the source code at http://github.com/amaunz/libfminer/tree (with git: <code>git clone git://github.com/amaunz/libfminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L, -l) flags. Run <code>make</code>.
+ *  - Get the library source code at http://github.com/amaunz/libfminer/tree (with git: <code>git clone git://github.com/amaunz/libfminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
+ *  - Get the frontend code at http://github.com/amaunz/fminer/tree (with git: <code>git clone git://github.com/amaunz/fminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
  *  - To create this documentation with doxygen, type 'make doc'. The documentation explains API, constructor usage and options.
  *  @subsection ssec22 Language Portability
  *  The API can be made available to other languages (currently only on Linux). Follow the installation instructions above. A config file for Swig to automagically create languages bindings exists (<code>fminer_wrap.i</code>). The Makefile also features a target that creates ruby bindings using this file. On Ubuntu, you can e.g. do this:
