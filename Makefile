@@ -27,7 +27,7 @@ INCLUDE_GSL  += -I/c/Program\ Files/GnuWin32/include/
 
 # ADJUST LINKER PATH TO OPENBABEL LIBRARY FILES (1st line Linux, 2nd line Windows):
 LDFLAGS_OB    = -L/usr/local/lib
-LDFLAGS_OB   += -L.
+LDFLAGS_OB   += -L/c/Users/am/Desktop/fminer
 # ADJUST LINKER PATH TO GSL LIBRARY FILES (1st line Linux, 2nd line Windows):
 LDFLAGS_GSL   =
 LDFLAGS_GSL  += -L/c/Program\ Files/GnuWin32/bin/
