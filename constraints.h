@@ -31,6 +31,7 @@
 
 namespace fm {
     extern Database* database;
+    extern bool line_nrs;
 }
 
 class Constraint {};
@@ -82,11 +83,13 @@ class ChisqConstraint : public Constraint {
       each (legocc) { 
 
         if (fm::database->trees[legocc[i].tid]->activity == 1) {
-            fa_set.insert(legocc[i].tid); 
+            if (fm::line_nrs) fa_set.insert(legocc[i].tid); 
+            else fa_set.insert(fm::database->trees[legocc[i].tid]->orig_tid); 
         }
 
         else if (fm::database->trees[legocc[i].tid]->activity == 0) {
-            fi_set.insert(legocc[i].tid); 
+            if (fm::line_nrs) fi_set.insert(legocc[i].tid); 
+            else fi_set.insert(fm::database->trees[legocc[i].tid]->orig_tid); 
         }
 
       }

@@ -134,6 +134,7 @@ void Fminer::Defaults() {
     fm::do_output=true;
     fm::bbrc_sep=false;
     fm::most_specific_trees_only=false;
+    fm::line_nrs=false;
 
     fm::updated = true;
     fm::do_yaml=true;
@@ -156,6 +157,7 @@ bool Fminer::GetBbrcSep(){return fm::bbrc_sep;}
 bool Fminer::GetMostSpecTreesOnly(){return fm::most_specific_trees_only;}
 bool Fminer::GetChisqActive(){return fm::chisq->active;}
 float Fminer::GetChisqSig(){return fm::chisq->sig;}
+bool Fminer::GetLineNrs() {return fm::line_nrs;}
 
 
 
@@ -269,6 +271,10 @@ void Fminer::SetChisqActive(bool val) {
 void Fminer::SetChisqSig(float _chisq_val) {
     if (_chisq_val < 0.0 || _chisq_val > 1.0) { cerr << "Error! Invalid value '" << _chisq_val << "' for parameter chisq." << endl; exit(1); }
     fm::chisq->sig = gsl_cdf_chisq_Pinv(_chisq_val, 1);
+}
+
+void Fminer::SetLineNrs(bool val) {
+    fm::line_nrs = val;
 }
 
 

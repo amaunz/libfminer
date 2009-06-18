@@ -40,6 +40,7 @@ namespace fm {
     extern bool do_yaml;
     extern bool gsp_out;
     extern bool bbrc_sep;
+    extern bool line_nrs;
 
 }
 class DLLEXPORT(Fminer) {
@@ -76,6 +77,7 @@ class DLLEXPORT(Fminer) {
     bool GetMostSpecTreesOnly(); //!< Get whether most specific trees only should be mined for every BBRC.
     bool GetChisqActive(); //!< Get whether chi-square filter is active.
     float GetChisqSig(); //!< Get significance threshold.
+    bool GetLineNrs(); //!< Get whether line numbers should be used in the output file.
     //@}
 
     /** @name Setters
@@ -95,6 +97,7 @@ class DLLEXPORT(Fminer) {
     void SetMostSpecTreesOnly(bool val); //!< Set this to 'true' to enable mining for the most specific tree patterns only.
     void SetChisqActive(bool val); //!< Set this to 'true' to enable chi-square filter.
     void SetChisqSig(float _chisq_val); //!< Set significance threshold here (between 0 and 1).
+    void SetLineNrs(bool val); //!< Set 'true' here to enable line numbers in the output file.
     //@}
     
     /** @name Others

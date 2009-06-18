@@ -41,6 +41,7 @@ namespace fm {
     bool gsp_out;
     bool bbrc_sep;
     bool most_specific_trees_only;
+    bool line_nrs;
 
     Database* database=NULL;
     Statistics* statistics=NULL;
