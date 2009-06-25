@@ -84,7 +84,7 @@ class Fminer {
     void SetDynamicUpperBound(bool val); //!< Pass 'false' here to disable dynamic upper bound pruning (e.g. for performance measures).
     void SetPruning(bool val); //!< Pass 'false' here to disable statistical metrical pruning completely.
     void SetConsoleOut(bool val); //!< Pass 'true' here to disable usage of result vector and directly print each fragment to the console (saves memory).
-    void SetAromatic(bool val); //!< Pass 'false' here to disable aromatic rings and use Kekule notation.
+    void SetAromatic(bool val); //!< Pass 'true' here to enable aromatic rings and use Kekule notation.
     void SetRefineSingles(bool val); //!< Pass 'true' here to enable refinement of fragments with frequency 1.
     void SetDoOutput(bool val); //!< Pass 'false' here to disable output.
     void SetBbrcSep(bool val); //!< Set this to 'true' to enable BBRC separators in output.

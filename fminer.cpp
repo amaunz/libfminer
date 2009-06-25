@@ -129,7 +129,7 @@ void Fminer::Defaults() {
     fm::adjust_ub = true;
     fm::do_pruning = true;
     fm::console_out = false;
-    fm::aromatic = true;
+    fm::aromatic = false;
     fm::refine_singles = false;
     fm::do_output=true;
     fm::bbrc_sep=false;

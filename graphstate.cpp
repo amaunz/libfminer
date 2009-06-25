@@ -312,6 +312,11 @@ int GraphState::enumerateSpanning () {
 
 
 
+
+
+
+// PRINT GSP TO STDOUT
+
 void GraphState::print ( FILE *f ) {
   static int counter = 0;
   counter++;
@@ -345,6 +350,9 @@ void GraphState::print ( FILE *f ) {
     }
   }
 }
+
+
+// PRINT SMARTS TO STDOUT
 
 void GraphState::DfsOut(int cur_n, int from_n) {
     InputNodeLabel inl = fm::database->nodelabels[nodes[cur_n].label].inputlabel;
@@ -383,13 +391,10 @@ void GraphState::DfsOut(int cur_n, int from_n) {
 }
 
 
+
+// ENTRY: BRANCH TO GSP (STDOUT) or PRINT YAML/LAZAR TO STDOUT
+
 void GraphState::print ( unsigned int frequency ) {
-/*
-    fm::gsp_out = true;
-    fm::do_yaml = true;
-    if (getenv("FMINER_LAZAR")) fm::do_yaml = false;
-    if (getenv("FMINER_SMARTS")) fm::gsp_out = false; 
-*/
     if (!fm::chisq->active || fm::chisq->p >= fm::chisq->sig) {
         if (fm::gsp_out) { 
             print(stdout); 
@@ -456,8 +461,6 @@ void GraphState::print ( unsigned int frequency ) {
                       printf("%i", (*iter)); 
                   }
               }
-//              if (!fm::do_yaml) oss.append (" ]");
-//              else oss.append (" ]");
               putchar(' ');
               putchar(']');
           }
@@ -473,6 +476,7 @@ void GraphState::print ( unsigned int frequency ) {
 
 
 
+// PRINT GSP TO OSS
 
 void GraphState::to_s ( string& oss ) {
   static int counter = 0;
@@ -512,6 +516,9 @@ void GraphState::to_s ( string& oss ) {
   }
 }
 
+
+// PRINT SMARTS TO OSS
+
 void GraphState::DfsOut(int cur_n, string& oss, int from_n) {
     InputNodeLabel inl = fm::database->nodelabels[nodes[cur_n].label].inputlabel;
     (inl!=254) ? oss.append( etab.GetSymbol(inl)) : oss.append("c"); // output nodelabel
@@ -545,6 +552,8 @@ void GraphState::DfsOut(int cur_n, string& oss, int from_n) {
     }
 }
 
+
+// ENTRY: BRANCH TO GSP (OSS) or PRINT YAML/LAZAR TO OSS
 
 string GraphState::to_s ( unsigned int frequency ) {
 
