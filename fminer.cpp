@@ -117,7 +117,7 @@ void Fminer::Reset() {
 
     SetChisqActive(true); 
     fm::result = &r;
-    comp_runner=1; 
+    comp_runner=0; 
     comp_no=0; 
     init_mining_done = false;
 }
