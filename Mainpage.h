@@ -9,8 +9,9 @@
  *
  *  @section sec0 News
  *
- * <i>Apr 29 2009</i>: The Backbone Refinement Class paper (co-authored by Christoph Helma and Stefan Kramer) has been accepted for the <b>KDD 2009</b> conference on Data Mining and Knowledge Discovery (Jun 28 - Jul 1 2009 in Paris) for a presentation at the conference and inclusion in the conference proceedings (see http://www.sigkdd.org/kdd/2009/papers.html).
- * 
+ * <i>29 Apr 2009</i>: The Backbone Refinement Class paper (co-authored by Christoph Helma and Stefan Kramer) has been accepted for the <b><a href="http://www.sigkdd.org/kdd/2009/papers.html">KDD 2009</a></b> conference on Data Mining and Knowledge Discovery (Jun 28 - Jul 1 2009 in Paris) for a presentation at the conference and inclusion in the conference proceedings.<p />
+ * <i>30 Apr 2009</i>: The paper has been selected for oral presentation at <b><a href="http://www.cs.kuleuven.be/~dtai/ilp-mlg-srl/index.php?CONF=mlg&CONT=accepted">MLG 2009</a></b>.
+ *
  *  @section sec1 Abstract
  *
  *  We present a new approach to large-scale graph mining
@@ -38,6 +39,23 @@
  *  represented by each descriptor. A final cross-validation run
  *  confirms that the novel descriptors render large training sets
  *  feasible which previously might have been intractable.
+ *
+ * \htmlonly
+ *  <table align="center" border="0" width="610">
+ *     <tr align="center">
+ *         <td>
+ *     <a href="http://www.maunz.de/salm.jpg">
+ *     <img src="/salm.jpg" width="300" alt="Euclidean embedding of a Backbone Refinement Class Descriptors and Salmonella Mutagenicity data" title="Euclidean embedding of a Backbone Refinement Class Descriptors and Salmonella Mutagenicity data" />
+ *      </a>
+ *         </td>
+ *     </tr>
+ *     <tr>
+ *         <td align="center">
+ *     <small>Co-occurrence-based 2D embedding of molecules and backbone refinement class features showing close to perfect separation of target classes along top left to bottom right. (De)activating features are (red) green, (In)active instances (salmon) blue. Data: <a href="http://github.com/amaunz/cpdbdata/tree/master">CPDB salmonella mutagenicity</a>; Euclidean embedding: <a href="http://www.cs.kuleuven.be/~dtai/ilp-mlg-srl/index.php?CONF=ims&amp;CONT=wiki&amp;id=paper:ilp:33" target="_blank">Schulz <i>et. al,</i></a> </small>
+ *         </td>
+ *     </tr>
+ *  </table>
+ *  \endhtmlonly
  *
  *  \subsection ssec1 License
  *
