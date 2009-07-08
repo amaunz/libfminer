@@ -113,9 +113,9 @@
  *    apt-get install swig1.3 swig1.3-doc swig1.3-examples
  *    \endcode
  *  - Run <code>make ruby</code>.
- *  @section sec3 Pocket example using the LibFminer API
+ *  @section sec3 Pocket examples using the LibFminer API
  *  LibFminer uses the 'singleton' design pattern known from software engineering, i.e., class instantiation is restricted to one object.
- *  The following code retrieves a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output consists of gSpan graphs.
+ *  The following code demonstrate the use of the Fminer API from C++ and ruby. It retrieves a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output consists of gSpan graphs.
  *
  * Define the FMINER_SMARTS environment variable to produce output in SMARTS format. In this case, each line is a YAML sequence, containing SMARTS fragment, <i>p</i>-value, and two sequences denoting positive and negative class occurrences (line numbers in Smiles file): 
  *
@@ -123,9 +123,9 @@
  *  - [ smarts,    p_chisq,    occ_list_active,    occ_list_inactive ]
  *  \endcode
  *
- * Documentation for YAML can be found at: http://yaml.org/spec/cvs/current.html#
+ * Documentation for YAML can be found at: http://yaml.org/spec/cvs/current.html# Additionally define the FMINER_LAZAR environment variable to produce output in linfrag format which can be used as input to <code>Lazar</code>. 
  *
- * Additionally define the FMINER_LAZAR environment variable to produce output in linfrag format which can be used as input to <code>Lazar</code>.
+ * For the purpose of demonstration we use a toy database of two compounds and an unusual parameter configuration. Please note, that in general the defaults set by the standard constructor are sensible for most databases. They switch on BBRC mining with upper bound pruning for 95% significance and a minimum frequency of 2. For a complete overview, see the <a href="http://github.com/amaunz/fminer/tree/master" target="_blank">fminer README</a>. I recommend increasing minimum frequency as a first step when too many features are generated
  *
  * \subsection CPP C++
  *
@@ -210,25 +210,6 @@
  * Fminer (int type, unsigned int minfreq, float chisq_val, bool do_backbone);
  * \endcode
 
-*
- * \subsection Options Options Description
- *
- * The following parameters and switches are normally configured via the constructor. At a later point, you may change those settings via public setter methods and get their values via public getter methods, see the <code>Fminer</code> API.
- *
- * Constraint parameters:
- *  - Subgraph type, choices are paths and trees. <code>type</code> may be  1 (paths) and 2 (trees). Default is 2.
- *  - Minimum frequency constraint, used for anti-monotonic pruning. <code>minfreq</code> may be 1,2,... Default is 2.
- *  - Chi-square significance level, used for statistical upper-bound pruning. <code>chisq_val</code> may be 0.0<=chisq_val<=1.0. Default is .95.
- *
- * Constraint switches:
- *  - Switch off mining of only the most significant/most general representative of each backbone. <code>do_backbone</code> may be <code>true</code> or <code>false</code>. Default is <code>false</code>.
- *
- * Some pruning options can also be switched off:
- * \code
- * void SetDynamicUpperBound(bool val) {adjust_ub=val;} //!< Pass 'false' here to disable dynamic upper bound pruning (e.g. for performance measures).
- * void SetPruning(bool val) {do_pruning=val;} //!< Pass 'false' here to disable statistical pruning completely.
- * \endcode
- *
  * @section Contact Contact
  * Dipl.-Inf. Andreas Maunz<br>
  * Freiburg Center for Data Analysis and Modelling<br>
