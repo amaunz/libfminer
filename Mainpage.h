@@ -114,8 +114,8 @@
  *    \endcode
  *  - Run <code>make ruby</code>.
  *  @section sec3 Pocket examples using the LibFminer API
- *  LibFminer uses the 'singleton' design pattern known from software engineering, i.e., class instantiation is restricted to one object.
- *  The following code demonstrate the use of the Fminer API from C++ and ruby. It retrieves a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output consists of gSpan graphs.
+ *  LibFminer uses the 'singleton' design pattern known from software engineering, i.e., class instantiation is restricted to one object. If you want to empty the database after a run to feed new compounds, use the Fminer::Reset() routine. 
+ *  The following code demonstrate the use of the Fminer API from C++ and ruby. It feeds a set of class-labelled molecules in SMILES format (the API currently allows no gSpan input, use the frontend application for that) and calculates a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output consists of gSpan graphs.
  *
  * Define the FMINER_SMARTS environment variable to produce output in SMARTS format. In this case, each line is a YAML sequence, containing SMARTS fragment, <i>p</i>-value, and two sequences denoting positive and negative class occurrences (line numbers in Smiles file): 
  *
