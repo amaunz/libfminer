@@ -125,10 +125,8 @@
  *
  * Documentation for YAML can be found at: http://yaml.org/spec/cvs/current.html# Additionally define the FMINER_LAZAR environment variable to produce output in linfrag format which can be used as input to <code>Lazar</code>. 
  *
- * For the purpose of demonstration we use a toy database of two compounds and an unusual parameter configuration. Please note, that in general the defaults set by the standard constructor are sensible for most databases. They switch on BBRC mining with upper bound pruning for 95% significance and a minimum frequency of 2. For a complete overview, see the <a href="http://github.com/amaunz/fminer/tree/master" target="_blank">fminer README</a>. I recommend increasing minimum frequency as a first step when too many features are generated
  *
  * \subsection CPP C++
- *
  *
  * \code
  * #include "fminer.h"
@@ -195,8 +193,11 @@
  *  \endcode
  *
  * \section Const Description of Constructors and Options
-
- * The above program uses the standard settings:
+ * 
+ * For the purpose of demonstration we used a toy database of two compounds and an unusual parameter configuration. Please note, that in general the defaults set by the standard constructor are sensible for most databases. They switch on BBRC mining with upper bound pruning for 95% significance and a minimum frequency of 2. The complete standard settings are:
+ *
+ * Minimum frequency: <b>2</b>, Feature type: <b>Trees</b>, Mine BBRCs: <b>true</b>, Dynamic upper bound: <b>true</b>, Significance level: <b>95%</b>, Console output: <b>false</b>, Aromatic perception: <b>false</b>, Refine Singles: <b>false</b>, Do Output: <b>true</b>, Separate BBRCs in output by blank line/vector: <b>false</b>, Most Specific Trees Only (Positive Border): <b>false</b>, Use line numbers instead of IDs: <b>false</b>
+ *
  * \code
  *  //! Constructor for standard settings: 95% significance level, minimum frequency 2, type trees, dynamic upper bound, BBRC
  *  Fminer ();
@@ -209,13 +210,14 @@
  * //! Like standard constructor, but type, minimum frequency, significance level and BBRC configurable
  * Fminer (int type, unsigned int minfreq, float chisq_val, bool do_backbone);
  * \endcode
+ * It is recommended to increase minimum frequency as a first step when too many features are generated. 
 
  * @section Contact Contact
  * Dipl.-Inf. Andreas Maunz<br>
  * Freiburg Center for Data Analysis and Modelling<br>
  * Hermann-Herder-Str. 3a<br>
  * 79104 Freiburg, Germany<br>
- * Phone: +49761/203-8442, Fax: +49761/203-7700<br>
+  Phone: +49761/203-8442, Fax: +49761/203-7700<br>
  * Email: maunza@fdm.uni-freiburg.de<br>
  * Web: http://cs.maunz.de
  *
