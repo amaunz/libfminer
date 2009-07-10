@@ -10,7 +10,8 @@
  *  @section sec0 News
  *
  * <i>29 Apr 2009</i>: The Backbone Refinement Class paper (co-authored by Christoph Helma and Stefan Kramer) has been accepted for the <b><a href="http://www.sigkdd.org/kdd/2009/papers.html">KDD 2009</a></b> conference on Data Mining and Knowledge Discovery (Jun 28 - Jul 1 2009 in Paris) for a presentation at the conference and inclusion in the conference proceedings.<p />
- * <i>30 Apr 2009</i>: The paper has been selected for oral presentation at <b><a href="http://www.cs.kuleuven.be/~dtai/ilp-mlg-srl/index.php?CONF=mlg&CONT=accepted">MLG 2009</a></b>.
+ * <i>30 Apr 2009</i>: The paper has been selected for oral presentation at <b><a href="http://www.cs.kuleuven.be/~dtai/ilp-mlg-srl/index.php?CONF=mlg&CONT=accepted">MLG 2009</a></b>.<p />
+ * <i>10 Jul 2009</i>: <a href="http://doi.acm.org/10.1145/1557019.1557089" target="_blank">KDD conference proceedings are online</a>.
  *
  *  @section sec1 Abstract
  *
@@ -60,11 +61,11 @@
  *  \subsection ssec1 License
  *
  *   LibFminer is licensed under the terms of the GNU General Public License (GPL, see LICENSE). LibFminer is derived from (i.e., includes code from) the following project, licensed under GPL:
- * - Gaston: Siegfried Nijssen and Joost Kok. A Quickstart in Frequent Structure Mining Can Make a Difference. Proceedings of the SIGKDD, 2004 (http://www.liacs.nl/home/snijssen/gaston/)
+ * - Gaston: <a href="http://doi.acm.org/10.1145/1014052.1014134" target="_blank">Siegfried Nijssen and Joost Kok. A Quickstart in Frequent Structure Mining Can Make a Difference. Proceedings of the SIGKDD, 2004</a> (http://www.liacs.nl/home/snijssen/gaston/)
  *
  *   LibFminer uses (i.e., links to) the following projects, also licensed under GPL:
- * - OpenBabel: The Open Babel Package, version 2.1.1 (http://openbabel.sourceforge.net/)
- * - GSL: GNU Scientific Library, version 0.1 (http://www.gnu.org/software/gsl/)
+ * - <a href="http://openbabel.sourceforge.net/" target="_blank">OpenBabel</a>: The Open Babel Package, version 2.1.1.
+ * - <a href="http://www.gnu.org/software/gsl/" target="_blank">GSL: GNU Scientific Library</a>, version 0.1.
  *
  *   These licensing conditions mean essentially, that your published program may only use (i.e., link to) and/or derive code from LibFminer under the condition that your source code is also freely available. Your personal usage of LibFminer, however, is not restricted in any way.
  *
@@ -72,20 +73,20 @@
  *  LibFminer is a library, written in C++. It dynamically links to OpenBabel and GSL libraries.
  *  This section describes the installation of both the library and the frontend application for Linux and and 32 bit versions of Windows (NT and later).
  *  @subsection ssec20 Binary Quick Installation
- *  For Windows, you may use the installer available at http://github.com/amaunz/fminer/downloads . This installs the binary as well as libraries and C++ development headers. Otherwise install manually:
- *  - Download the binary DLL/SO file from http://github.com/amaunz/libfminer/downloads and put it in a directory contained in your PATH/LD_LIBRARY_PATH environment variable.
- *  - Download the binary frontend application from http://github.com/amaunz/fminer/downloads .
- *  - <b>Windows</b>: download the binary OpenBabel from http://github.com/amaunz/openbabel-dll/tree . Click on the 'Download' button and chose 'ZIP'. After downloading, unpack and check file integrity (see README.txt). Then, put the DLL files in a directory contained in your PATH environment variable. <b>Linux</b>: install the package libopenbabel-dev.
- *  - <b>Windows</b>: download the binary GSL from http://github.com/amaunz/gsl-dll/tree . Click on the 'Download' button and chose 'ZIP'. After downloading, unpack and check file integrity (see README.txt). Then, put the DLL files in a directory contained in your PATH environment variable. <b>Linux</b>: install the package libgsl0-dev.
+ *  For Windows, you may use the <a href="http://github.com/amaunz/fminer/downloads" target="_blank">installer</a>. This installs the binary as well as libraries and C++ development headers. Otherwise install manually:
+ *  - <a href="http://github.com/amaunz/libfminer/downloads" target="_blank">Download the binary DLL/SO file</a> and put it in a directory contained in your PATH/LD_LIBRARY_PATH environment variable.
+ *  - <a href="http://github.com/amaunz/fminer/downloads" target="_blank">Download the binary frontend application</a>.
+ *  - <b>Windows</b>: <a href="http://github.com/amaunz/openbabel-dll/tree" target="_blank">download the binary OpenBabel</a>. Click on the 'Download' button and chose 'ZIP'. After downloading, unpack and check file integrity (see README.txt). Then, put the DLL files in a directory contained in your PATH environment variable. <b>Linux</b>: install the package libopenbabel-dev.
+ *  - <b>Windows</b>: <a href="http://github.com/amaunz/gsl-dll/tree" target="_blank">download the binary GSL</a>. Click on the 'Download' button and chose 'ZIP'. After downloading, unpack and check file integrity (see README.txt). Then, put the DLL files in a directory contained in your PATH environment variable. <b>Linux</b>: install the package libgsl0-dev.
  *
  *  @subsection ssec21 Compiling from source
  *  LibFminer is built as a dynamically loadable library.<br>
  *  Windows DLL: 
- *  - Install Msys and MinGW (http://www.mingw.org/, then update gcc-core and gcc-g++ packages manually to the latest version). 
- *  - OpenBabel: follow the installation instrucations at http://openbabel.org/wiki/Install_(MinGW) to build OpenBabel yourself or download the binary DLLs at http://github.com/amaunz/openbabel-dll/tree (with git: <code>git clone git://github.com/amaunz/openbabel-dll.git</code>).
- *  - GSL: download the binary DLLs at http://github.com/amaunz/gsl-dll/tree (with git: <code>git clone git://github.com/amaunz/gsl-dll.git</code>).
- *  - Get the library source code at http://github.com/amaunz/libfminer/tree (with git: <code>git clone git://github.com/amaunz/libfminer.git</code>). The <code>Makefile</code> automagically detects Windows. However, you have to adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
- *  - Get the frontend source code at http://github.com/amaunz/fminer/tree (with git: <code>git clone git://github.com/amaunz/fminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
+ *  - <a href="http://www.mingw.org/" target="_blank">Install Msys and MinGW</a>, then update gcc-core and gcc-g++ packages manually to the latest version.
+ *  - OpenBabel: <a href="http://openbabel.org/wiki/Install_(MinGW)" target="_blank">follow the installation instrucations</a> to build OpenBabel yourself or <a href="http://github.com/amaunz/openbabel-dll/tree" target="_blank">download the binary DLLs</a> (with git: <code>git clone git://github.com/amaunz/openbabel-dll.git</code>).
+ *  - GSL: <a href="http://github.com/amaunz/gsl-dll/tree" target="_blank">download the binary DLLs</a> (with git: <code>git clone git://github.com/amaunz/gsl-dll.git</code>).
+ *  - <a href="http://github.com/amaunz/libfminer/tree" target="_blank">Download the library source code</a> (with git: <code>git clone git://github.com/amaunz/libfminer.git</code>). The <code>Makefile</code> automagically detects Windows. However, you have to adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
+ *  - <a href="http://github.com/amaunz/fminer/tree" target="_blank">Download the frontend source code</a> (with git: <code>git clone git://github.com/amaunz/fminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
  *  - To create this documentation with doxygen, type 'make doc'. The documentation explains API, constructor usage and options.
  *
  *  Linux SO: install development tools (gcc, g++, GNU make) and GSL as well as OpenBabel development package, then compile LibFminer. On Ubuntu, you can e.g. do it like this:
@@ -103,8 +104,8 @@
  *    \code
  *    apt-get install libopenbabel-dev            # OB binary lib and headers
  *    \endcode
- *  - Get the library source code at http://github.com/amaunz/libfminer/tree (with git: <code>git clone git://github.com/amaunz/libfminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
- *  - Get the frontend code at http://github.com/amaunz/fminer/tree (with git: <code>git clone git://github.com/amaunz/fminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
+ *  - <a href="http://github.com/amaunz/libfminer/tree" target="_blank">Download the library source code</a> (with git: <code>git clone git://github.com/amaunz/libfminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
+ *  - <a href="http://github.com/amaunz/fminer/tree" target="_blank">Download the frontend code</a> (with git: <code>git clone git://github.com/amaunz/fminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
  *  - To create this documentation with doxygen, type 'make doc'. The documentation explains API, constructor usage and options.
  *  @subsection ssec22 Language Portability
  *  The API can be made available to other languages (currently only on Linux). Follow the installation instructions above. A config file for Swig to automagically create languages bindings exists (<code>fminer_wrap.i</code>). The Makefile also features a target that creates ruby bindings using this file. On Ubuntu, you can e.g. do this:
