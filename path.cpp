@@ -56,9 +56,7 @@ Path::Path ( NodeLabel startnodelabel ) {
     frontsymmetry = backsymmetry = totalsymmetry = 0;
 
     InputNodeLabel inl = fm::database->nodelabels[startnodelabel].inputlabel;
-    cerr << "Root: ";
-    cerr << inl; 
-    cerr << endl; 
+    cerr << "Root: " << inl << endl;
 
     DatabaseNodeLabel &databasenodelabel = fm::database->nodelabels[startnodelabel];
 
@@ -66,8 +64,8 @@ Path::Path ( NodeLabel startnodelabel ) {
     vector<EdgeLabel> frequentedgelabels;
     for ( unsigned int i = 0; i < databasenodelabel.frequentedgelabels.size (); i++ )
         frequentedgelabels.push_back ( fm::database->edgelabels[databasenodelabel.frequentedgelabels[i]].edgelabel );
-                                                                                                //  ^^^^^^^^^ is frequency rank!
-    sort ( frequentedgelabels.begin (), frequentedgelabels.end () );                            // restores the rank order
+                                                                                                    //  ^^^^^^^^^ is frequency rank!
+    sort ( frequentedgelabels.begin (), frequentedgelabels.end () );                                // restores the rank order
     
     Tid lastself[frequentedgelabels.size ()];
     vector<EdgeLabel> edgelabelorder ( fm::database->edgelabelsindexes.size () );
@@ -75,7 +73,7 @@ Path::Path ( NodeLabel startnodelabel ) {
 
     // FOR ALL EDGES...
     for ( unsigned int i = 0; i < frequentedgelabels.size (); i++ ) {
-        edgelabelorder[frequentedgelabels[i]] = j;                                              // For each rank, store it's position
+        edgelabelorder[frequentedgelabels[i]] = j;                      // For each rank, store it's position
         j++;
     
         // ...CREATE LEGS

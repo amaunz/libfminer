@@ -76,7 +76,7 @@ void GraphState::deleteStartNode () {
 
 void GraphState::insertNode ( int from, EdgeLabel edgelabel, short unsigned int maxdegree  ) {
   NodeLabel fromlabel = nodes[from].label, tolabel;
-  DatabaseEdgeLabel &dataedgelabel = fm::database->edgelabels[  fm::database->edgelabelsindexes[edgelabel]];
+  DatabaseEdgeLabel &dataedgelabel = fm::database->edgelabels[fm::database->edgelabelsindexes[edgelabel]];
   if ( dataedgelabel.fromnodelabel == fromlabel )
     tolabel = dataedgelabel.tonodelabel;
   else
