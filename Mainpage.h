@@ -60,28 +60,30 @@
  *
  *  \subsection ssec1 License
  *
- *   LibFminer is licensed under the terms of the GNU General Public License (GPL, see LICENSE). LibFminer is derived from (i.e., includes code from) the following project, licensed under GPL:
- * - Gaston: <a href="http://doi.acm.org/10.1145/1014052.1014134" target="_blank">Siegfried Nijssen and Joost Kok. A Quickstart in Frequent Structure Mining Can Make a Difference. Proceedings of the SIGKDD, 2004</a> (http://www.liacs.nl/home/snijssen/gaston/)
+ *   LibFminer is licensed under the terms of the GNU General Public License (GPL, see LICENSE). LibFminer is derived from (i.e. includes code from) the following project, licensed under GPL:
+ * - <a href="http://doi.acm.org/10.1145/1014052.1014134" target="_blank">Siegfried Nijssen and Joost Kok. A Quickstart in Frequent Structure Mining Can Make a Difference. Proceedings of the SIGKDD, 2004</a> (http://www.liacs.nl/home/snijssen/gaston/)
  *
- *   LibFminer uses (i.e., links to) the following projects, also licensed under GPL:
+ *   LibFminer uses (i.e. links to) the following projects, also licensed under GPL:
  * - <a href="http://openbabel.sourceforge.net/" target="_blank">OpenBabel</a>: The Open Babel Package, version 2.1.1.
  * - <a href="http://www.gnu.org/software/gsl/" target="_blank">GSL: GNU Scientific Library</a>, version 0.1.
  *
- *   These licensing conditions mean essentially, that your published program may only use (i.e., link to) and/or derive code from LibFminer under the condition that your source code is also freely available. Your personal usage of LibFminer, however, is not restricted in any way.
+ *   These licensing conditions mean essentially that your published program may only use (i.e., link to) and/or derive code from LibFminer under the condition that your source code is also freely available. This is to secure public availability and freedom of use.
  *
- *  @section sec2 Using LibFminer
+ *  @section sec2 Installation
  *  LibFminer is a library, written in C++. It dynamically links to OpenBabel and GSL libraries.
  *  This section describes the installation of both the library and the frontend application for Linux and and 32 bit versions of Windows (NT and later).
  *  @subsection ssec20 Binary Quick Installation
- *  For Windows, you may use the <a href="http://github.com/amaunz/fminer/downloads" target="_blank">installer</a>. This installs the binary as well as libraries and C++ development headers. Otherwise install manually:
+ *  This installs the binary as well as libraries and C++ development headers.
+ *  For <b>Windows</b>, use the <a href="http://cloud.github.com/downloads/amaunz/fminer/setup.exe" target="_blank">installer</a>. 
+ *  For <b>Debian/Ubuntu</b>, use the provided packages, <a href="http://cloud.github.com/downloads/amaunz/fminer/fminer_1.0.0_i386.deb" target="_blank">binary</a> and <a href="http://cloud.github.com/downloads/amaunz/libfminer/libfminer_1.0.0_i386.deb" target="_blank">library</a>.
+ *  @subsection ssec21 Binary Manual Installation
  *  - <a href="http://github.com/amaunz/libfminer/downloads" target="_blank">Download the binary DLL/SO file</a> and put it in a directory contained in your PATH/LD_LIBRARY_PATH environment variable.
  *  - <a href="http://github.com/amaunz/fminer/downloads" target="_blank">Download the binary frontend application</a>.
  *  - <b>Windows</b>: <a href="http://github.com/amaunz/openbabel-dll/tree" target="_blank">download the binary OpenBabel</a>. Click on the 'Download' button and chose 'ZIP'. After downloading, unpack and check file integrity (see README.txt). Then, put the DLL files in a directory contained in your PATH environment variable. <b>Linux</b>: install the package libopenbabel-dev.
  *  - <b>Windows</b>: <a href="http://github.com/amaunz/gsl-dll/tree" target="_blank">download the binary GSL</a>. Click on the 'Download' button and chose 'ZIP'. After downloading, unpack and check file integrity (see README.txt). Then, put the DLL files in a directory contained in your PATH environment variable. <b>Linux</b>: install the package libgsl0-dev.
  *
- *  @subsection ssec21 Compiling from source
- *  LibFminer is built as a dynamically loadable library.<br>
- *  Windows DLL: 
+ *  @subsection ssec22 Compiling from source
+ *  <b>Windows DLL</b>: 
  *  - <a href="http://www.mingw.org/" target="_blank">Install Msys and MinGW</a>, then update gcc-core and gcc-g++ packages manually to the latest version.
  *  - OpenBabel: <a href="http://openbabel.org/wiki/Install_(MinGW)" target="_blank">follow the installation instrucations</a> to build OpenBabel yourself or <a href="http://github.com/amaunz/openbabel-dll/tree" target="_blank">download the binary DLLs</a> (with git: <code>git clone git://github.com/amaunz/openbabel-dll.git</code>).
  *  - GSL: <a href="http://github.com/amaunz/gsl-dll/tree" target="_blank">download the binary DLLs</a> (with git: <code>git clone git://github.com/amaunz/gsl-dll.git</code>).
@@ -89,7 +91,7 @@
  *  - <a href="http://github.com/amaunz/fminer/tree" target="_blank">Download the frontend source code</a> (with git: <code>git clone git://github.com/amaunz/fminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
  *  - To create this documentation with doxygen, type 'make doc'. The documentation explains API, constructor usage and options.
  *
- *  Linux SO: install development tools (gcc, g++, GNU make) and GSL as well as OpenBabel development package, then compile LibFminer. On Ubuntu, you can e.g. do it like this:
+ *  <b>Linux SO</b>: install development tools (gcc, g++, GNU make) and GSL as well as OpenBabel development package, then compile LibFminer. On Ubuntu, you can e.g. do it like this:
  *  - Install build tools and GSL:
  *    \code
  *    apt-get install build-essential             # development tools
@@ -107,7 +109,7 @@
  *  - <a href="http://github.com/amaunz/libfminer/tree" target="_blank">Download the library source code</a> (with git: <code>git clone git://github.com/amaunz/libfminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
  *  - <a href="http://github.com/amaunz/fminer/tree" target="_blank">Download the frontend code</a> (with git: <code>git clone git://github.com/amaunz/fminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
  *  - To create this documentation with doxygen, type 'make doc'. The documentation explains API, constructor usage and options.
- *  @subsection ssec22 Language Portability
+ *  @subsection ssec23 Language Portability
  *  The API can be made available to other languages (currently only on Linux). Follow the installation instructions above. A config file for Swig to automagically create languages bindings exists (<code>fminer_wrap.i</code>). The Makefile also features a target that creates ruby bindings using this file. On Ubuntu, you can e.g. do this:
  *  - Swig: 
  *    \code
@@ -115,16 +117,15 @@
  *    \endcode
  *  - Run <code>make ruby</code>.
  *  @section sec3 Pocket examples using the LibFminer API
- *  LibFminer uses the 'singleton' design pattern known from software engineering, i.e., class instantiation is restricted to one object. If you want to empty the database after a run to feed new compounds, use the Fminer::Reset() routine. 
- *  The following code demonstrate the use of the Fminer API from C++ and ruby. It feeds a set of class-labelled molecules in SMILES format (the API currently allows no gSpan input, use the frontend application for that) and calculates a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output consists of gSpan graphs.
+ *  LibFminer uses the 'singleton' design pattern known from software engineering, i.e., class instantiation is restricted to one object. To empty the database after a run to feed new compounds, use the Fminer::Reset() routine. 
  *
- * Define the FMINER_SMARTS environment variable to produce output in SMARTS format. In this case, each line is a YAML sequence, containing SMARTS fragment, <i>p</i>-value, and two sequences denoting positive and negative class occurrences (line numbers in Smiles file): 
+ *  The following code demonstrate the use of the Fminer API from C++ and ruby. It feeds a set of class-labelled molecules in SMILES format (the API currently allows no gSpan input, use the frontend application for that) and calculates a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output consists of gSpan graphs. Define the FMINER_SMARTS environment variable to produce output in SMARTS format. In this case, each line is a YAML sequence, containing SMARTS fragment, <i>p</i>-value, and two sequences denoting positive and negative class occurrences (line numbers in Smiles file): 
  *
  *  \code
  *  - [ smarts,    p_chisq,    occ_list_active,    occ_list_inactive ]
  *  \endcode
  *
- * Documentation for YAML can be found at: http://yaml.org/spec/cvs/current.html# Additionally define the FMINER_LAZAR environment variable to produce output in linfrag format which can be used as input to <code>Lazar</code>. 
+ * Documentation for YAML can be found at: http://yaml.org/spec/cvs/current.html# Additionally define the FMINER_LAZAR environment variable to produce output in linfrag format which can be used as input to <code><a href="http://lazar.in-silico.de" target="_blank">Lazar</a></code>. 
  *
  *
  * \subsection CPP C++
@@ -197,7 +198,20 @@
  * 
  * For the purpose of demonstration we used a toy database of two compounds and an unusual parameter configuration. Please note, that in general the defaults set by the standard constructor are sensible for most databases. They switch on BBRC mining with upper bound pruning for 95% significance and a minimum frequency of 2. The complete standard settings are:
  *
- * Minimum frequency: <b>2</b>, Feature type: <b>Trees</b>, Mine BBRCs: <b>true</b>, Dynamic upper bound: <b>true</b>, Significance level: <b>95%</b>, Console output: <b>false</b>, Aromatic perception: <b>false</b>, Refine Singles: <b>false</b>, Do Output: <b>true</b>, Separate BBRCs in output by blank line/vector: <b>false</b>, Most Specific Trees Only (Positive Border): <b>false</b>, Use line numbers instead of IDs: <b>false</b>
+ * <ul>
+ *  <li>Minimum frequency: <b>2</b></li>
+ *  <li>Feature type: <b>Trees</b></li>
+ *  <li>Mine BBRCs: <b>true</b></li>
+ *  <li>Dynamic upper bound: <b>true</b></li>
+ *  <li>Significance level: <b>95%</b></li>
+ *  <li>Console output: <b>false</b></li>
+ *  <li>Aromatic perception: <b>false</b></li>
+ *  <li>Refine Singles: <b>false</b></li>
+ *  <li>Do Output: <b>true</b></li>
+ *  <li>Separate BBRCs in output by blank line/vector: <b>false</b></li>
+ *  <li>Most Specific Trees Only (Positive Border): <b>false</b></li>
+ *  <li>Use line numbers instead of IDs: <b>false</b></li>
+ * </ul>
  *
  * \code
  *  //! Constructor for standard settings: 95% significance level, minimum frequency 2, type trees, dynamic upper bound, BBRC
@@ -212,7 +226,29 @@
  * Fminer (int type, unsigned int minfreq, float chisq_val, bool do_backbone);
  * \endcode
  * It is recommended to increase minimum frequency as a first step when too many features are generated. 
-
+ *
+ * @section Examples Examples for the frontend application
+ *
+ * In any case, 1-frequent patterns are not refined further, unless you use the -s switch
+ * @subsection sExamples1 Use BBRC mining (default): 
+ * \code
+ * # BBRC representatives (min frequency 2, min significance 95%), using dynamic UB pruning
+ * ./fminer <graphs> <activities> 
+ *
+ * # same as above, but much slower (explicitly no dynamic UB pruning)
+ * ./fminer -d <graphs> <activities>                                        
+ * \endcode
+ *
+ * @subsection sExamples2 Switch off BBRC mining:
+ * \code
+ * # all 2-frequent and 95%-significant features
+ * # Note, that the -d is mandatory (no dynamic UB pruning possible here)!
+ * ./fminer -d -b <graphs> <activities>
+ *
+ * # All 20-frequent patterns (standard frequent pattern mining)
+ * ./fminer -f 20 <graphs>
+ * \endcode
+ *
  * @section Contact Contact
  * Dipl.-Inf. Andreas Maunz<br>
  * Freiburg Center for Data Analysis and Modelling<br>
