@@ -22,6 +22,7 @@
 #ifndef GRAPHSTATE_H
 #define GRAPHSTATE_H
 #include <vector>
+#include <set>
 #include <iostream>
 
 #include "misc.h"
