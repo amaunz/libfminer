@@ -32,6 +32,7 @@ Fminer::Fminer() : init_mining_done(false) {
       fm::instance_present=true;
       if (getenv("FMINER_LAZAR")) fm::do_yaml = false;
       if (getenv("FMINER_SMARTS")) fm::gsp_out = false; 
+      if (getenv("FMINER_PVALUES")) fm::pvalues = true;
   }
   else {
     cerr << "Error! Cannot create more than 1 instance." << endl; 
@@ -49,6 +50,7 @@ Fminer::Fminer(int _type, unsigned int _minfreq) : init_mining_done(false) {
       fm::instance_present=true;
       if (getenv("FMINER_LAZAR")) fm::do_yaml = false;
       if (getenv("FMINER_SMARTS")) fm::gsp_out = false; 
+      if (getenv("FMINER_PVALUES")) fm::pvalues = true;
   }
   else {
     cerr << "Error! Cannot create more than 1 instance." << endl; 
@@ -69,6 +71,7 @@ Fminer::Fminer(int _type, unsigned int _minfreq, float _chisq_val, bool _do_back
       fm::instance_present=true;
       if (getenv("FMINER_LAZAR")) fm::do_yaml = false;
       if (getenv("FMINER_SMARTS")) fm::gsp_out = false; 
+      if (getenv("FMINER_PVALUES")) fm::pvalues = true;
 
   }
   else {
@@ -138,6 +141,7 @@ void Fminer::Defaults() {
 
     fm::updated = true;
     fm::do_yaml=true;
+    fm::pvalues=false;
     fm::gsp_out=true;
 }
 

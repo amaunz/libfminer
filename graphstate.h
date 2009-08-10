@@ -24,6 +24,7 @@
 #include <vector>
 #include <set>
 #include <iostream>
+#include <gsl/gsl_cdf.h>
 
 #include "misc.h"
 #include "database.h"

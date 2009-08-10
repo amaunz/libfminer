@@ -39,6 +39,7 @@ namespace fm {
     bool do_output;
     bool do_yaml;
     bool gsp_out;
+    bool pvalues;
     bool bbrc_sep;
     bool most_specific_trees_only;
     bool line_nrs;

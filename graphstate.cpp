@@ -33,6 +33,7 @@ namespace fm {
     extern bool console_out;
     extern bool gsp_out;
     extern bool do_yaml;
+    extern bool pvalues;
     extern Database* database;
     extern GraphState* graphstate;
 }
@@ -430,7 +431,10 @@ void GraphState::print ( unsigned int frequency ) {
           }
           // output chisq
           if (fm::chisq->active) {
-            if (fm::do_yaml) { printf("%.4f, ", fm::chisq->p); }
+            if (fm::do_yaml) { 
+                if (!fm::pvalues) printf("%.4f, ", fm::chisq->p); 
+                else printf("%.4f, ", gsl_cdf_chisq_P(fm::chisq->p,1)); 
+            }
             else putchar('\t');
           }
           // output freq
