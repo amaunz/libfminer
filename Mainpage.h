@@ -5,14 +5,27 @@
  * This is the Fminer library, available at http://github.com/amaunz/libfminer/tree/master .<br>
  * The Fminer frontend application is available from http://github.com/amaunz/fminer/tree/master .<br>
  * You may download the scientific documentation from http://cs.maunz.de . The paper is entitled "Large Scale Graph Mining using Backbone Refinement Classes".<br>
+ *
+ *  @section Contents
+ *  <ul>
+ *      <li><a href="#News">News</a></li>
+ *      <li><a href="#Abstract">Abstract</a></li>
+ *      <li><a href="#Installation">Installation</a></li>
+ *      <li><a href="#Examples-App">Examples (Frontend)</a></li>
+ *      <li><a href="#Examples-API">Examples (API)</a></li>
+ *  </ul>
  * Contact details are located at the end of this page.
  *
+ * <br><br>
+ *  <a name="News">
  *  @section sec0 News
  *
  * <i>29 Apr 2009</i>: The Backbone Refinement Class paper (co-authored by Christoph Helma and Stefan Kramer) has been accepted for the <b><a href="http://www.sigkdd.org/kdd/2009/papers.html">KDD 2009</a></b> conference on Data Mining and Knowledge Discovery (Jun 28 - Jul 1 2009 in Paris) for a presentation at the conference and inclusion in the conference proceedings.<p />
  * <i>30 Apr 2009</i>: The paper has been selected for oral presentation at <b><a href="http://www.cs.kuleuven.be/~dtai/ilp-mlg-srl/index.php?CONF=mlg&CONT=accepted">MLG 2009</a></b>.<p />
  * <i>10 Jul 2009</i>: <a href="http://doi.acm.org/10.1145/1557019.1557089" target="_blank">KDD conference proceedings are online</a>.
  *
+ * <br><br>
+ *  <a name="Abstract">
  *  @section sec1 Abstract
  *
  *  We present a new approach to large-scale graph mining
@@ -69,6 +82,8 @@
  *
  *   These licensing conditions mean essentially that your published program may only use (i.e., link to) and/or derive code from LibFminer under the condition that your source code is also freely available. This is to secure public availability and freedom of use.
  *
+ * <br><br>
+ *  <a name="Installation">
  *  @section sec2 Installation
  *  LibFminer is a library, written in C++. It dynamically links to OpenBabel and GSL libraries.
  *  This section describes the installation of both the library and the frontend application for Linux and and 32 bit versions of Windows (NT and later).
@@ -116,7 +131,61 @@
  *    apt-get install swig1.3 swig1.3-doc swig1.3-examples
  *    \endcode
  *  - Run <code>make ruby</code>.
- *  @section sec3 Pocket examples using the LibFminer API
+ *
+ * <br><br>
+ *  <a name="Examples-App">
+ * @section Examples Examples for the frontend application
+ *
+ * In any case, 1-frequent patterns are not refined further, unless you use the -s switch.
+ * Usage: 
+ * \code
+ *        ./fminer [-f minfreq] [-l type] [-s] [-a] [-o] [-n] [-r] [-d [-b [-m] | -u]] [-p p_value] <graphs> <activities>
+ *        ./fminer [-f minfreq] [-l type] [-s] [-a] [-o] [-n] [-r] <graphs>
+ *
+ *          File formats:
+ *               <graphs> File must either have suffix .smi or .gsp, indicating SMILES or gSpan format.
+ *               <activities> File must be in Activity format (suffix not relevant).
+ *
+ *         General options:
+ *               -f  --minfreq _minfreq_      Set minimum frequency. Allowable values for _minfreq_: 1, 2, ... (default: 2).
+ *               -l  --level _level_          Set fragment type. Allowable values for _type_: 1 (paths) and 2 (trees) (default: 2).
+ *               -s  --refine-singles         Switch on refinement of fragments with frequency 1 (default: off).
+ *               -o  --no-output              Switch off output (default: on).
+ *               -n  --line-nrs               Switch on line numbers in output file (default: off).
+ *               -r  --bbrc-sep               Switch on BBRC separator in result vector (default: off).
+ *
+ *         Upper bound pruning options:
+ *               -a  --aromaticity            Switch on aromatic ring perception when using smiles input format (default: off).
+ *               -d  --no-dynamic-ub          Switch off dynamic adjustment of upper bound for backbone mining (default: on).
+ *               -b  --no-bbr-classes         Switch off mining for backbone refinement classes (default: on).
+ *               -m  --max-trees              Switch on mining for maximal trees, aka the positive border (default: off).
+ *               -u  --no-upper-bound-pruning Switch off upper bound pruning (default: on).
+ *               -p  --p-value _p_value_      Set significance type. Allowable values for _p_value_: 0 <= _p_value_ <= 1.0 (default: 0.95).
+ * \endcode
+ * There are two modes of operation, with activity information and without. BBRC mining is switched on by default. To disable it (-b), you also have to disable dynamic upper bound adjustment (-d).
+ *
+ * @subsection sExamples1 Use BBRC mining (default): 
+ * \code
+ * # BBRC representatives (min frequency 2, min significance 95%), using dynamic UB pruning
+ * ./fminer <graphs> <activities> 
+ *
+ * # same as above, but much slower (explicitly no dynamic UB pruning)
+ * ./fminer -d <graphs> <activities>                                        
+ * \endcode
+ *
+ * @subsection sExamples2 Switch off BBRC mining:
+ * \code
+ * # all 2-frequent and 95%-significant features
+ * # Note, that the -d is mandatory (no dynamic UB pruning possible here)!
+ * ./fminer -d -b <graphs> <activities>
+ *
+ * # All 20-frequent patterns (standard frequent pattern mining)
+ * ./fminer -f 20 <graphs>
+ * \endcode
+ *
+ * <br><br>
+ *  <a name="Examples-API">
+ *  @section sec3 Examples using the LibFminer API
  *  LibFminer uses the 'singleton' design pattern known from software engineering, i.e., class instantiation is restricted to one object. To empty the database after a run to feed new compounds, use the Fminer::Reset() routine. 
  *
  *  The following code demonstrate the use of the Fminer API from C++ and ruby. It feeds a set of class-labelled molecules in SMILES format (the API currently allows no gSpan input, use the frontend application for that) and calculates a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output consists of gSpan graphs. Define the FMINER_SMARTS environment variable to produce output in SMARTS format. In this case, each line is a YAML sequence, containing SMARTS fragment, <i>p</i>-value, and two sequences denoting positive and negative class occurrences (line numbers in Smiles file): 
@@ -194,7 +263,7 @@
  *
  *  \endcode
  *
- * \section Const Description of Constructors and Options
+ * \subsection Const Description of Constructors and Options
  * 
  * For the purpose of demonstration we used a toy database of two compounds and an unusual parameter configuration. Please note, that in general the defaults set by the standard constructor are sensible for most databases. They switch on BBRC mining with upper bound pruning for 95% significance and a minimum frequency of 2. The complete standard settings are:
  *
@@ -227,28 +296,7 @@
  * \endcode
  * It is recommended to increase minimum frequency as a first step when too many features are generated. 
  *
- * @section Examples Examples for the frontend application
- *
- * In any case, 1-frequent patterns are not refined further, unless you use the -s switch
- * @subsection sExamples1 Use BBRC mining (default): 
- * \code
- * # BBRC representatives (min frequency 2, min significance 95%), using dynamic UB pruning
- * ./fminer <graphs> <activities> 
- *
- * # same as above, but much slower (explicitly no dynamic UB pruning)
- * ./fminer -d <graphs> <activities>                                        
- * \endcode
- *
- * @subsection sExamples2 Switch off BBRC mining:
- * \code
- * # all 2-frequent and 95%-significant features
- * # Note, that the -d is mandatory (no dynamic UB pruning possible here)!
- * ./fminer -d -b <graphs> <activities>
- *
- * # All 20-frequent patterns (standard frequent pattern mining)
- * ./fminer -f 20 <graphs>
- * \endcode
- *
+ * <br><br>
  * @section Contact Contact
  * Dipl.-Inf. Andreas Maunz<br>
  * Freiburg Center for Data Analysis and Modelling<br>
