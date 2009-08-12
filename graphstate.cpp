@@ -595,7 +595,11 @@ string GraphState::to_s ( unsigned int frequency ) {
 
           // output chisq
           if (fm::chisq->active) {
-            if (fm::do_yaml) { char x[20]; sprintf(x,"%.4f", fm::chisq->p); (oss.append(x)).append(", "); }
+            if (fm::do_yaml) { 
+                if (!fm::pvalues) { char x[20]; sprintf(x,"%.4f", fm::chisq->p); (oss.append(x)).append(", "); }
+                else { char x[20]; sprintf(x,"%.4f", gsl_cdf_chisq_P(fm::chisq->p, 1)); (oss.append(x)).append(", "); }
+            }
+
           }
 
           // output freq
