@@ -33,7 +33,8 @@ LDFLAGS_GSL   =
 LDFLAGS_GSL  += -L/c/Program\ Files/GnuWin32/bin/
 
 # FOR RUBY TARGET: ADJUST COMPILER PATH TO RUBY HEADERS (LINUX)
-INCLUDE_RB    = -I/usr/lib/ruby/1.8/i486-linux/ 
+INCLUDE_RB    = -I/usr/lib/ruby/1.8/i486-linux/
+INCLUDE_JAVA  = -I/usr/lib/jvm/java-6-sun-1.6.0.10/include/ -I/usr/lib/jvm/java-6-sun-1.6.0.10/include/linux/
 
 # FOR LINUX: INSTALL TARGET DIRECTORY
 DESTDIR       = /usr/local/lib/
@@ -48,7 +49,7 @@ INCLUDE       = $(INCLUDE_OB) $(INCLUDE_GSL)
 LDFLAGS       = $(LDFLAGS_OB) $(LDFLAGS_GSL)
 OBJ           = closeleg.o constraints.o database.o graphstate.o legoccurrence.o path.o patterntree.o fminer.o
 SWIG          = swig
-SWIGFLAGS     = -c++ -ruby
+SWIGFLAGS     = -c++
 ifeq ($(OS), Windows_NT) # assume MinGW/Windows
 CXXFLAGS      = -O3 -g $(INCLUDE)
 LIBS	      = -lm -llibopenbabel-3 -llibgsl -llibgslcblas
@@ -65,20 +66,27 @@ LIB1          = lib$(NAME).so
 LIB1_SONAME   = $(LIB1).1
 LIB1_REALNAME = $(LIB1_SONAME).0.1
 LIB2          = $(NAME).so
+LIB3          = lib$(NAME).so
 .PHONY:
 all: $(LIB1_REALNAME) 
 .PHONY:
 ruby: $(LIB2)
+java: $(LIB3)
 $(LIB1_REALNAME): $(OBJ)
 	$(CC) $(LDFLAGS) $(LIBS) -shared -Wl,-soname,$@ -o $@ $^
 	-ln -sf $@ $(LIB1_SONAME)
 	-ln -sf $@ $(LIB1)
-$(LIB2): $(NAME)_wrap.o $(OBJ)
-	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) $^ $(LIBS_LIB2) -o $@
-$(NAME)_wrap.o: $(NAME)_wrap.cxx
-	$(CC) -c $(CXXFLAGS) $(INCLUDE_RB) $^ -o $@
-%.cxx: %.i
-	$(SWIG) $(SWIGFLAGS) -o $@ $^
+
+$(LIB2): clean $(OBJ) $(NAME)_wrap.i
+	$(SWIG) $(SWIGFLAGS) -ruby -o $(NAME)_wrap.cxx $(NAME)_wrap.i
+	$(CC) -c $(CXXFLAGS) $(INCLUDE_RB) $(NAME)_wrap.cxx -o $(NAME)_wrap.o
+	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) $(OBJ) $(NAME)_wrap.o $(LIBS_LIB2) -o $@
+
+$(LIB3): clean $(OBJ) $(NAME)_wrap.i
+	$(SWIG) $(SWIGFLAGS) -java -o $(NAME)_wrap.cxx $(NAME)_wrap.i
+	$(CC) -c $(CXXFLAGS) $(INCLUDE_JAVA) $(NAME)_wrap.cxx -o $(NAME)_wrap.o
+	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) $(OBJ) $(NAME)_wrap.o $(LIBS_LIB2) -o $@
+
 endif
 
 install: $(LIB1_REALNAME)
@@ -93,4 +101,4 @@ doc: Doxyfile Mainpage.h *.h
 	-doxygen $<
 .PHONY:
 clean:
-	-rm -rf *.o *.cxx $(LIB1) $(LIB1_SONAME) $(LIB1_REALNAME) $(LIB2)
+	-rm -rf *.o *.cxx *java $(LIB1) $(LIB1_SONAME) $(LIB1_REALNAME) $(LIB2)
