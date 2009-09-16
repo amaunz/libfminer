@@ -125,16 +125,35 @@
  *  - <a href="http://github.com/amaunz/fminer/tree" target="_blank">Download the frontend code</a> (with git: <code>git clone git://github.com/amaunz/fminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
  *  - To create this documentation with doxygen, type 'make doc'. The documentation explains API, constructor usage and options.
  *  @subsection ssec23 Language Portability
- *  The API can be made available to other languages (currently only on Linux). Follow the installation instructions above. A config file for Swig to automagically create languages bindings exists (<code>fminer_wrap.i</code>). The Makefile also features a target that creates ruby bindings using this file. On Ubuntu, you can e.g. do this:
+ *  The API can be made available to other languages (currently only on Linux). Follow the installation instructions above. A config file for Swig to automagically create languages bindings exists (<code>fminer_wrap.i</code>). 
+ *
+ *  The Makefile features a target that creates <b>ruby</b> bindings using this file. On Ubuntu, you can e.g. do this:
+ *  - Adjust the include flags (-I) in the Makefile in the line <code>INCLUDE_RB = ...</code> so that the directory contains file <code>ruby.h</code>.
  *  - Swig: 
  *    \code
  *    apt-get install swig1.3 swig1.3-doc swig1.3-examples
  *    \endcode
  *  - Run <code>make ruby</code>.
+ *  - Move the file <code>fminer.so</code> from the libfminer directory to your ruby sources. An example program for ruby is printed below. 
  *
+ *  The Makefile features a target that creates <b>JAVA</b> bindings using this file. On Ubuntu, you can e.g. do this:
+ *  - Adjust the include flags (-I) in the Makefile in the line <code>INCLUDE_JAVA = ...</code> so that the directories contain files <code>jni.h</code> and <code>jni_md.h</code>.
+ *  - Swig: 
+ *    \code
+ *    apt-get install swig1.3 swig1.3-doc swig1.3-examples
+ *    \endcode
+ *  - Run <code>make java</code>.
+ *  - Move the file <code>libfminer.so</code> and all java source and class files from the libfminer directory to your JAVA sources. An example program for JAVA is printed below. 
  * <br><br>
  *  <a name="Examples-App">
- * @section Examples Examples for the frontend application
+ * @section Guidance Guidance on Using (Lib)Fminer
+ *
+ * Most setting are sensible by default, see description of constructors and objects below. 
+ *
+ * I would suggest to manipulate the minimum frequency only at first. The number of fragments output should not be more than a multitude of the number of input graphs.
+ * For most chemical databases, a minimum frequency threshold of 2%-3% will deliver good results. LibFminer does not support percentage values, you will have to calculate absolute numbers to the <code>-f</code> switch first.
+ *
+ * @subsection Examples Examples for the frontend application
  *
  * In any case, 1-frequent patterns are not refined further, unless you use the -s switch.
  * Usage: 
@@ -199,6 +218,9 @@
  *
  * \subsection CPP C++
  *
+ * This example uses libfminer in a C++ program.
+ * The example assumes that you have created the C++ library using <code>make</code>.
+ *
  * \code
  * #include "fminer.h"
  * #include <iostream>
@@ -231,9 +253,42 @@
  *
  *  \endcode
  *
+ * \subsection JAVA JAVA
+ *
+ * This example uses libfminer in a JAVA program.
+ * The example assumes that you have created JAVA bindings using <code>make java</code>.
+ * \code
+ * class TestFminer {
+ *    public static void main(String[] args) {
+ *       System.loadLibrary("fminer");
+ *       Fminer MyFminer;
+ *       MyFminer = new Fminer();
+ *       MyFminer.AddCompound ("COC1=CC=C(C=C1)C2=NC(=C([NH]2)C3=CC=CC=C3)C4=CC=CC=C4", 1);
+ *       MyFminer.AddCompound ("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2", 2);
+ *          // ... continue adding compounds
+ *       MyFminer.AddActivity((boolean) true, 1);
+ *       MyFminer.AddActivity((boolean) false, 2);
+ *          // ... continue adding activities (true for active, false for inactive)
+ *       System.out.println(MyFminer.GetNoCompounds() + " compounds");
+ *       // Toy example: special settings for mining all fragments
+ *       MyFminer.SetChisqSig(0); // use no significance constraint
+ *       MyFminer.SetRefineSingles(true); // refine structures with support 1
+ *       // gather results for every root node in vector instead of immediate output
+ *       MyFminer.SetConsoleOut(false);
+ *       for (int j = 0; j < (int) MyFminer.GetNoRootNodes(); j++) {
+ *          SVector result = MyFminer.MineRoot(j);
+ *          for(int i = 0; i < result.size(); i++) {
+ *             System.out.println(result.get(i));
+ *          }
+ *       }
+ *       MyFminer = null;
+ *    }
+ * }
+ * \endcode
+ *
  * \subsection Ruby Ruby
  *
- * This example assumes that you have created ruby bindings using <code>make fminer.so</code>.
+ * This example assumes that you have created ruby bindings using <code>make ruby</code>.
  * \code
  *
  * require 'fminer'

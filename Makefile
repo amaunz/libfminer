@@ -101,4 +101,4 @@ doc: Doxyfile Mainpage.h *.h
 	-doxygen $<
 .PHONY:
 clean:
-	-rm -rf *.o *.cxx *java $(LIB1) $(LIB1_SONAME) $(LIB1_REALNAME) $(LIB2)
+	-rm -rf *.o *.cxx fminer.java  Fminer.*  fminerJNI.*  SVector.*  SWIGTYPE_p_ChisqConstraint.java  SWIGTYPE_p_FILE.* $(LIB1) $(LIB1_SONAME) $(LIB1_REALNAME) $(LIB2)
