@@ -77,13 +77,13 @@ $(LIB1_REALNAME): $(OBJ)
 	-ln -sf $@ $(LIB1_SONAME)
 	-ln -sf $@ $(LIB1)
 
-$(LIB2): clean $(OBJ) $(NAME)_wrap.i
-	$(SWIG) $(SWIGFLAGS) -ruby -o $(NAME)_wrap.cxx $(NAME)_wrap.i
+$(LIB2): clean $(OBJ) r$(NAME)_wrap.i
+	$(SWIG) $(SWIGFLAGS) -ruby -o $(NAME)_wrap.cxx r$(NAME)_wrap.i
 	$(CC) -c $(CXXFLAGS) $(INCLUDE_RB) $(NAME)_wrap.cxx -o $(NAME)_wrap.o
 	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) $(OBJ) $(NAME)_wrap.o $(LIBS_LIB2) -o $@
 
-$(LIB3): clean $(OBJ) $(NAME)_wrap.i
-	$(SWIG) $(SWIGFLAGS) -java -o $(NAME)_wrap.cxx $(NAME)_wrap.i
+$(LIB3): clean $(OBJ) j$(NAME)_wrap.i
+	$(SWIG) $(SWIGFLAGS) -java -o $(NAME)_wrap.cxx j$(NAME)_wrap.i
 	$(CC) -c $(CXXFLAGS) $(INCLUDE_JAVA) $(NAME)_wrap.cxx -o $(NAME)_wrap.o
 	$(CC) $(LDFLAGS) -shared $(CXXFLAGS) $(OBJ) $(NAME)_wrap.o $(LIBS_LIB2) -o $@
 
@@ -101,4 +101,4 @@ doc: Doxyfile Mainpage.h *.h
 	-doxygen $<
 .PHONY:
 clean:
-	-rm -rf *.o *.cxx fminer.java  Fminer.*  fminerJNI.*  SVector.*  SWIGTYPE_p_ChisqConstraint.java  SWIGTYPE_p_FILE.* $(LIB1) $(LIB1_SONAME) $(LIB1_REALNAME) $(LIB2)
+	-rm -rf *.o *.cxx libfminer.java  Fminer.*  libfminerJNI.*  SVector.*  SWIGTYPE_p_ChisqConstraint.java  SWIGTYPE_p_FILE.* $(LIB1) $(LIB1_SONAME) $(LIB1_REALNAME) $(LIB2)

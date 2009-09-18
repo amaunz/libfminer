@@ -11,8 +11,7 @@
  *      <li><a href="#News">News</a></li>
  *      <li><a href="#Abstract">Abstract</a></li>
  *      <li><a href="#Installation">Installation</a></li>
- *      <li><a href="#Examples-App">Examples (Frontend)</a></li>
- *      <li><a href="#Examples-API">Examples (API)</a></li>
+ *      <li><a href="#Guidance">Guidance on Using (Lib)Fminer</a></li>
  *  </ul>
  * Contact details are located at the end of this page.
  *
@@ -133,7 +132,7 @@
  *    \code
  *    apt-get install swig1.3 swig1.3-doc swig1.3-examples
  *    \endcode
- *  - Run <code>make ruby</code>.
+ *  - Run <code>make ruby</code>. <b>Attention!</b> This target will clean up your sources first!
  *  - Move the file <code>fminer.so</code> from the libfminer directory to your ruby sources. An example program for ruby is printed below. 
  *
  *  The Makefile features a target that creates <b>JAVA</b> bindings using this file. On Ubuntu, you can e.g. do this:
@@ -142,10 +141,10 @@
  *    \code
  *    apt-get install swig1.3 swig1.3-doc swig1.3-examples
  *    \endcode
- *  - Run <code>make java</code>.
+ *  - Run <code>make java</code>. <b>Attention!</b> This target will clean up your sources first!
  *  - Move the file <code>libfminer.so</code> and all java source and class files from the libfminer directory to your JAVA sources. An example program for JAVA is printed below. 
  * <br><br>
- *  <a name="Examples-App">
+ *  <a name="Guidance">
  * @section Guidance Guidance on Using (Lib)Fminer
  *
  * Most setting are sensible by default, see description of constructors and objects below. 
@@ -203,8 +202,7 @@
  * \endcode
  *
  * <br><br>
- *  <a name="Examples-API">
- *  @section sec3 Examples using the LibFminer API
+ *  @subsection sec3 Examples using the LibFminer API
  *  LibFminer uses the 'singleton' design pattern known from software engineering, i.e., class instantiation is restricted to one object. To empty the database after a run to feed new compounds, use the Fminer::Reset() routine. 
  *
  *  The following code demonstrate the use of the Fminer API from C++ and ruby. It feeds a set of class-labelled molecules in SMILES format (the API currently allows no gSpan input, use the frontend application for that) and calculates a vector of fragments along with statistical relevance and occurrences and prints them out. Every root node corresponds to a single chemical element. The output consists of gSpan graphs. Define the FMINER_SMARTS environment variable to produce output in SMARTS format. In this case, each line is a YAML sequence, containing SMARTS fragment, <i>p</i>-value, and two sequences denoting positive and negative class occurrences (line numbers in Smiles file): 
@@ -216,7 +214,7 @@
  * Documentation for YAML can be found at: http://yaml.org/spec/cvs/current.html# Additionally define the FMINER_LAZAR environment variable to produce output in linfrag format which can be used as input to <code><a href="http://lazar.in-silico.de" target="_blank">Lazar</a></code>. 
  *
  *
- * \subsection CPP C++
+ * \subsubsection CPP C++
  *
  * This example uses libfminer in a C++ program.
  * The example assumes that you have created the C++ library using <code>make</code>.
@@ -253,7 +251,7 @@
  *
  *  \endcode
  *
- * \subsection JAVA JAVA
+ * \subsubsection JAVA JAVA
  *
  * This example uses libfminer in a JAVA program.
  * The example assumes that you have created JAVA bindings using <code>make java</code>.
@@ -286,7 +284,7 @@
  * }
  * \endcode
  *
- * \subsection Ruby Ruby
+ * \subsubsection Ruby Ruby
  *
  * This example assumes that you have created ruby bindings using <code>make ruby</code>.
  * \code
@@ -318,7 +316,7 @@
  *
  *  \endcode
  *
- * \subsection Const Description of Constructors and Options
+ * \subsubsection Const Description of Constructors and Options
  * 
  * For the purpose of demonstration we used a toy database of two compounds and an unusual parameter configuration. Please note, that in general the defaults set by the standard constructor are sensible for most databases. They switch on BBRC mining with upper bound pruning for 95% significance and a minimum frequency of 2. The complete standard settings are:
  *
