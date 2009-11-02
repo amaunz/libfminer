@@ -18,8 +18,8 @@ require 'fminer'
  (0 .. MyFminer.GetNoRootNodes()-1).each do |j|
     result = MyFminer.MineRoot(j)
     puts "Results"
-    (0 .. result.size-1).each do |i|
-        puts result[i]
+    result.each do |res|
+        puts res
    end
  end
 
