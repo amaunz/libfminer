@@ -109,7 +109,7 @@ void Fminer::Reset() {
     }
     fm::database = new Database();
     fm::statistics = new Statistics();
-    fm::chisq = new ChisqConstraint(0.95);
+    fm::chisq = new ChisqConstraint(3.84146);
     fm::graphstate = new GraphState();
     fm::closelegoccurrences = new CloseLegOccurrences();
     fm::legoccurrences = new LegOccurrences();
