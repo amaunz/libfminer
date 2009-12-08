@@ -16,25 +16,29 @@
 # You should have received a copy of the GNU General Public License
 # along with LibFminer.  If not, see <http://www.gnu.org/licenses/>.
 
-
+INCLUDE_OB    =
+INCLUDE_GSL   =
+LDFLAGS_OB    =
+LDFLAGS_GSL   =
+INCLUDE_RB    = 
 
 # ADJUST COMPILER PATH TO OPENBABEL INCLUDE FILES (1st line Linux, 2nd line Windows):
-INCLUDE_OB    = -I/usr/local/include/openbabel-2.0
-INCLUDE_OB   += -I/home/openbabel-2.2.1/include
+#INCLUDE_OB    = -I/usr/local/include/openbabel-2.0
+#INCLUDE_OB   += -I/home/openbabel-2.2.1/include
 # ADJUST COMPILER PATH TO GSL INCLUDE FILES (1st line Linux, 2nd line Windows):
-INCLUDE_GSL   = -I/usr/include
-INCLUDE_GSL  += -I/c/Program\ Files/GnuWin32/include/
+#INCLUDE_GSL   = -I/usr/include
+#INCLUDE_GSL  += -I/c/Program\ Files/GnuWin32/include/
 
 # ADJUST LINKER PATH TO OPENBABEL LIBRARY FILES (1st line Linux, 2nd line Windows):
-LDFLAGS_OB    = -L/usr/local/lib
-LDFLAGS_OB   += -L/c/Users/am/Desktop/fminer
+#LDFLAGS_OB    = -L/usr/local/lib
+#LDFLAGS_OB   += -L/c/Users/am/Desktop/fminer
 # ADJUST LINKER PATH TO GSL LIBRARY FILES (1st line Linux, 2nd line Windows):
-LDFLAGS_GSL   =
-LDFLAGS_GSL  += -L/c/Program\ Files/GnuWin32/bin/
+#LDFLAGS_GSL   =
+#LDFLAGS_GSL  += -L/c/Program\ Files/GnuWin32/bin/
 
 # FOR RUBY TARGET: ADJUST COMPILER PATH TO RUBY HEADERS (LINUX)
-INCLUDE_RB    = -I/usr/lib/ruby/1.8/i486-linux/
-INCLUDE_JAVA  = -I/usr/lib/jvm/java-6-sun-1.6.0.10/include/ -I/usr/lib/jvm/java-6-sun-1.6.0.10/include/linux/
+#INCLUDE_RB    = -I/usr/lib/ruby/1.8/i486-linux/
+#INCLUDE_JAVA  = -I/usr/lib/jvm/java-6-sun-1.6.0.10/include/ -I/usr/lib/jvm/java-6-sun-1.6.0.10/include/linux/
 
 # FOR LINUX: INSTALL TARGET DIRECTORY
 DESTDIR       = /usr/local/lib/
