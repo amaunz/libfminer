@@ -19,6 +19,7 @@
  *  <a name="News">
  *  @section sec0 News
  *
+ * <i>29 Nov 2009</i>: Added configure script and bugfixes.<p />
  * <i>29 Apr 2009</i>: The Backbone Refinement Class paper (co-authored by Christoph Helma and Stefan Kramer) has been accepted for the <b><a href="http://www.sigkdd.org/kdd/2009/papers.html">KDD 2009</a></b> conference on Data Mining and Knowledge Discovery (Jun 28 - Jul 1 2009 in Paris) for a presentation at the conference and inclusion in the conference proceedings.<p />
  * <i>30 Apr 2009</i>: The paper has been selected for oral presentation at <b><a href="http://www.cs.kuleuven.be/~dtai/ilp-mlg-srl/index.php?CONF=mlg&CONT=accepted">MLG 2009</a></b>.<p />
  * <i>10 Jul 2009</i>: <a href="http://doi.acm.org/10.1145/1557019.1557089" target="_blank">KDD conference proceedings are online</a>.
@@ -101,8 +102,8 @@
  *  - <a href="http://www.mingw.org/" target="_blank">Install Msys and MinGW</a>, then update gcc-core and gcc-g++ packages manually to the latest version.
  *  - OpenBabel: <a href="http://openbabel.org/wiki/Install_(MinGW)" target="_blank">follow the installation instrucations</a> to build OpenBabel yourself or <a href="http://github.com/amaunz/openbabel-dll/tree" target="_blank">download the binary DLLs</a> (with git: <code>git clone git://github.com/amaunz/openbabel-dll.git</code>).
  *  - GSL: <a href="http://github.com/amaunz/gsl-dll/tree" target="_blank">download the binary DLLs</a> (with git: <code>git clone git://github.com/amaunz/gsl-dll.git</code>).
- *  - <a href="http://github.com/amaunz/libfminer/tree" target="_blank">Download the library source code</a> (with git: <code>git clone git://github.com/amaunz/libfminer.git</code>). The <code>Makefile</code> automagically detects Windows. However, you have to adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
- *  - <a href="http://github.com/amaunz/fminer/tree" target="_blank">Download the frontend source code</a> (with git: <code>git clone git://github.com/amaunz/fminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
+ *  - <a href="http://github.com/amaunz/libfminer/tree" target="_blank">Download the library source code</a> (with git: <code>git clone git://github.com/amaunz/libfminer.git</code>). The <code>Makefile</code> automagically detects Windows. Use <code>./configure</code> to configure the Makefile automatically or adjust the include (-I) and linker (-L) flags in the Makefile manually. Run <code>make</code>.
+ *  - <a href="http://github.com/amaunz/fminer/tree" target="_blank">Download the frontend source code</a> (with git: <code>git clone git://github.com/amaunz/fminer.git</code>). Use <code>./configure</code> to configure the Makefile automatically or, in the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
  *  - To create this documentation with doxygen, type 'make doc'. The documentation explains API, constructor usage and options.
  *
  *  <b>Linux SO</b>: install development tools (gcc, g++, GNU make) and GSL as well as OpenBabel development package, then compile LibFminer. On Ubuntu, you can e.g. do it like this:
@@ -120,14 +121,14 @@
  *    \code
  *    apt-get install libopenbabel-dev            # OB binary lib and headers
  *    \endcode
- *  - <a href="http://github.com/amaunz/libfminer/tree" target="_blank">Download the library source code</a> (with git: <code>git clone git://github.com/amaunz/libfminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
- *  - <a href="http://github.com/amaunz/fminer/tree" target="_blank">Download the frontend code</a> (with git: <code>git clone git://github.com/amaunz/fminer.git</code>). In the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
+ *  - <a href="http://github.com/amaunz/libfminer/tree" target="_blank">Download the library source code</a> (with git: <code>git clone git://github.com/amaunz/libfminer.git</code>). Use <code>./configure</code> to configure the Makefile automatically or, in the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
+ *  - <a href="http://github.com/amaunz/fminer/tree" target="_blank">Download the frontend code</a> (with git: <code>git clone git://github.com/amaunz/fminer.git</code>). Use <code>./configure</code> to configure the Makefile automatically or, in the <code>Makefile</code>, adjust the include (-I) and linker (-L) flags. Run <code>make</code>.
  *  - To create this documentation with doxygen, type 'make doc'. The documentation explains API, constructor usage and options.
  *  @subsection ssec23 Language Portability
  *  The API can be made available to other languages (currently only on Linux). Follow the installation instructions above. A config file for Swig to automagically create languages bindings exists (<code>fminer_wrap.i</code>). 
  *
  *  The Makefile features a target that creates <b>ruby</b> bindings using this file. On Ubuntu, you can e.g. do this:
- *  - Adjust the include flags (-I) in the Makefile in the line <code>INCLUDE_RB = ...</code> so that the directory contains file <code>ruby.h</code>.
+ *  - Use <code>./configure</code> to configure the Makefile automatically or, adjust the include flags (-I) in the Makefile in the line <code>INCLUDE_RB = ...</code> so that the directory contains file <code>ruby.h</code>.
  *  - Swig: 
  *    \code
  *    apt-get install swig1.3 swig1.3-doc swig1.3-examples

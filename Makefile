@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with LibFminer.  If not, see <http://www.gnu.org/licenses/>.
 
-INCLUDE_OB    =
-INCLUDE_GSL   =
-LDFLAGS_OB    =
-LDFLAGS_GSL   =
-INCLUDE_RB    = 
+INCLUDE_OB  =  -I/usr/local/include/openbabel-2.0  
+INCLUDE_GSL  =   
+LDFLAGS_OB  =  -L/usr/local/lib  
+LDFLAGS_GSL  =   
+INCLUDE_RB  =  1.9.1p243 NOT FOUND
 
 # ADJUST COMPILER PATH TO OPENBABEL INCLUDE FILES (1st line Linux, 2nd line Windows):
 #INCLUDE_OB    = -I/usr/local/include/openbabel-2.0
