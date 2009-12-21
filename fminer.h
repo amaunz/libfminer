@@ -72,6 +72,7 @@ class Fminer {
     bool GetChisqActive(); //!< Get whether chi-square filter is active.
     float GetChisqSig(); //!< Get significance threshold.
     bool GetLineNrs(); //!< Get whether line numbers should be used in the output file.
+    bool GetRegression(); //!< Get whether continuous activity values should be used.
     //@}
 
     /** @name Setters
@@ -92,6 +93,7 @@ class Fminer {
     void SetChisqActive(bool val); //!< Set this to 'true' to enable chi-square filter.
     void SetChisqSig(float _chisq_val); //!< Set significance threshold here (between 0 and 1).
     void SetLineNrs(bool val); //!< Set 'true' here to enable line numbers in the output file.
+    void SetRegression(bool val); //!< Set 'true' here to enable continuous activity values.
     //@}
     
     /** @name Others
@@ -109,6 +111,11 @@ class Fminer {
   private:
     void AddChiSqNa(){fm::chisq->na++;fm::chisq->n++;}
     void AddChiSqNi(){fm::chisq->ni++;fm::chisq->n++;}
+    // KS: Insert value into set of activities
+    /* KS:
+    void AddKS(float val){fm::ks.insert(val);}
+    */
+
 
     bool init_mining_done;
     int comp_runner;

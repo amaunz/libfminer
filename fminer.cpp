@@ -138,6 +138,7 @@ void Fminer::Defaults() {
     fm::bbrc_sep=false;
     fm::most_specific_trees_only=false;
     fm::line_nrs=false;
+    fm::regression=false;
 
     fm::updated = true;
     fm::do_yaml=true;
@@ -162,6 +163,7 @@ bool Fminer::GetMostSpecTreesOnly(){return fm::most_specific_trees_only;}
 bool Fminer::GetChisqActive(){return fm::chisq->active;}
 float Fminer::GetChisqSig(){return fm::chisq->sig;}
 bool Fminer::GetLineNrs() {return fm::line_nrs;}
+bool Fminer::GetRegression() {return fm::regression;}
 
 
 
@@ -281,6 +283,24 @@ void Fminer::SetLineNrs(bool val) {
     fm::line_nrs = val;
 }
 
+void Fminer::SetRegression(bool val) {
+    fm::regression = val;
+    if (fm::regression) {
+         if (!GetBackbone()) {
+            cerr << "Notice: Activating Backbone Mining due to activated regression." << endl;
+            SetBackbone(true);
+         }
+         if (GetMostSpecTreesOnly()) {
+            cerr << "Notice: Deactivating Most Specific Trees due to activated regression." << endl;
+            SetMostSpecTreesOnly(false);
+         }
+         if (!GetPruning()) {
+            cerr << "Notice: Activating pruning due to activated regression." << endl;
+            SetPruning(true);
+         }
+    }
+}
+
 
 // 4. Other methods
 
@@ -349,3 +369,21 @@ bool Fminer::AddActivity(bool act, unsigned int comp_id) {
     }
 }
 
+// KS: recognize regr field
+/* KS:
+bool Fminer::AddActivity(float act, unsigned int comp_id) {
+    if (fm::database->trees_map[comp_id] == NULL) { 
+        cerr << "No structure for ID " << comp_id << ". Ignoring entry!" << endl; return false; 
+    }
+    else {
+        if (!fm::regr)
+            if ((fm::database->trees_map[comp_id]->activity = act) == 1.0) AddChiSqNa();
+            else AddChiSqNi();
+        }
+        else {
+            if ((fm::database->trees_map[comp_id]->activity = act)) AddKS(act);
+        }
+        return true;
+    }
+}
+*/

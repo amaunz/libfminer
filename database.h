@@ -92,8 +92,12 @@ struct DatabaseTree {
 
   DatabaseTreeEdge *edges;
   int activity;
+  // KS: float
+  // KS: float activity;
 
   DatabaseTree ( Tid tid , Tid orig_tid , int line_nr ): tid ( tid ), orig_tid (orig_tid ), line_nr (line_nr), activity ( -1 ) { }
+  // KS: initialize to NaN
+  // KS: DatabaseTree ( Tid tid , Tid orig_tid , int line_nr ): tid ( tid ), orig_tid (orig_tid ), line_nr (line_nr), activity ( NaN ) { }
   DatabaseTree () { }
   
   friend ostream &operator<< ( ostream &stream, DatabaseTree &databasetree );
