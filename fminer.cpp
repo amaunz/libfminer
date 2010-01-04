@@ -323,7 +323,7 @@ vector<string>* Fminer::MineRoot(unsigned int j) {
         init_mining_done=true; 
         cerr << "Settings:" << endl \
              << "---" << endl \
-             << "Chi-square active (p-value): " << GetChisqActive() << " (" << GetChisqSig()<< ")" << endl \
+             << "Chi-square active (chi-square-value): " << GetChisqActive() << " (" << GetChisqSig()<< ")" << endl \
              << "BBRC mining: " << GetBackbone() << endl \
              << "statistical metric (dynamic upper bound) pruning: " << GetPruning() << " (" << GetDynamicUpperBound() << ")" << endl \
              << "---" << endl \

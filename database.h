@@ -91,13 +91,13 @@ struct DatabaseTree {
   vector<DatabaseTreeNode> nodes;
 
   DatabaseTreeEdge *edges;
-  int activity;
+  // KS: int activity;
   // KS: float
-  // KS: float activity;
+  float activity;
 
-  DatabaseTree ( Tid tid , Tid orig_tid , int line_nr ): tid ( tid ), orig_tid (orig_tid ), line_nr (line_nr), activity ( -1 ) { }
+  // KS: DatabaseTree ( Tid tid , Tid orig_tid , int line_nr ): tid ( tid ), orig_tid (orig_tid ), line_nr (line_nr), activity ( -1 ) { }
   // KS: initialize to NaN
-  // KS: DatabaseTree ( Tid tid , Tid orig_tid , int line_nr ): tid ( tid ), orig_tid (orig_tid ), line_nr (line_nr), activity ( NaN ) { }
+  DatabaseTree ( Tid tid , Tid orig_tid , int line_nr ): tid ( tid ), orig_tid (orig_tid ), line_nr (line_nr), activity ( 0.0 ) { }
   DatabaseTree () { }
   
   friend ostream &operator<< ( ostream &stream, DatabaseTree &databasetree );
