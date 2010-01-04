@@ -100,5 +100,27 @@ class ChisqConstraint : public Constraint {
 
 };
 
+class KSConstraint : public Constraint {
+    public:
+    set<float> all_set;
+    float sig;
+    bool active;
+
+    KSConstraint (float sig) : sig(sig), active(0) {}
+
+    private:
+    //!< Calculates KS values
+    float KS(set<float> x, set<float> y);
+
+    //!< Stores activities of occurrences of legs
+    template <typename OccurrenceType>
+    void LegActivityOccurrence(vector<OccurrenceType>& legocc) {
+      all_set.clear();
+      each (legocc) {
+        all_set.insert(fm::database->trees[legocc[i].tid]->activity);
+      }
+    }
+
+};
 
 #endif

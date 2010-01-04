@@ -33,3 +33,51 @@ float ChisqConstraint::ChiSq(float x, float y) {
         return(chisq);
 
 }
+
+float KSConstraint::KS(set<float> x, set<float> y) {
+
+    vector<float> feat_activities = vector<float> (y.begin(),y.end());
+    vector<float> all_activities = vector<float> (x.begin(),x.end());
+
+    // Kolmogorov-Smirnov Test
+    // numerical recipies in C pp 626, extended version with better sensitivity at the ends
+    unsigned int j1=0, j2=0;
+    float d,d1,d2,d_1,d_2,dt1,dt2,en1,en2,en,fn1=0,fn2=0,alam;
+    d1 = d2 = d_1 = d_2 = 0.0;
+
+    en1 = all_activities.size();
+    en2 = feat_activities.size();
+
+    while (j1 < en1 && j2 < en2) {
+        if ((!isnan(d1=all_activities[j1])) && (!isnan(d2=feat_activities[j2]))) {
+            if (d1 <= d2) { // next step is in all_activities
+                j1++;
+                fn1=j1/en1;
+            }
+
+            if (d2 <= d1) { // next step is in feat_activities
+                j2++;
+                fn2=j2/en2;
+            }
+
+        }
+        else {
+            if (isnan(d1)) {
+                j1++;
+            }
+            if (isnan(d2)){
+                j2++;
+            }
+            continue;
+        }
+        dt1=fn2-fn1;
+        dt2=fn1-fn2;
+        if (dt1 > d_1) d_1=dt1;
+        if (dt2 > d_2) d_2=dt2;
+    }
+    d = d_1 + d_2;
+    en=sqrt(en1*en2/(en1+en2));
+    alam=(en+0.155+0.24/en)*d;
+    return alam;
+
+}
