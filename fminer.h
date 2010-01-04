@@ -35,6 +35,7 @@ namespace fm {
     extern bool gsp_out;
     extern bool bbrc_sep;
     extern bool line_nrs;
+    extern bool regression;
 
 }
 class Fminer {
@@ -103,7 +104,9 @@ class Fminer {
     vector<string>* MineRoot(unsigned int j); //!< Mine fragments rooted at the j-th root node (element type).
     void ReadGsp(FILE* gsp); //!< Read in a gSpan file
     bool AddCompound(string smiles, unsigned int comp_id); //!< Add a compound to the database.
-    bool AddActivity(bool act, unsigned int comp_id); //!< Add an activity to the database.
+    // KS: bool AddActivity(bool act, unsigned int comp_id); //!< Add an activity to the database.
+    // KS: recognize regr field
+    bool AddActivity(float act, unsigned int comp_id); //!< Add an activity to the database.
     int GetNoRootNodes() {return fm::database->nodelabels.size();} //!< Get number of root nodes (different element types).
     int GetNoCompounds() {return fm::database->trees.size();} //!< Get number of compounds in the database.
     //@}
@@ -112,9 +115,9 @@ class Fminer {
     void AddChiSqNa(){fm::chisq->na++;fm::chisq->n++;}
     void AddChiSqNi(){fm::chisq->ni++;fm::chisq->n++;}
     // KS: Insert value into set of activities
-    /* KS:
-    void AddKS(float val){fm::ks.insert(val);}
-    */
+    void AddKS(float val){ //fm::ks.insert(val);
+    }
+   
 
 
     bool init_mining_done;

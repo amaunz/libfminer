@@ -358,6 +358,7 @@ bool Fminer::AddCompound(string smiles, unsigned int comp_id) {
     return insert_done;
 }
 
+/* KS:
 bool Fminer::AddActivity(bool act, unsigned int comp_id) {
     if (fm::database->trees_map[comp_id] == NULL) { 
         cerr << "No structure for ID " << comp_id << ". Ignoring entry!" << endl; return false; 
@@ -368,15 +369,15 @@ bool Fminer::AddActivity(bool act, unsigned int comp_id) {
         return true;
     }
 }
+*/
 
 // KS: recognize regr field
-/* KS:
 bool Fminer::AddActivity(float act, unsigned int comp_id) {
     if (fm::database->trees_map[comp_id] == NULL) { 
         cerr << "No structure for ID " << comp_id << ". Ignoring entry!" << endl; return false; 
     }
     else {
-        if (!fm::regr)
+        if (!fm::regression) {
             if ((fm::database->trees_map[comp_id]->activity = act) == 1.0) AddChiSqNa();
             else AddChiSqNi();
         }
@@ -386,4 +387,3 @@ bool Fminer::AddActivity(float act, unsigned int comp_id) {
         return true;
     }
 }
-*/
