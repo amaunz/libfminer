@@ -103,11 +103,16 @@ class ChisqConstraint : public Constraint {
 class KSConstraint : public Constraint {
     public:
     vector<float> all;
-    float sig;
-    bool active;
+    vector<float> feat;
+    float sig, p;
 
-    KSConstraint (float sig) : sig(sig), active(0) {}
-    
+    KSConstraint (float sig) : sig(sig), p(0.0) {}
+
+    template <typename OccurrenceType>
+    void Calc(vector<OccurrenceType>& legocc) {
+        LegActivityOccurrence(legocc);
+        p = KS(all,feat);
+    }
 
     private:
     //!< Calculates KS values
@@ -116,9 +121,9 @@ class KSConstraint : public Constraint {
     //!< Stores activities of occurrences of legs
     template <typename OccurrenceType>
     void LegActivityOccurrence(vector<OccurrenceType>& legocc) {
-      all.clear();
+      feat.clear();
       each (legocc) {
-        all.push_back(fm::database->trees[legocc[i].tid]->activity);
+        feat.push_back(fm::database->trees[legocc[i].tid]->activity);
       }
     }
 
