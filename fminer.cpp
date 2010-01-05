@@ -86,6 +86,7 @@ Fminer::~Fminer() {
         delete fm::database;
         delete fm::statistics; 
         delete fm::chisq; 
+        delete fm::ks;
         delete fm::graphstate;
         delete fm::closelegoccurrences;
         delete fm::legoccurrences;
@@ -103,6 +104,7 @@ void Fminer::Reset() {
         delete fm::database;
         delete fm::statistics;
         delete fm::chisq;
+        delete fm::ks;
         delete fm::graphstate;
         delete fm::closelegoccurrences;
         delete fm::legoccurrences;
@@ -110,6 +112,7 @@ void Fminer::Reset() {
     fm::database = new Database();
     fm::statistics = new Statistics();
     fm::chisq = new ChisqConstraint(3.84146);
+    fm::ks = new KSConstraint(0.95);
     fm::graphstate = new GraphState();
     fm::closelegoccurrences = new CloseLegOccurrences();
     fm::legoccurrences = new LegOccurrences();

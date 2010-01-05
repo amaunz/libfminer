@@ -34,13 +34,14 @@ float ChisqConstraint::ChiSq(float x, float y) {
 
 }
 
-float KSConstraint::KS(set<float> x, set<float> y) {
-
-    vector<float> feat_activities = vector<float> (y.begin(),y.end());
-    vector<float> all_activities = vector<float> (x.begin(),x.end());
+float KSConstraint::KS(vector<float> all_activities, vector<float> feat_activities) {
 
     // Kolmogorov-Smirnov Test
     // numerical recipies in C pp 626, extended version with better sensitivity at the ends
+    
+    sort(feat_activities.begin(),feat_activities.end());
+    sort(all_activities.begin(), all_activities.end());
+
     unsigned int j1=0, j2=0;
     float d,d1,d2,d_1,d_2,dt1,dt2,en1,en2,en,fn1=0,fn2=0,alam;
     d1 = d2 = d_1 = d_2 = 0.0;
@@ -78,6 +79,21 @@ float KSConstraint::KS(set<float> x, set<float> y) {
     d = d_1 + d_2;
     en=sqrt(en1*en2/(en1+en2));
     alam=(en+0.155+0.24/en)*d;
-    return alam;
 
+
+    // KS probability function
+    float p,a2,fac=2,sum=0,term,termbf=0,fac2;
+    a2 = -2.0 *alam*alam;
+    p = 0;
+    fac2 = 4.0*alam*alam;
+    for (int j=1;j<=100;j++) {
+        term = fac*((fac2*j*j)-1.0)*exp(a2*j*j);
+        sum += term;
+        if (fabs(term) <= 0.001*termbf || fabs(term) <= 1.0e-8*sum) {
+            p=1-sum;
+            break;
+        }
+        termbf=fabs(term);
+    }
+    return p;
 }

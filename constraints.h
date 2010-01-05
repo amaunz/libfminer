@@ -102,22 +102,23 @@ class ChisqConstraint : public Constraint {
 
 class KSConstraint : public Constraint {
     public:
-    set<float> all_set;
+    vector<float> all;
     float sig;
     bool active;
 
     KSConstraint (float sig) : sig(sig), active(0) {}
+    
 
     private:
     //!< Calculates KS values
-    float KS(set<float> x, set<float> y);
+    float KS(vector<float> all_activities, vector<float> feat_activities);
 
     //!< Stores activities of occurrences of legs
     template <typename OccurrenceType>
     void LegActivityOccurrence(vector<OccurrenceType>& legocc) {
-      all_set.clear();
+      all.clear();
       each (legocc) {
-        all_set.insert(fm::database->trees[legocc[i].tid]->activity);
+        all.push_back(fm::database->trees[legocc[i].tid]->activity);
       }
     }
 
