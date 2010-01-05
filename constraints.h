@@ -105,6 +105,7 @@ class KSConstraint : public Constraint {
     vector<float> all;
     vector<float> feat;
     float sig, p;
+    set<Tid> fa_set, fi_set;
 
     KSConstraint (float sig) : sig(sig), p(0.0) {}
 
@@ -121,9 +122,14 @@ class KSConstraint : public Constraint {
     //!< Stores activities of occurrences of legs
     template <typename OccurrenceType>
     void LegActivityOccurrence(vector<OccurrenceType>& legocc) {
+      fa_set.clear();
+      fi_set.clear();
+
       feat.clear();
       each (legocc) {
         feat.push_back(fm::database->trees[legocc[i].tid]->activity);
+        if (fm::line_nrs) fa_set.insert(fm::database->trees[legocc[i].tid]->line_nr); 
+        else fa_set.insert(fm::database->trees[legocc[i].tid]->orig_tid); 
       }
     }
 

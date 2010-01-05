@@ -30,10 +30,12 @@
 
 namespace fm {
     extern ChisqConstraint* chisq;
+    extern KSConstraint* ks;
     extern bool console_out;
     extern bool gsp_out;
     extern bool do_yaml;
     extern bool pvalues;
+    extern bool regression;
     extern Database* database;
     extern GraphState* graphstate;
 }
@@ -406,7 +408,18 @@ void GraphState::DfsOut(int cur_n, int from_n) {
 // ENTRY: BRANCH TO GSP (STDOUT) or PRINT YAML/LAZAR TO STDOUT
 
 void GraphState::print ( unsigned int frequency ) {
-    if (!fm::chisq->active || fm::chisq->p >= fm::chisq->sig) {
+    float p, sig;
+    if (fm::chisq->active) {
+        if (!fm::regression) {
+            p = fm::chisq->p;
+            sig = fm::chisq->sig;
+        }
+        else {
+            p = fm::ks->p;
+            sig = fm::ks->sig;
+        }
+    }
+    if (!fm::chisq->active || p >= sig) {
         if (fm::gsp_out) { 
             print(stdout); 
         }
@@ -432,14 +445,14 @@ void GraphState::print ( unsigned int frequency ) {
           // output chisq
           if (fm::chisq->active) {
             if (fm::do_yaml) { 
-                if (!fm::pvalues) printf("%.4f, ", fm::chisq->p); 
-                else printf("%.4f, ", gsl_cdf_chisq_P(fm::chisq->p,1)); 
+                if (!fm::pvalues || fm::regression) printf("%.4f, ", p); 
+                else printf("%.4f, ", gsl_cdf_chisq_P(p,1)); 
             }
             else putchar('\t');
           }
           // output freq
           if (fm::chisq->active) {
-              if (frequency != (fm::chisq->fa+fm::chisq->fi)) { cerr << "Error: wrong counts! " << frequency << "!=" << fm::chisq->fa + fm::chisq->fi << "(" << fm::chisq->fa << "+" << fm::chisq->fi << ")" << endl; }
+              if (!fm::regression && frequency != (fm::chisq->fa+fm::chisq->fi)) { cerr << "Error: wrong counts! " << frequency << "!=" << fm::chisq->fa + fm::chisq->fi << "(" << fm::chisq->fa << "+" << fm::chisq->fi << ")" << endl; }
           }
           else { 
               if (fm::do_yaml) { printf("%i", frequency); }
@@ -447,11 +460,16 @@ void GraphState::print ( unsigned int frequency ) {
           }
           // output occurrences
           if (fm::chisq->active) {
+
+              set<Tid> fa_set, fi_set;
+              if (!fm::regression) { fa_set = fm::chisq->fa_set; fi_set = fm::chisq->fi_set; }
+              else { fa_set = fm::ks->fa_set; fi_set = fm::ks->fi_set; }
+
               putchar ('[');
               set<Tid>::iterator iter;
               if (fm::do_yaml) {
-                  for (iter = fm::chisq->fa_set.begin(); iter != fm::chisq->fa_set.end(); iter++) {
-                      if (iter != fm::chisq->fa_set.begin()) putchar (',');
+                  for (iter = fa_set.begin(); iter != fa_set.end(); iter++) {
+                      if (iter != fa_set.begin()) putchar (',');
                       putchar (' ');
                       printf("%i", (*iter)); 
                   }
@@ -461,15 +479,15 @@ void GraphState::print ( unsigned int frequency ) {
                   putchar ('[');
               }
               if (fm::do_yaml) {
-                  for (iter = fm::chisq->fi_set.begin(); iter != fm::chisq->fi_set.end(); iter++) {
-                      if (iter != fm::chisq->fi_set.begin()) putchar (',');
+                  for (iter = fi_set.begin(); iter != fi_set.end(); iter++) {
+                      if (iter != fi_set.begin()) putchar (',');
                       printf(" %i", (*iter)); 
                   }
               }
               if (!fm::do_yaml) {
                   set<Tid> ids;
-                  ids.insert(fm::chisq->fa_set.begin(), fm::chisq->fa_set.end());
-                  ids.insert(fm::chisq->fi_set.begin(), fm::chisq->fi_set.end());
+                  ids.insert(fa_set.begin(), fa_set.end());
+                  ids.insert(fi_set.begin(), fi_set.end());
                   for (iter = ids.begin(); iter != ids.end(); iter++) {
                       putchar(' ');
                       printf("%i", (*iter)); 
@@ -570,8 +588,19 @@ void GraphState::DfsOut(int cur_n, string& oss, int from_n) {
 // ENTRY: BRANCH TO GSP (OSS) or PRINT YAML/LAZAR TO OSS
 
 string GraphState::to_s ( unsigned int frequency ) {
+    float p, sig;
+    if (fm::chisq->active) {
+        if (!fm::regression) {
+            p = fm::chisq->p;
+            sig = fm::chisq->sig;
+        }
+        else {
+            p = fm::ks->p;
+            sig = fm::ks->sig;
+        }
+    }
 
-    if (!fm::chisq->active || fm::chisq->p >= fm::chisq->sig) {
+    if (!fm::chisq->active || p >= sig) {
 
         string oss;
 
@@ -596,14 +625,14 @@ string GraphState::to_s ( unsigned int frequency ) {
           // output chisq
           if (fm::chisq->active) {
             if (fm::do_yaml) { 
-                if (!fm::pvalues) { char x[20]; sprintf(x,"%.4f", fm::chisq->p); (oss.append(x)).append(", "); }
-                else { char x[20]; sprintf(x,"%.4f", gsl_cdf_chisq_P(fm::chisq->p, 1)); (oss.append(x)).append(", "); }
+                if (!fm::pvalues || fm::regression) { char x[20]; sprintf(x,"%.4f", p); (oss.append(x)).append(", "); }
+                else { char x[20]; sprintf(x,"%.4f", gsl_cdf_chisq_P(p, 1)); (oss.append(x)).append(", "); }
             }
 
           }
 
           // output freq
-          if (fm::chisq->active) {
+          if (!fm::regression && fm::chisq->active) {
               if (frequency != (fm::chisq->fa+fm::chisq->fi)) { cerr << "Notice: Wrong counts for frequency " << frequency << " [!=" << fm::chisq->fa << "(fa)+" << fm::chisq->fi << "(fi)]." << endl; }
           }
           else { 
@@ -613,15 +642,20 @@ string GraphState::to_s ( unsigned int frequency ) {
 
           // output occurrences
           if (fm::chisq->active) {
+
+              set<Tid> fa_set, fi_set;
+              if (!fm::regression) { fa_set = fm::chisq->fa_set; fi_set = fm::chisq->fi_set; }
+              else { fa_set = fm::ks->fa_set; fi_set = fm::ks->fi_set; }
+
               oss.append ("[");
 
               set<Tid>::iterator iter;
               char x[20];
 
               if (fm::do_yaml) {
-                  set<Tid>::iterator begin = fm::chisq->fa_set.begin();
-                  set<Tid>::iterator end = fm::chisq->fa_set.end();
-                  set<Tid>::iterator last = end; if (fm::chisq->fa_set.size()) last = --(fm::chisq->fa_set.end());
+                  set<Tid>::iterator begin = fa_set.begin();
+                  set<Tid>::iterator end = fa_set.end();
+                  set<Tid>::iterator last = end; if (fa_set.size()) last = --(fa_set.end());
 
                   for (iter = begin; iter != end; iter++) {
                       if (iter != begin) oss.append (",");
@@ -631,9 +665,9 @@ string GraphState::to_s ( unsigned int frequency ) {
                   }
                   oss.append ("], [");
 
-                  begin = fm::chisq->fi_set.begin();
-                  end = fm::chisq->fi_set.end();
-                  last = end; if (fm::chisq->fi_set.size()) last = --(fm::chisq->fi_set.end());
+                  begin = fi_set.begin();
+                  end = fi_set.end();
+                  last = end; if (fi_set.size()) last = --(fi_set.end());
 
                   for (iter = begin; iter != end; iter++) {
                       if (iter != begin) oss.append (",");
@@ -645,8 +679,8 @@ string GraphState::to_s ( unsigned int frequency ) {
 
               if (!fm::do_yaml) {
                   set<Tid> ids;
-                  ids.insert(fm::chisq->fa_set.begin(), fm::chisq->fa_set.end());
-                  ids.insert(fm::chisq->fi_set.begin(), fm::chisq->fi_set.end());
+                  ids.insert(fa_set.begin(), fa_set.end());
+                  ids.insert(fi_set.begin(), fi_set.end());
                   for (iter = ids.begin(); iter != ids.end(); iter++) {
                       sprintf(x,"%i", (*iter)); 
                       (oss.append (" ")).append(x);

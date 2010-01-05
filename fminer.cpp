@@ -297,9 +297,9 @@ void Fminer::SetRegression(bool val) {
             cerr << "Notice: Deactivating Most Specific Trees due to activated regression." << endl;
             SetMostSpecTreesOnly(false);
          }
-         if (!GetPruning()) {
-            cerr << "Notice: Activating pruning due to activated regression." << endl;
-            SetPruning(true);
+         if (GetPruning()) {
+            cerr << "Notice: Disabling statistical metric pruning due to activated regression." << endl;
+            SetPruning(false);
          }
     }
 }
