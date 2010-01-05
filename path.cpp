@@ -537,8 +537,14 @@ void Path::expand2 (pair<float,string> max) {
       ){   // UB-PRUNING
 
       Path path ( *this, index );
-      if (max.first<fm::chisq->p) { fm::updated = true; path.expand2 ( pair<float, string>(fm::chisq->p, fm::graphstate->to_s(legs[index]->occurrences.frequency))); }
-      else path.expand2 (max);
+      if (!fm::regression) {
+          if (max.first<fm::chisq->p) { fm::updated = true; path.expand2 ( pair<float, string>(fm::chisq->p, fm::graphstate->to_s(legs[index]->occurrences.frequency))); }
+          else path.expand2 (max);
+      }
+      else {
+          if (max.first<fm::ks->p) { fm::updated = true; path.expand2 ( pair<float, string>(fm::ks->p, fm::graphstate->to_s(legs[index]->occurrences.frequency))); }
+          else path.expand2 (max);
+      }
     }
     else {
         if (fm::do_backbone && fm::updated) {  // FREE STRUCTURES: search was pruned
@@ -592,8 +598,14 @@ void Path::expand2 (pair<float,string> max) {
      ){   // UB-PRUNING
 
       Path path ( *this, index );
-      if (max.first<fm::chisq->p) { fm::updated = true; path.expand2 ( pair<float, string>(fm::chisq->p, fm::graphstate->to_s(legs[index]->occurrences.frequency))); }
-      else path.expand2 (max);
+      if (!fm::regression) {
+          if (max.first<fm::chisq->p) { fm::updated = true; path.expand2 ( pair<float, string>(fm::chisq->p, fm::graphstate->to_s(legs[index]->occurrences.frequency))); }
+          else path.expand2 (max);
+      }
+      else {
+          if (max.first<fm::ks->p) { fm::updated = true; path.expand2 ( pair<float, string>(fm::ks->p, fm::graphstate->to_s(legs[index]->occurrences.frequency))); }
+          else path.expand2 (max);
+      }
     }
     else {
         if (fm::do_backbone && fm::updated) { // FREE STRUCTURES: search was pruned
@@ -668,8 +680,15 @@ void Path::expand2 (pair<float,string> max) {
                 else fm::graphstate->print(legs[i]->occurrences.frequency);
             }
 
-            if (max.first<fm::chisq->p) { fm::updated = true; tree.expand ( pair<float, string>(fm::chisq->p, fm::graphstate->to_s(legs[i]->occurrences.frequency))); }
-            else tree.expand (max);
+            if (!fm::regression) {
+                if (max.first<fm::chisq->p) { fm::updated = true; tree.expand ( pair<float, string>(fm::chisq->p, fm::graphstate->to_s(legs[i]->occurrences.frequency))); }
+                else tree.expand (max);
+            }
+            else {
+                if (max.first<fm::ks->p) { fm::updated = true; tree.expand ( pair<float, string>(fm::ks->p, fm::graphstate->to_s(legs[i]->occurrences.frequency))); }
+                else tree.expand (max);
+            }
+
           }
 
           else {
