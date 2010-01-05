@@ -473,10 +473,12 @@ void GraphState::print ( unsigned int frequency ) {
                       putchar (' ');
                       printf("%i", (*iter)); 
                   }
-                  putchar (']');
-                  putchar (',');
-                  putchar (' ');
-                  putchar ('[');
+                  if (!fm::regression) {
+                      putchar (']');
+                      putchar (',');
+                      putchar (' ');
+                      putchar ('[');
+                  }
               }
               if (fm::do_yaml) {
                   for (iter = fi_set.begin(); iter != fi_set.end(); iter++) {
@@ -632,8 +634,8 @@ string GraphState::to_s ( unsigned int frequency ) {
           }
 
           // output freq
-          if (!fm::regression && fm::chisq->active) {
-              if (frequency != (fm::chisq->fa+fm::chisq->fi)) { cerr << "Notice: Wrong counts for frequency " << frequency << " [!=" << fm::chisq->fa << "(fa)+" << fm::chisq->fi << "(fi)]." << endl; }
+          if (fm::chisq->active) {
+              if (!fm::regression && frequency != (fm::chisq->fa+fm::chisq->fi)) { cerr << "Notice: Wrong counts for frequency " << frequency << " [!=" << fm::chisq->fa << "(fa)+" << fm::chisq->fi << "(fi)]." << endl; }
           }
           else { 
               char x[20]; sprintf(x,"%i", frequency); 
@@ -663,7 +665,7 @@ string GraphState::to_s ( unsigned int frequency ) {
                       sprintf(x,"%i", (*iter)); oss.append (x);
                       if ((last != end) && (iter == last)) oss.append (" ");
                   }
-                  oss.append ("], [");
+                  if (!fm::regression) oss.append ("], [");
 
                   begin = fi_set.begin();
                   end = fi_set.end();
