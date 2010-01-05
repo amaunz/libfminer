@@ -274,6 +274,7 @@ void Fminer::SetChisqActive(bool val) {
         SetBackbone(false);
         cerr << "Notice: Disabling statistical metric pruning due to deactivated significance criterium." << endl;
         SetPruning(false);
+        SetRegression(false);
     }
 }
 
