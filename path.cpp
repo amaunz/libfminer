@@ -38,9 +38,11 @@ namespace fm {
     extern bool do_output;
     extern bool bbrc_sep;
     extern bool most_specific_trees_only;
+    extern bool regression;
 
     extern Database* database;
     extern ChisqConstraint* chisq;
+    extern KSConstraint* ks;
     extern vector<string>* result;
     extern Statistics* statistics;
     extern GraphState* graphstate;
@@ -503,7 +505,10 @@ void Path::expand2 (pair<float,string> max) {
 
 
     // Calculate chisq
-    if (fm::chisq->active) fm::chisq->Calc(legs[index]->occurrences.elements);
+     if (fm::chisq->active) { 
+        if (!fm::regression) fm::chisq->Calc(legs[index]->occurrences.elements);
+        else fm::ks->Calc(legs[index]->occurrences.elements);
+      }
           
     // GRAPHSTATE AND OUTPUT
     fm::graphstate->insertNode ( legs[index]->tuple.connectingnode, legs[index]->tuple.edgelabel, legs[index]->occurrences.maxdegree );
@@ -556,7 +561,11 @@ void Path::expand2 (pair<float,string> max) {
     
 
     // Calculate chisq
-    if (fm::chisq->active) fm::chisq->Calc(legs[index]->occurrences.elements);
+    if (fm::chisq->active) { 
+        if (!fm::regression) fm::chisq->Calc(legs[index]->occurrences.elements);
+        else fm::ks->Calc(legs[index]->occurrences.elements);
+    }
+
 
     // GRAPHSTATE AND OUTPUT
     fm::graphstate->insertNode ( legs[index]->tuple.connectingnode, legs[index]->tuple.edgelabel, legs[index]->occurrences.maxdegree );
@@ -621,7 +630,12 @@ void Path::expand2 (pair<float,string> max) {
 	      ( legs[i]->tuple.depth != nodelabels.size () - 2 || legs[i]->tuple.edgelabel >= edgelabels.back () ) &&
 	        fm::type > 1 ) {
           // Calculate chisq
-          if (fm::chisq->active) fm::chisq->Calc(legs[i]->occurrences.elements);
+          if (fm::chisq->active) { 
+            if (!fm::regression) fm::chisq->Calc(legs[i]->occurrences.elements);
+            else fm::ks->Calc(legs[i]->occurrences.elements);
+          }
+
+
           // GRAPHSTATE
           fm::graphstate->insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.edgelabel, legs[i]->occurrences.maxdegree );
 
@@ -696,7 +710,10 @@ void Path::expand () {
     PathTuple &tuple = legs[i]->tuple;
     if ( tuple.nodelabel >= nodelabels[0] ) {
         
-      if (fm::chisq->active) fm::chisq->Calc(legs[i]->occurrences.elements);
+      if (fm::chisq->active) { 
+        if (!fm::regression) fm::chisq->Calc(legs[i]->occurrences.elements);
+        else fm::ks->Calc(legs[i]->occurrences.elements);
+      }
 
       // GRAPHSTATE AND OUTPUT
       fm::graphstate->insertNode ( tuple.connectingnode, tuple.edgelabel, legs[i]->occurrences.maxdegree );

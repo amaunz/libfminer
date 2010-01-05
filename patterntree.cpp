@@ -33,9 +33,11 @@ namespace fm {
     extern bool do_output;
     extern bool bbrc_sep;
     extern bool most_specific_trees_only;
+    extern bool regression;
 
     extern Database* database;
     extern ChisqConstraint* chisq;
+    extern KSConstraint* ks;
     extern vector<string>* result;
     extern Statistics* statistics;
     extern GraphState* graphstate;
@@ -857,7 +859,10 @@ void PatternTree::expand (pair<float, string> max) {
   for ( int i = legs.size()-1; i >= 0; i-- ) {
 
     // Calculate chisq
-    if (fm::chisq->active) fm::chisq->Calc(legs[i]->occurrences.elements);
+    if (fm::chisq->active) { 
+        if (!fm::regression) fm::chisq->Calc(legs[i]->occurrences.elements);
+        else fm::ks->Calc(legs[i]->occurrences.elements);
+    }
 
     // GRAPHSTATE
     fm::graphstate->insertNode ( legs[i]->tuple.connectingnode, legs[i]->tuple.label, legs[i]->occurrences.maxdegree );
