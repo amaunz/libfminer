@@ -359,20 +359,18 @@ void GraphState::print ( FILE *f ) {
 
 void GraphState::DfsOut(int cur_n, int from_n) {
 
-    string oss[]= {"B", "C", "N", "O", "P", "S", "F", "Cl", "Br", "I"};
-    set<string> organic_subset(oss, oss+10);
-
     InputNodeLabel inl = fm::database->nodelabels[nodes[cur_n].label].inputlabel;
+    putchar('[');
+    putchar('#');
     if (inl!=254) {
-        string str = etab.GetSymbol(inl);
-        if (organic_subset.find(str) == organic_subset.end()) {
-            str.insert(0,"[");
-            str.insert(str.size(),"]");
-            cerr << str << endl;
-        }
-        
-        for(int i = 0; str[i] != '\0'; i++) putchar(str[i]);
-    } else putchar('c'); // output nodelabel
+        char s[3]; sprintf (s,"%d", inl);
+        cout << s;
+    } 
+    else {
+        cout << "6"; // output nodelabel
+    }
+    putchar(']');
+
     int fanout = (int) nodes[cur_n].edges.size ();
     InputEdgeLabel iel;
     for ( int j = 0; j < fanout; j++ ) {
