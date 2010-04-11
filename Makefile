@@ -38,7 +38,7 @@ INCLUDE_RB  =  1.9.1p243 NOT FOUND
 
 # FOR RUBY TARGET: ADJUST COMPILER PATH TO RUBY HEADERS (LINUX)
 #INCLUDE_RB    = -I/usr/lib/ruby/1.8/i486-linux/
-#INCLUDE_JAVA  = -I/usr/lib/jvm/java-6-sun-1.6.0.10/include/ -I/usr/lib/jvm/java-6-sun-1.6.0.10/include/linux/
+INCLUDE_JAVA  = -I/usr/lib/jvm/java-6-sun-1.6.0.14/include/ -I/usr/lib/jvm/java-6-sun-1.6.0.14/include/linux/
 
 # FOR LINUX: INSTALL TARGET DIRECTORY
 DESTDIR       = /usr/local/lib/
@@ -105,4 +105,4 @@ doc: Doxyfile Mainpage.h *.h
 	-doxygen $<
 .PHONY:
 clean:
-	-rm -rf *.o *.cxx libfminer.java  Fminer.*  libfminerJNI.*  SVector.*  SWIGTYPE_p_ChisqConstraint.java  SWIGTYPE_p_FILE.* $(LIB1) $(LIB1_SONAME) $(LIB1_REALNAME) $(LIB2)
+	-rm -rf *.o Fminer.*  libfminerJNI.*  SVector.*  SWIGTYPE_p_ChisqConstraint.java  SWIGTYPE_p_FILE.* $(LIB1) $(LIB1_SONAME) $(LIB1_REALNAME) $(LIB2)

@@ -1,13 +1,13 @@
-class TestFminer {
-    public static void main(String[] args) {
+public class TestFminer {
+    public static void main(String args[]) {
        System.loadLibrary("fminer");
        Fminer MyFminer;
        MyFminer = new Fminer();
        MyFminer.AddCompound ("COC1=CC=C(C=C1)C2=NC(=C([NH]2)C3=CC=CC=C3)C4=CC=CC=C4", 1);
        MyFminer.AddCompound ("O=C1NC(=S)NC(=O)C1C(=O)NC2=CC=CC=C2", 2);
           // ... continue adding compounds
-       MyFminer.AddActivity((boolean) true, 1);
-       MyFminer.AddActivity((boolean) false, 2);
+       MyFminer.AddActivity(1.0F, 1);
+       MyFminer.AddActivity(0.0F, 2);
           // ... continue adding activities (true for active, false for inactive)
        System.out.println(MyFminer.GetNoCompounds() + " compounds");
        // Toy example: special settings for mining all fragments
